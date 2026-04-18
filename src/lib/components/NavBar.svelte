@@ -27,7 +27,7 @@
 </script>
 
 <nav class="fixed bottom-2 left-1/2 -translate-x-1/2">
-	<Tabs.Root bind:value={tab} >
+	<Tabs.Root bind:value={tab}>
 		<Tabs.List class="*:flex *:flex-col *:gap-0.5 [&>button>svg]:size-5!">
 			<Tabs.Trigger value="browse">
 				<DotsNineIcon weight="fill" />

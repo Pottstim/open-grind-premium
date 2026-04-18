@@ -2,6 +2,7 @@
 	import "../layout.css";
 	import favicon from "$lib/assets/favicon.png";
 	import { Toaster } from "svelte-french-toast";
+	import { IconContext } from "phosphor-svelte";
 
 	let {
 		children,
@@ -19,4 +20,6 @@
 		style: "background-color: var(--accent); color: var(--popover)",
 	}}
 />
-{@render children?.()}
+<IconContext values={{}}>
+	{@render children?.()}
+</IconContext>

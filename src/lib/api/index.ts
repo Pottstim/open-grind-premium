@@ -100,7 +100,6 @@ export async function fetchRest(
 			if (appError.kind === "Auth" && appError.message === "Not logged in") {
 				toast("Please log in to continue");
 				goto("/auth/sign-in");
-				return;
 			}
 		}
 		throw error;

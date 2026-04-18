@@ -78,7 +78,7 @@
 										<br /><br />
 										Would you like help?
 									</p>
-									<br /><br />
+									<br />
 									<p>Don't worry, Clippy would never</p>
 									<ul class="list-clippy ps-3.5">
 										<li>Sell your information</li>
