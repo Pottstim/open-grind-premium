@@ -3,13 +3,18 @@
 
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Tauri + SvelteKit + Typescript App</title>
+	<style>
+		:root {
+			color-scheme: dark;
+			--background: oklch(0.145 0 0);
+			background-color: var(--background);
+		}
+	</style>
 	%sveltekit.head%
 </head>
 
-<body data-sveltekit-preload-data="hover">
+<body data-sveltekit-preload-data="hover" class="dark">
 	<div style="display: contents">%sveltekit.body%</div>
 </body>
 
