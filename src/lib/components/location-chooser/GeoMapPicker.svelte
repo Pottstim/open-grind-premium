@@ -24,7 +24,7 @@
 	let {
 		pinPos = $bindable(),
 	}: {
-		pinPos?: LatLng;
+		pinPos?: { lat: number; lng: number };
 	} = $props();
 
 	let map: LeafletMap | undefined = $state();
@@ -41,7 +41,8 @@
 		}
 	});
 
-	let searchQuery = $state("Madrid");
+	let searchQuery = $state("");
+	let showSearchResults = $state(false);
 	let searchPlaces = $derived.by(async () => {
 		try {
 			let query = searchQuery.trim();
@@ -61,7 +62,7 @@
 							places: z.array(
 								z.object({
 									name: z.string(),
-									address: z.string(),
+									address: z.string().nullable(),
 									lat: z.number(),
 									lon: z.number(),
 									importance: z.number(),
@@ -72,10 +73,8 @@
 				);
 			return response;
 		} catch (e) {
-			toast.error(
-				"Failed to search places: " +
-					(e instanceof Error ? e.message : String(e)),
-			);
+			console.error(e);
+			toast.error("Failed to search places");
 		}
 	});
 </script>
@@ -117,13 +116,24 @@
 			id="search-place"
 			type="search"
 			placeholder="Search places..."
-			bind:value={searchQuery}
+			bind:value={
+				() => searchQuery,
+				(v) => {
+					searchQuery = v;
+					showSearchResults = true;
+				}
+			}
 			class=" bg-popover-foreground text-background shadow-md"
 			maxlength={100}
+			onfocus={() => {
+				if (searchQuery.trim()) {
+					showSearchResults = true;
+				}
+			}}
 		/>
 		<!-- bottom-2 w-[calc(100%-8rem)]  -->
 	</div>
-	{#if searchQuery}
+	{#if showSearchResults}
 		<div class="size-full z-1000 top-0 left-0 absolute p-1 pb-16">
 			<div
 				class="bg-popover-foreground backdrop-blur-xl w-full h-full rounded-md flex flex-col text-popover shadow-md px-1 py-3 overflow-auto gap-2"
@@ -136,13 +146,20 @@
 							<Button
 								class="flex flex-col gap-0 items-start justify-start text-current cursor-pointer text-left h-auto"
 								variant="link"
+								onclick={() => {
+									pinPos = { lat: place.lat, lng: place.lon };
+									map?.setView([place.lat, place.lon], 17);
+									showSearchResults = false;
+								}}
 							>
-								<span class="max-w-full truncate line-clamp-1">{place.name}</span>
-								<span
-									class="max-w-full truncate line-clamp-1 text-sm text-popover/40"
+								<div class="max-w-full block truncate line-clamp-1">
+									{place.name}
+								</div>
+								<div
+									class="max-w-full block truncate line-clamp-1 text-sm text-popover/40"
 								>
 									{place.address}
-								</span>
+								</div>
 							</Button>
 						{/each}
 					{/if}

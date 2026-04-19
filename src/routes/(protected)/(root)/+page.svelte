@@ -19,7 +19,7 @@
 		</main>
 	{:else}
 		<main class="min-h-dvh flex flex-col p-4">
-			<LocationChange />
+			<LocationChange onUpdate={() => (preferences = getPreferences())} />
 			<!-- <Grid {geohash} /> -->
 			{geohash}
 		</main>

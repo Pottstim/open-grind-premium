@@ -26,7 +26,7 @@ Response:
 
 - `places` — array of objects
   - `name` — string
-  - `address` — string
+  - `address` — string or `null`
   - `lat` — number
   - `lon` — number
   - `placeId` — string with number

@@ -264,7 +264,7 @@ Response:
     - `type` — integer, WIP
     - `state` — integer, WIP
   - `profileId` — integer
-  - `profileImageMediaHash` — [Media hash](/grindr-api/media/index#media) or `null
+  - `profileImageMediaHash` — [Media hash](/grindr-api/media/index#media) or `null`
   - `profileTags` — array of [Profile tags](/grindr-api/users/profiles#profile-tags)
   - `seen` — unix timestamp in milliseconds
   - `showAge` —  boolean

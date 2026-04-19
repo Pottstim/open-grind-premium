@@ -24,24 +24,30 @@
 	let geoMapPickerOpen = $state(false);
 
 	const geoApiSupported = $derived(["android", "ios"].includes(platform()));
+	let disabled = $state(false);
 
 	async function handleDetectLocation() {
-		let permissions = await checkPermissions();
-		if (
-			permissions.location === "prompt" ||
-			permissions.location === "prompt-with-rationale"
-		) {
-			permissions = await requestPermissions(["location"]);
-		}
-		if (permissions.location === "granted") {
-			const {
-				coords: { latitude, longitude },
-			} = await getCurrentPosition();
-			submitGeohash(encodeGeohash(latitude, longitude));
-		} else {
-			toast.error(
-				"Location permission denied. Change this in your system settings to use this button.",
-			);
+		disabled = true;
+		try {
+			let permissions = await checkPermissions();
+			if (
+				permissions.location === "prompt" ||
+				permissions.location === "prompt-with-rationale"
+			) {
+				permissions = await requestPermissions(["location"]);
+			}
+			if (permissions.location === "granted") {
+				const {
+					coords: { latitude, longitude },
+				} = await getCurrentPosition();
+				submitGeohash(encodeGeohash(latitude, longitude));
+			} else {
+				toast.error(
+					"Location permission denied. Change this in your system settings to use this button.",
+				);
+			}
+		} finally {
+			disabled = false;
 		}
 	}
 
@@ -71,7 +77,7 @@
 	<Empty.Content>
 		<div class="flex gap-2">
 			{#if geoApiSupported}
-				<Button variant="default" onclick={handleDetectLocation}>
+				<Button variant="default" onclick={handleDetectLocation} disabled={disabled}>
 					<GpsFixIcon color="currentColor" weight="fill" />
 					Use current location
 				</Button>
