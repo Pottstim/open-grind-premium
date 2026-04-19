@@ -1,21 +1,27 @@
 <script lang="ts">
-	import { getPreferences } from "$lib/app-data/preferences";
+	import { getPreferences } from "$lib/app-data/preferences.svelte";
+	import LocationChooser from "./LocationEmpty.svelte";
+	import LocationChange from "./LocationChange.svelte";
 	import Grid from "./Grid.svelte";
-	import LocationChooser from "$lib/components/location-chooser/LocationChooser.svelte";
+
+	let preferences = $state(getPreferences());
 </script>
 
 <svelte:head>
 	<title>Open Grind</title>
 </svelte:head>
-<main class="min-h-dvh">
-	{#await getPreferences() then { geohash }}
-		{#if geohash === null}
+{#await preferences then { geohash }}
+	{#if geohash === null}
+		<main class="min-h-dvh">
 			<div class="m-auto flex min-h-dvh pb-16">
-				<LocationChooser />
+				<LocationChooser onUpdate={() => (preferences = getPreferences())} />
 			</div>
-		{:else}
+		</main>
+	{:else}
+		<main class="min-h-dvh flex flex-col p-4">
+			<LocationChange />
 			<!-- <Grid {geohash} /> -->
 			{geohash}
-		{/if}
-	{/await}
-</main>
+		</main>
+	{/if}
+{/await}

@@ -79,7 +79,6 @@
 				onclick={async () => {
 					if (map) {
 						let permissions = await checkPermissions();
-						console.log(permissions);
 						if (
 							permissions.location === "prompt" ||
 							permissions.location === "prompt-with-rationale"

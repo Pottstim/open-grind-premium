@@ -2,10 +2,12 @@
 	import type z from "zod";
 	import { onMount } from "svelte";
 	import { searchProfiles, type searchProfile } from "./grid";
-	import { getPreferences } from "$lib/app-data/preferences";
+	import { getPreferences } from "$lib/app-data/preferences.svelte";
 
-	let { geohash }: {
-		geohash: string
+	let {
+		geohash,
+	}: {
+		geohash: string;
 	} = $props();
 
 	// <button
@@ -29,7 +31,7 @@
 
 	async function fetchProfiles() {
 		searchProfiles({
-			nearbyGeoHash: "",
+			nearbyGeoHash: geohash,
 		});
 	}
 </script>
