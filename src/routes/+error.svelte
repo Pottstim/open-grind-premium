@@ -132,7 +132,7 @@
 		</Empty.Content>
 		<Button variant="link" class="text-muted-foreground" size="sm">
 			<a
-				href="https://git.hloth.dev/hloth/open-grind/issues/new?title=%5BBUG%5D+Short+description+of+the+issue"
+				href="https://git.opengrind.org/open-grind/open-grind/issues/new?title=%5BBUG%5D+Short+description+of+the+issue"
 			>
 				Report an issue <ArrowUpRightIcon class="inline" />
 			</a>

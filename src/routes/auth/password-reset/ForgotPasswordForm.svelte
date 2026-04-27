@@ -9,7 +9,7 @@
 	<Alert.Title>Unimplemented</Alert.Title>
 	<Alert.Description>
 		Password reset is not implemented yet, track <a
-			href="https://git.hloth.dev/hloth/open-grind/issues/22"
+			href="https://git.opengrind.org/open-grind/open-grind/issues/22"
 		>
 			#22
 		</a>.

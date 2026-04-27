@@ -1,5 +1,5 @@
 # Donate to Open Grind
 
-Contributors listed in order of their contributions value:
+Open Grind maintainers and contributors accept donations through their own chosen platforms and payment methods.
 
-- [@hloth](https://git.hloth.dev/hloth) — [hloth.dev/donate](https://hloth.dev/donate)
+You can find the list of persons who made contributions ordered by the value in [GOVERNANCE.md](./GOVERNANCE.md).

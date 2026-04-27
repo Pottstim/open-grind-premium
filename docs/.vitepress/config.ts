@@ -46,13 +46,13 @@ export default defineConfig({
 		},
 
 		socialLinks: [
-			{ icon: "git", link: "https://git.hloth.dev/hloth/open-grind/" },
+			{ icon: "git", link: "https://git.opengrind.org/open-grind/open-grind/" },
 		],
 
 		footer: {
 			message: "Open Grind is not affiliated with Grindr in any way.",
 			copyright:
-				'Licensed under the <a href="https://git.hloth.dev/hloth/open-grind/src/branch/main/LICENSE">MIT</a> License.',
+				'Licensed under the <a href="https://opengrind.org/license">MIT</a> License.',
 		},
 	},
 });
