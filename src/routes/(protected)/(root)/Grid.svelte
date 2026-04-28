@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type z from "zod";
 	import { onMount } from "svelte";
-	import { searchProfiles, type searchProfileSchema } from "./grid";
+	import {
+		getV3Cascade,
+		searchProfiles,
+		type searchProfileSchema,
+	} from "./grid";
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 	import Filters from "./GridFilters.svelte";
@@ -30,10 +34,10 @@
 	async function fetchProfiles() {
 		try {
 			const { gridSearchFilters } = await getPreferences();
-			return await searchProfiles({
+			return await getV3Cascade({
 				nearbyGeoHash: geohash,
 				// favorite || undefined
-				online: gridSearchFilters?.isOnline || undefined,
+				onlineOnly: gridSearchFilters?.isOnline || undefined,
 				// right now || undefined
 				...(gridSearchFilters?.ageEnabled && {
 					ageMinimum: gridSearchFilters?.age[0],
@@ -96,9 +100,15 @@
 		{#each Array.from({ length: 20 })}
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
-	{:then { profiles }}
-		{#each profiles as { displayName, age, distance, profileId, medias } (profileId)}
-			<ProfileMiniCard id={profileId} {displayName} {age} {distance} {medias} />
+	{:then { items }}
+		{#each items as { data: { displayName, age, profileId, photoMediaHashes } } (profileId)}
+			<ProfileMiniCard
+				id={profileId}
+				{displayName}
+				{age}
+				distance={null}
+				medias={photoMediaHashes?.map((mediaHash) => ({ mediaHash })) ?? []}
+			/>
 		{/each}
 	{/await}
 </div>

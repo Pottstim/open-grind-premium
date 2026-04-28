@@ -53,10 +53,10 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
 
 ## ProfileFields
 
-- `meetAt` — array of integers, see [Meet at](#meet-at)
-- `vaccines` — array of integers, see [Vaccines](#vaccines)
-- `genders` — array of integers, see [Genders](#genders)
-- `pronouns` — array of integers, see [Pronouns](#pronouns)
+- `meetAt` — array of integers, optional, see [Meet at](#meet-at)
+- `vaccines` — array of integers, optional, see [Vaccines](#vaccines)
+- `genders` — array of integers, optional, see [Genders](#genders)
+- `pronouns` — array of integers, optional, see [Pronouns](#pronouns)
 
 ## Profile
 

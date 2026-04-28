@@ -333,10 +333,10 @@ export const profileShortSchema = profileMaskedSchema
 	});
 
 export const profileFieldsSchema = z.object({
-	meetAt: z.array(meetAtSchema),
-	vaccines: z.array(vaccinesSchema),
-	genders: z.array(z.number().int().nonnegative()),
-	pronouns: z.array(z.number().int().nonnegative()),
+	meetAt: z.array(meetAtSchema).optional(),
+	vaccines: z.array(vaccinesSchema).optional(),
+	genders: z.array(z.number().int().nonnegative()).optional(),
+	pronouns: z.array(z.number().int().nonnegative()).optional(),
 });
 
 export const profileSchema = profileShortSchema

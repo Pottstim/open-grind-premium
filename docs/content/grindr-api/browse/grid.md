@@ -120,9 +120,9 @@ Only for [v3/cascade](#get-cascade-legacy):
 
 Only for [v4/cascade](#get-cascade):
 
-- `age` — integer
-- `heightCm` — integer
-- `weightGrams` — integer
+- `age` — integer, optional
+- `heightCm` — integer, optional
+- `weightGrams` — integer, optional
 - `bodyType` — integer, see [Body type](/grindr-api/users/profiles#body-type)
 
 ### `explore_aggregation_v1`
