@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { HeartbeatIcon } from "phosphor-svelte";
+	import ProfileField from "./ProfileField.svelte";
+	import ProfileValueLabel from "./ProfileValueLabel.svelte";
 	import {
 		healthPractices as healthPracticesOptions,
 		type HealthPracticeId,
@@ -13,13 +15,12 @@
 </script>
 
 {#if healthPractices !== null && healthPractices.length > 0}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<HeartbeatIcon class="shrink-0" />
-		<div class="gap-1">
-			<span class="text-neutral-500">Health Practices</span>
+		<ProfileValueLabel label="Health Practices">
 			{healthPractices
 				.map((option) => healthPracticesOptions[option])
 				.join(", ")}
-		</div>
-	</div>
+		</ProfileValueLabel>
+	</ProfileField>
 {/if}

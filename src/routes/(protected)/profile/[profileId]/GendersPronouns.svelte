@@ -3,6 +3,7 @@
 	import { fetchGenders } from "$lib/api/genders";
 	import { fetchPronouns } from "$lib/api/pronouns";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+	import ProfileField from "./ProfileField.svelte";
 
 	let allGenders = $derived(fetchGenders());
 	let allPronouns = $derived(fetchPronouns());
@@ -17,7 +18,7 @@
 </script>
 
 {#if (genders !== null && genders.length > 0) || (pronouns !== null && pronouns.length > 0)}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="1em"
@@ -39,34 +40,32 @@
 				<circle cx="12" cy="12" r="4" />
 			</g>
 		</svg>
-		<div class="flex items-center gap-1">
-			{#if genders !== null && genders.length > 0}
-				{#await allGenders}
-					<Spinner />
-				{:then allGenders}
-					{genders
-						.map(
-							(genderId) =>
-								allGenders.find((g) => g.genderId === genderId)?.gender,
-						)
-						.join(", ")}
-				{/await}
-			{/if}
-			{#if genders !== null && genders.length > 0 && pronouns !== null && pronouns.length > 0}
-				<Separator orientation="vertical" />
-			{/if}
-			{#if pronouns !== null && pronouns.length > 0}
-				{#await allPronouns}
-					<Spinner />
-				{:then allPronouns}
-					{pronouns
-						.map(
-							(pronounId) =>
-								allPronouns.find((p) => p.pronounId === pronounId)?.pronoun,
-						)
-						.join(", ")}
-				{/await}
-			{/if}
-		</div>
-	</div>
+		{#if genders !== null && genders.length > 0}
+			{#await allGenders}
+				<Spinner />
+			{:then allGenders}
+				{genders
+					.map(
+						(genderId) =>
+							allGenders.find((g) => g.genderId === genderId)?.gender,
+					)
+					.join(", ")}
+			{/await}
+		{/if}
+		{#if genders !== null && genders.length > 0 && pronouns !== null && pronouns.length > 0}
+			<Separator orientation="vertical" />
+		{/if}
+		{#if pronouns !== null && pronouns.length > 0}
+			{#await allPronouns}
+				<Spinner />
+			{:then allPronouns}
+				{pronouns
+					.map(
+						(pronounId) =>
+							allPronouns.find((p) => p.pronounId === pronounId)?.pronoun,
+					)
+					.join(", ")}
+			{/await}
+		{/if}
+	</ProfileField>
 {/if}

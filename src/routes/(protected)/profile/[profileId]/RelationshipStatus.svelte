@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { UsersIcon } from "phosphor-svelte";
+	import ProfileField from "./ProfileField.svelte";
 	import {
 		relationshipStatuses,
 		type RelationshipStatusId,
@@ -13,8 +14,8 @@
 </script>
 
 {#if relationshipStatus !== null}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<UsersIcon class="shrink-0" />
 		{relationshipStatuses[relationshipStatus]}
-	</div>
+	</ProfileField>
 {/if}

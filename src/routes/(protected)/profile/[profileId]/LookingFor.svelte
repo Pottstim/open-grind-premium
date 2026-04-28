@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { EyesIcon } from "phosphor-svelte";
+	import ProfileValueLabel from "./ProfileValueLabel.svelte";
+	import ProfileField from "./ProfileField.svelte";
 	import {
 		lookingFor as lookingForOptions,
 		type LookingForId,
@@ -13,11 +15,10 @@
 </script>
 
 {#if lookingFor !== null && lookingFor.length > 0}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<EyesIcon class="shrink-0" weight="fill" />
-		<div class="gap-1">
-			<span class="text-neutral-500">Looking For</span>
+		<ProfileValueLabel label="Looking For">
 			{lookingFor.map((option) => lookingForOptions[option]).join(", ")}
-		</div>
-	</div>
+		</ProfileValueLabel>
+	</ProfileField>
 {/if}

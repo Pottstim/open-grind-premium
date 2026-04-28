@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { UsersThreeIcon } from "phosphor-svelte";
 	import { tribes as allTribes, type TribeId } from "$lib/model/profile";
+	import ProfileField from "./ProfileField.svelte";
 
 	let {
 		tribes,
@@ -10,10 +11,10 @@
 </script>
 
 {#if tribes !== null && tribes.length > 0}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<UsersThreeIcon class="shrink-0" />
-		<div class="flex items-center gap-1">
+		<ProfileValue>
 			{tribes.map((tribe) => allTribes[tribe]).join(", ")}
-		</div>
-	</div>
+		</ProfileValue>
+	</ProfileField>
 {/if}

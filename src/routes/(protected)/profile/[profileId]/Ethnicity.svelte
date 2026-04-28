@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GlobeStandIcon } from "phosphor-svelte";
+	import ProfileField from "./ProfileField.svelte";
 	import { ethnicities, type EthnicityId } from "$lib/model/profile";
 
 	let {
@@ -10,10 +11,8 @@
 </script>
 
 {#if ethnicity !== null}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<GlobeStandIcon class="shrink-0" />
-		<div class="flex items-center gap-1">
-			{ethnicities[ethnicity]}
-		</div>
-	</div>
+		{ethnicities[ethnicity]}
+	</ProfileField>
 {/if}

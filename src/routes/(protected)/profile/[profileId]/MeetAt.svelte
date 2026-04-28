@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { HouseIcon } from "phosphor-svelte";
 	import { meetAt as meetAtOptions, type MeetAtId } from "$lib/model/profile";
+	import ProfileField from "./ProfileField.svelte";
+	import ProfileValueLabel from "./ProfileValueLabel.svelte";
 
 	let {
 		meetAt = null,
@@ -10,11 +12,10 @@
 </script>
 
 {#if meetAt !== null && meetAt.length > 0}
-	<div class="flex items-center gap-1.5 text-sm">
+	<ProfileField>
 		<HouseIcon class="shrink-0" />
-		<div class="gap-1">
-			<span class="text-neutral-500">Meet At</span>
+		<ProfileValueLabel label="Meet At">
 			{meetAt.map((option) => meetAtOptions[option]).join(", ")}
-		</div>
-	</div>
+		</ProfileValueLabel>
+	</ProfileField>
 {/if}
