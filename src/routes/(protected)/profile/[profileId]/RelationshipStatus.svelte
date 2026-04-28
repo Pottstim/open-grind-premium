@@ -14,9 +14,7 @@
 
 {#if relationshipStatus !== null}
 	<div class="flex items-center gap-1.5 text-sm">
-		<UsersIcon />
-		<div class="flex items-center gap-1">
-			{relationshipStatuses[relationshipStatus]}
-		</div>
+		<UsersIcon class="shrink-0" />
+		{relationshipStatuses[relationshipStatus]}
 	</div>
 {/if}

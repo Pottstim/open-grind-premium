@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { UsersThreeIcon } from "phosphor-svelte";
-	import { type LookingForId } from "$lib/model/profile";
+	import { EyesIcon } from "phosphor-svelte";
+	import {
+		lookingFor as lookingForOptions,
+		type LookingForId,
+	} from "$lib/model/profile";
 
 	let {
 		lookingFor,
@@ -11,10 +14,10 @@
 
 {#if lookingFor !== null && lookingFor.length > 0}
 	<div class="flex items-center gap-1.5 text-sm">
-		<UsersThreeIcon class="shrink-0" />
+		<EyesIcon class="shrink-0" weight="fill" />
 		<div class="gap-1">
 			<span class="text-neutral-500">Looking For</span>
-			{lookingFor.map((option) => lookingFor[option]).join(", ")}
+			{lookingFor.map((option) => lookingForOptions[option]).join(", ")}
 		</div>
 	</div>
 {/if}

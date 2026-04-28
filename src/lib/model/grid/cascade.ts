@@ -52,7 +52,7 @@ export const cascadeV3QuerySchema = cascadeQuerySchema.extend({
 export const cascadeResponseProfileSchema = z.object({
 	profileId: z.number().int().nonnegative(),
 	onlineUntil: unixTimestampMsSchema.nullable(),
-	displayName: z.string().nullable(),
+	displayName: z.string().nullable().optional(),
 	distanceMeters: z.number().int().nonnegative().optional(),
 	rightNow: z.string(),
 	unreadCount: z.number().int().nonnegative(),
@@ -79,14 +79,13 @@ export const cascadeV3ResponseProfileSchema =
 		isBoostingSomewhereElse: z.boolean(),
 	});
 
-export const cascadeV4ResponseProfileSchema =
-	cascadeResponseProfileSchema.extend({
-		primaryImageUrl: z.url(),
-		favorite: z.boolean(),
-		viewed: z.boolean(),
-		chatted: z.boolean(),
-		roaming: z.boolean(),
-	});
+export const cascadeV4ResponseProfileSchema = cascadeResponseProfileSchema.extend({
+	primaryImageUrl: z.url(),
+	favorite: z.boolean().optional(),
+	viewed: z.boolean().optional(),
+	chatted: z.boolean().optional(),
+	roaming: z.boolean().optional(),
+});
 
 export const cascadeV3ResponseProfileFullProfileV1Schema = z.object({
 	type: z.literal("full_profile_v1"),
@@ -99,9 +98,9 @@ export const cascadeV3ResponseProfileFullProfileV1Schema = z.object({
 			mediaHashPublicSchema,
 			z.object({
 				takenOnGrindr: z.boolean(),
-				createdAt: unixTimestampMsSchema,
+				createdAt: unixTimestampMsSchema.nullable(),
 			}),
-		),
+		).optional(),
 	}),
 });
 
@@ -116,10 +115,167 @@ export const cascadeV4ResponseProfileFullProfileV1Schema = z.object({
 	}),
 });
 
-export const cascadeV3ResponseItemSchema = z.union([
+export const cascadeV3ResponsePartialProfileV1Schema = z.object({
+	type: z.literal("partial_profile_v1"),
+	data: cascadeResponseProfileSchema.extend({
+		"@type": z.literal("CascadeItemData$PartialProfileV1"),
+		upsellItemType: z.string(),
+	}),
+});
+
+export const cascadeV4ResponsePartialProfileV1Schema = z.object({
+	type: z.literal("partial_profile_v1"),
+	data: cascadeV4ResponseProfileSchema.extend({
+		upsellItemType: z.string(),
+	}),
+});
+
+export const cascadeV3ResponseAdvertV1Schema = z.object({
+	type: z.literal("advert_v1"),
+	data: z.object({
+		"@type": z.literal("CascadeItemData$Advert"),
+		cascadePlacementName: z.string(),
+	}),
+});
+
+export const cascadeV4ResponseAdvertV1Schema = z.object({
+	type: z.literal("advert_v1"),
+	data: z.object({
+		cascadePlacementName: z.string(),
+	}),
+});
+
+export const cascadeV3ResponseTopPicksV1Schema = z.object({
+	type: z.literal("top_picks_v1"),
+	data: z.object({}).passthrough(),
+});
+
+export const cascadeV4ResponseTopPicksV1Schema = z.object({
+	type: z.literal("top_picks_v1"),
+	data: z.object({}).passthrough(),
+});
+
+const exploreAggregationLocationItemSchema = z.object({
+	"@type": z.literal("ExploreAggregationItem$Location"),
+	data: z.object({
+		onlineCount: z.number().int().nonnegative(),
+		uuid: z.string(),
+		location: z.object({
+			id: z.number().int(),
+			name: z.string(),
+			suffix: z.string(),
+			lat: z.number(),
+			lon: z.number(),
+		}),
+		profiles: z.array(z.object({ profileImageUrl: z.url() })),
+	}),
+});
+
+const exploreAggregationCtaItemSchema = z.object({
+	"@type": z.literal("ExploreAggregationItem$Cta"),
+});
+
+export const cascadeV3ResponseExploreAggregationV1Schema = z.object({
+	type: z.literal("explore_aggregation_v1"),
+	data: z.object({
+		"@type": z.literal("CascadeItemData$ExploreAggregationV1"),
+		uuid: z.string(),
+		headerName: z.string(),
+		source: z.string(),
+		items: z.array(
+			z.discriminatedUnion("@type", [
+				exploreAggregationLocationItemSchema,
+				exploreAggregationCtaItemSchema,
+			]),
+		),
+	}),
+});
+
+export const cascadeV4ResponseExploreAggregationV1Schema = z.object({
+	type: z.literal("explore_aggregation_v1"),
+	data: z.object({
+		uuid: z.string(),
+		headerName: z.string(),
+		source: z.string(),
+		items: z.array(
+			z.discriminatedUnion("@type", [
+				exploreAggregationLocationItemSchema,
+				exploreAggregationCtaItemSchema,
+			]),
+		),
+	}),
+});
+
+export const cascadeV3ResponseBoostUpsellV1Schema = z.object({
+	type: z.literal("boost_upsell_v1"),
+	data: z.object({
+		"@type": z.literal("CascadeItemData$BoostUpsellV1"),
+	}),
+});
+
+export const cascadeV4ResponseBoostUpsellV1Schema = z.object({
+	type: z.literal("boost_upsell_v1"),
+	data: z.object({}),
+});
+
+export const cascadeV3ResponseUnlimitedMpuV1Schema = z.object({
+	type: z.literal("unlimited_mpu_v1"),
+	data: z.object({
+		"@type": z.literal("CascadeItemData$UnlimitedMpuV1"),
+	}),
+});
+
+export const cascadeV4ResponseUnlimitedMpuV1Schema = z.object({
+	type: z.literal("unlimited_mpu_v1"),
+	data: z.object({}),
+});
+
+export const cascadeV3ResponseXtraMpuV1Schema = z.object({
+	type: z.literal("xtra_mpu_v1"),
+	data: z.object({
+		"@type": z.literal("CascadeItemData$XtraMpuV1"),
+	}),
+});
+
+export const cascadeV4ResponseXtraMpuV1Schema = z.object({
+	type: z.literal("xtra_mpu_v1"),
+	data: z.object({}),
+});
+
+export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseProfileFullProfileV1Schema,
+	cascadeV3ResponsePartialProfileV1Schema,
+	cascadeV3ResponseAdvertV1Schema,
+	cascadeV3ResponseTopPicksV1Schema,
+	cascadeV3ResponseExploreAggregationV1Schema,
+	cascadeV3ResponseBoostUpsellV1Schema,
+	cascadeV3ResponseUnlimitedMpuV1Schema,
+	cascadeV3ResponseXtraMpuV1Schema,
 ]);
 
-export const cascadeV4ResponseItemSchema = z.union([
+export const cascadeV4ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV4ResponseProfileFullProfileV1Schema,
+	cascadeV4ResponsePartialProfileV1Schema,
+	cascadeV4ResponseAdvertV1Schema,
+	cascadeV4ResponseTopPicksV1Schema,
+	cascadeV4ResponseExploreAggregationV1Schema,
+	cascadeV4ResponseBoostUpsellV1Schema,
+	cascadeV4ResponseUnlimitedMpuV1Schema,
+	cascadeV4ResponseXtraMpuV1Schema,
 ]);
+
+export const cascadeV3ResponseSchema = z.object({
+	items: z.array(cascadeV3ResponseItemSchema),
+	nextPage: z.number().int().nonnegative(),
+	shuffled: z.boolean(),
+	hiddenProfiles: z.unknown(),
+	hiddenProfileInfo: z.unknown(),
+});
+
+export const cascadeV4ResponseSchema = z.object({
+	items: z.array(cascadeV4ResponseItemSchema),
+	nextPage: z.number().int().nonnegative(),
+	shuffled: z.boolean(),
+	hiddenProfiles: z.unknown(),
+	hiddenProfileInfo: z.unknown(),
+});

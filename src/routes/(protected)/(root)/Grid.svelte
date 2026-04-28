@@ -1,14 +1,10 @@
 <script lang="ts">
-	import type z from "zod";
-	import { onMount } from "svelte";
-	import {
-		getV3Cascade,
-		searchProfiles,
-		type searchProfileSchema,
-	} from "./grid";
+	import { getV3Cascade } from "./grid";
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 	import Filters from "./GridFilters.svelte";
+	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
+	import type z from "zod";
 
 	let {
 		geohash,
@@ -34,57 +30,68 @@
 	async function fetchProfiles() {
 		try {
 			const { gridSearchFilters } = await getPreferences();
-			return await getV3Cascade({
+			const query: z.infer<typeof cascadeV3QuerySchema> = {
 				nearbyGeoHash: geohash,
-				// favorite || undefined
+				favorites: gridSearchFilters?.isFavorite || undefined,
 				onlineOnly: gridSearchFilters?.isOnline || undefined,
-				// right now || undefined
+				rightNow: gridSearchFilters?.isRightNow || undefined,
 				...(gridSearchFilters?.ageEnabled && {
-					ageMinimum: gridSearchFilters?.age[0],
-					ageMaximum: gridSearchFilters?.age[1],
+					ageMin: gridSearchFilters?.age[0],
+					ageMax: gridSearchFilters?.age[1],
 				}),
 				...(gridSearchFilters?.genderEnabled && {
 					genders: gridSearchFilters?.genders,
 				}),
 				...(gridSearchFilters?.positionEnabled && {
-					sexualPositionIds: gridSearchFilters?.positions,
+					sexualPositions: gridSearchFilters?.positions,
 				}),
-				...(gridSearchFilters?.photosEnabled && {
-					photoOnly: gridSearchFilters?.photos.includes("has-photos"),
-					hasAlbum: gridSearchFilters?.photos.includes("has-albums"),
-					faceOnly: gridSearchFilters?.photos.includes("has-face-pics"),
-				}),
+				...(gridSearchFilters?.photosEnabled &&
+					gridSearchFilters?.photos.includes("has-photos") && {
+						photoOnly: true,
+					}),
+				...(gridSearchFilters?.photosEnabled &&
+					gridSearchFilters?.photos.includes("has-albums") && {
+						hasAlbum: gridSearchFilters?.photos.includes("has-albums"),
+					}),
+				...(gridSearchFilters?.photosEnabled &&
+					gridSearchFilters?.photos.includes("has-profile-pic") && {
+						faceOnly: gridSearchFilters?.photos.includes("has-face-pics"),
+					}),
 				...(gridSearchFilters?.tribesEnabled && {
-					grindrTribesIds: gridSearchFilters?.tribes,
+					tribes: gridSearchFilters?.tribes,
 				}),
 				...(gridSearchFilters?.bodyTypesEnabled && {
-					bodyTypeIds: gridSearchFilters?.bodyTypes,
+					bodyTypes: gridSearchFilters?.bodyTypes,
 				}),
 				...(gridSearchFilters?.heightEnabled && {
-					heightMinimum: gridSearchFilters?.height[0],
-					heightMaximum: gridSearchFilters?.height[1],
+					heightCmMin: gridSearchFilters?.height[0],
+					heightCmMax: gridSearchFilters?.height[1],
 				}),
 				...(gridSearchFilters?.weightEnabled && {
-					weightMinimum: gridSearchFilters?.weight[0],
-					weightMaximum: gridSearchFilters?.weight[1],
+					weightGramsMin: gridSearchFilters?.weight[0],
+					weightGramsMax: gridSearchFilters?.weight[1],
 				}),
 				...(gridSearchFilters?.relationshipStatusesEnabled && {
-					relationshipStatusIds: gridSearchFilters?.relationshipStatuses,
+					relationshipStatuses: gridSearchFilters?.relationshipStatuses,
 				}),
 				...(gridSearchFilters?.acceptNSFWPicsEnabled &&
 					gridSearchFilters?.acceptNSFWPics !== undefined && {
-						nsfwIds: gridSearchFilters?.acceptNSFWPics,
+						nsfwPics: gridSearchFilters?.acceptNSFWPics,
 					}),
 				...(gridSearchFilters?.lookingForEnabled && {
-					lookingForIds: gridSearchFilters?.lookingFor,
+					lookingFor: gridSearchFilters?.lookingFor,
 				}),
 				...(gridSearchFilters?.meetAtEnabled && {
-					meetAtIds: gridSearchFilters?.meetAt,
+					meetAt: gridSearchFilters?.meetAt,
 				}),
 				notRecentlyChatted:
 					gridSearchFilters?.haventChattedTodayEnabled || undefined,
-				// healthPractices
-			});
+				...(gridSearchFilters?.healthPracticesEnabled && {
+					sexualHealth: gridSearchFilters?.healthPractices,
+				}),
+			} satisfies z.infer<typeof cascadeV3QuerySchema>;
+				console.log({ query });
+			return await getV3Cascade(query);
 		} catch (e) {
 			console.error(e);
 			throw new Error("Failed to fetch profiles");
@@ -101,13 +108,17 @@
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
 	{:then { items }}
-		{#each items as { data: { displayName, age, profileId, photoMediaHashes } } (profileId)}
+		{@const fullProfiles = items.filter(
+			(i) => i.type === "full_profile_v1" || i.type === "partial_profile_v1",
+		)}
+		{#each fullProfiles as { data: { displayName, profileId, isVisiting, onlineUntil, rightNow, unreadCount, ...props } } (profileId)}
 			<ProfileMiniCard
 				id={profileId}
-				{displayName}
-				{age}
+				displayName={displayName ?? null}
 				distance={null}
-				medias={photoMediaHashes?.map((mediaHash) => ({ mediaHash })) ?? []}
+				medias={"photoMediaHashes" in props
+					? (props.photoMediaHashes?.map((mediaHash) => ({ mediaHash })) ?? [])
+					: []}
 			/>
 		{/each}
 	{/await}

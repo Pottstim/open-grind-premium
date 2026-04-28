@@ -11,7 +11,7 @@
 
 {#if tribes !== null && tribes.length > 0}
 	<div class="flex items-center gap-1.5 text-sm">
-		<UsersThreeIcon />
+		<UsersThreeIcon class="shrink-0" />
 		<div class="flex items-center gap-1">
 			{tribes.map((tribe) => allTribes[tribe]).join(", ")}
 		</div>

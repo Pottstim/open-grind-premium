@@ -122,9 +122,9 @@ export const Tribe = {
 	Otter: 8,
 	Poz: 9,
 	Rugged: 10,
-	Sober: 11,
-	Trans: 12,
-	Twink: 13,
+	Trans: 11,
+	Twink: 12,
+	Sober: 13,
 } as const;
 
 export const tribes = {

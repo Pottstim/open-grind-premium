@@ -15,11 +15,16 @@
 	import Tribes from "./Tribes.svelte";
 	import LookingFor from "./LookingFor.svelte";
 	import MeetAt from "./MeetAt.svelte";
+	import NSFWPics from "./NSFWPics.svelte";
+	import Socials from "./Socials.svelte";
+	import HivStatus from "./HivStatus.svelte";
+	import LastTested from "./LastTested.svelte";
+	import HealthPractices from "./HealthPractices.svelte";
 
 	const profile = $derived(getProfile(Number(page.params.profileId)));
 </script>
 
-<main>
+<main class="pb-16">
 	{#await profile}
 		<Skeleton />
 	{:then profile}
@@ -43,9 +48,14 @@
 			grindrTribes,
 			lookingFor,
 			meetAt,
+			nsfw,
+			hivStatus,
+			lastTestedDate: lastTestedDateValue,
+			sexualHealth: sexualHealthValue,
+			socialNetworks,
 		} = profile}
 		<ImageCarousel />
-		<div class="flex flex-col p-4">
+		<div class="flex flex-col p-4 pb-12">
 			<h1 class="text-2xl wrap-break-word">
 				{#if displayName !== null}
 					<span class="font-semibold">
@@ -69,14 +79,37 @@
 			{#if aboutMe !== null}
 				<AboutMe>{aboutMe}</AboutMe>
 			{/if}
-			{#if (genders !== null && genders.length > 0) || (pronouns !== null && pronouns.length > 0) || ethnicity !== null || relationshipStatus !== null || (grindrTribes !== null && grindrTribes.length > 0) || (lookingFor !== null && lookingFor.length > 0) || (meetAt !== null && meetAt.length > 0)}
+			{#if (genders && genders.length > 0) || (pronouns && pronouns.length > 0) || ethnicity !== null || relationshipStatus !== null || (grindrTribes && grindrTribes.length > 0)}
 				<div class="flex flex-col gap-2 mt-4">
+					<span class="uppercase text-sm text-muted-foreground">Stats</span>
 					<Genders {genders} {pronouns} />
+					<Tribes tribes={grindrTribes} />
 					<Ethnicity {ethnicity} />
 					<RelationshipStatus {relationshipStatus} />
-					<Tribes tribes={grindrTribes} />
+				</div>
+			{/if}
+			{#if (lookingFor && lookingFor.length > 0) || (meetAt && meetAt.length > 0) || nsfw !== null}
+				<div class="flex flex-col gap-2 mt-4">
+					<span class="uppercase text-sm text-muted-foreground"
+						>Expectations</span
+					>
 					<LookingFor {lookingFor} />
 					<MeetAt {meetAt} />
+					<NSFWPics nsfwPics={nsfw} />
+				</div>
+			{/if}
+			{#if hivStatus !== null || lastTestedDateValue !== null || sexualHealthValue !== null}
+				<div class="flex flex-col gap-2 mt-4">
+					<span class="uppercase text-sm text-muted-foreground">Health</span>
+					<HivStatus {hivStatus} />
+					<LastTested lastTestedDate={lastTestedDateValue} />
+					<HealthPractices healthPractices={sexualHealthValue} />
+				</div>
+			{/if}
+			{#if socialNetworks}
+				<div class="flex flex-col gap-2 mt-4">
+					<span class="uppercase text-sm text-muted-foreground">Socials</span>
+					<Socials socials={socialNetworks} />
 				</div>
 			{/if}
 		</div>

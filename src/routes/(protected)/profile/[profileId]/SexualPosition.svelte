@@ -18,17 +18,17 @@
 
 <span class="flex items-center gap-1 whitespace-nowrap *:shrink-0">
 	{#if sexualPosition === SexualPosition.Top}
-		<ArrowUpIcon />
+		<ArrowUpIcon class="shrink-0" />
 	{:else if sexualPosition === SexualPosition.VersTop}
-		<ArrowUpRightIcon />
+		<ArrowUpRightIcon class="shrink-0" />
 	{:else if sexualPosition === SexualPosition.Versatile}
-		<ArrowsDownUpIcon />
+		<ArrowsDownUpIcon class="shrink-0" />
 	{:else if sexualPosition === SexualPosition.VersBottom}
-		<ArrowDownRightIcon />
+		<ArrowDownRightIcon class="shrink-0" />
 	{:else if sexualPosition === SexualPosition.Bottom}
-		<ArrowDownIcon />
+		<ArrowDownIcon class="shrink-0" />
 	{:else if sexualPosition === SexualPosition.Side}
-		<ArrowsLeftRightIcon />
+		<ArrowsLeftRightIcon class="shrink-0" />
 	{/if}
 	{sexualPositions[sexualPosition]}
 </span>

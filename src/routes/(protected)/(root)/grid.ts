@@ -4,7 +4,7 @@ import { urlSearchParamsCodec } from "$lib/utils";
 import { searchProfileSchema, searchQuerySchema } from "$lib/model/grid/search";
 import {
 	cascadeV3QuerySchema,
-	cascadeV4ResponseItemSchema,
+	cascadeV3ResponseItemSchema,
 } from "$lib/model/grid/cascade";
 
 export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
@@ -40,7 +40,7 @@ export async function getV3Cascade(
 		.then((data) =>
 			z
 				.object({
-					items: z.array(cascadeV4ResponseItemSchema),
+					items: z.array(cascadeV3ResponseItemSchema),
 					nextPage: z.number().int().nonnegative(),
 					shuffled: z.boolean(),
 					hiddenProfiles: z.unknown(),

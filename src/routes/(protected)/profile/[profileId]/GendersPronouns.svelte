@@ -8,11 +8,11 @@
 	let allPronouns = $derived(fetchPronouns());
 
 	let {
-		genders,
-		pronouns,
+		genders = null,
+		pronouns = null,
 	}: {
-		genders: number[] | null;
-		pronouns: number[] | null;
+		genders?: number[] | null;
+		pronouns?: number[] | null;
 	} = $props();
 </script>
 
@@ -23,6 +23,7 @@
 			width="1em"
 			height="1em"
 			viewBox="0 0 24 24"
+			class="shrink-0"
 		>
 			<!-- Icon from Lucide by Lucide Contributors - https://github.com/lucide-icons/lucide/blob/main/LICENSE -->
 			<g
@@ -43,9 +44,12 @@
 				{#await allGenders}
 					<Spinner />
 				{:then allGenders}
-					{#each genders as genderId}
-						{allGenders.find((g) => g.genderId === genderId)?.gender}
-					{/each}
+					{genders
+						.map(
+							(genderId) =>
+								allGenders.find((g) => g.genderId === genderId)?.gender,
+						)
+						.join(", ")}
 				{/await}
 			{/if}
 			{#if genders !== null && genders.length > 0 && pronouns !== null && pronouns.length > 0}
@@ -55,9 +59,12 @@
 				{#await allPronouns}
 					<Spinner />
 				{:then allPronouns}
-					{#each pronouns as pronounId}
-						{allPronouns.find((p) => p.pronounId === pronounId)?.pronoun}
-					{/each}
+					{pronouns
+						.map(
+							(pronounId) =>
+								allPronouns.find((p) => p.pronounId === pronounId)?.pronoun,
+						)
+						.join(", ")}
 				{/await}
 			{/if}
 		</div>

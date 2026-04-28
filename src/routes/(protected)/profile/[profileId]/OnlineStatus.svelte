@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatDistanceToNow, formatDistanceToNowStrict } from "date-fns";
+	import { formatDistanceToNowStrict } from "date-fns";
 
 	let {
 		onlineUntil,
@@ -12,7 +12,8 @@
 
 {#if onlineUntil !== null && onlineUntil > Date.now()}
 	<div class="flex items-center gap-1.5 whitespace-nowrap">
-		<span class="bg-green-500 rounded-full size-2 inline-block ms-0.5 shrink-0"></span>
+		<span class="bg-green-500 rounded-full size-2 inline-block ms-0.5 shrink-0">
+		</span>
 		Online now
 	</div>
 {:else if seen !== null}

@@ -5,13 +5,13 @@
 	let {
 		id,
 		displayName,
-		age,
+		age = null,
 		distance,
 		medias,
 	}: {
 		id: number;
 		displayName: string | null;
-		age: number | null;
+		age?: number | null;
 		distance: number | null;
 		medias: { mediaHash: string }[] | null;
 	} = $props();

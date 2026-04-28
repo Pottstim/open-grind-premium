@@ -11,7 +11,7 @@
 
 {#if ethnicity !== null}
 	<div class="flex items-center gap-1.5 text-sm">
-		<GlobeStandIcon />
+		<GlobeStandIcon class="shrink-0" />
 		<div class="flex items-center gap-1">
 			{ethnicities[ethnicity]}
 		</div>
