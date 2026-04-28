@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { meetAtOptions } from "$lib/model/profile";
+	import { meetAt } from "$lib/model/profile";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {
@@ -13,7 +13,7 @@
 	bind:value
 	id="meet-at"
 	label="Meet at"
-	items={Object.entries(meetAtOptions).map(([value, label]) => ({
+	items={Object.entries(meetAt).map(([value, label]) => ({
 		value: Number(value),
 		label,
 	}))}

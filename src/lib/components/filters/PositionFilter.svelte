@@ -1,5 +1,8 @@
 <script lang="ts">
-	import type { filterPositionsSchema } from "$lib/components/filters/filters";
+	import {
+		FilterPosition,
+		filterPositionSchema,
+	} from "$lib/components/filters/filters";
 	import * as ToggleGroup from "$lib/components/ui/toggle-group";
 	import type z from "zod";
 	import FilterBoolean from "./FilterBoolean.svelte";
@@ -18,7 +21,7 @@
 		value = $bindable(),
 	}: {
 		checked: boolean;
-		value: z.infer<typeof filterPositionsSchema>;
+		value: z.infer<typeof filterPositionSchema>;
 	} = $props();
 </script>
 
@@ -30,33 +33,39 @@
 			variant="outline"
 			spacing={2}
 			class="flex-wrap w-full gap-1"
-			bind:value={() => value, (v) => ((checked = v.length > 0), (value = v))}
+			bind:value={
+				() => value.map(String),
+				(v) => (
+					(checked = v.length > 0),
+					(value = filterPositionSchema.parse(v.map(Number)))
+				)
+			}
 		>
-			<ToggleGroup.Item value="top">
+			<ToggleGroup.Item value={FilterPosition.Top.toString()}>
 				<ArrowUpIcon />
 				Top
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="vers-top">
+			<ToggleGroup.Item value={FilterPosition.VersTop.toString()}>
 				<ArrowUpRightIcon />
 				Vers Top
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="vers">
+			<ToggleGroup.Item value={FilterPosition.Versatile.toString()}>
 				<ArrowsDownUpIcon />
 				Versatile
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="vers-bottom">
+			<ToggleGroup.Item value={FilterPosition.VersBottom.toString()}>
 				<ArrowDownRightIcon />
 				Vers Bottom
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="bottom">
+			<ToggleGroup.Item value={FilterPosition.Bottom.toString()}>
 				<ArrowDownIcon />
 				Bottom
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="side">
+			<ToggleGroup.Item value={FilterPosition.Side.toString()}>
 				<ArrowsLeftRightIcon />
 				Side
 			</ToggleGroup.Item>
-			<ToggleGroup.Item value="not-specified">
+			<ToggleGroup.Item value={FilterPosition.NotSpecified.toString()}>
 				<XIcon />
 				Not Specified
 			</ToggleGroup.Item>

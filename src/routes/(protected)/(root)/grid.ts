@@ -2,6 +2,16 @@ import z from "zod";
 import { fetchRest } from "$lib/api";
 import { geohashSchema } from "$lib/model/geohash";
 import { mediaHashPublicSchema } from "$lib/model/media";
+import {
+	filterAcceptNSFWPicsSchema,
+	filterBodyTypeSchema,
+	filterGendersSchema,
+	filterLookingForSchema,
+	filterMeetAtSchema,
+	filterPositionSchema,
+	filterRelationshipStatusSchema,
+	filterTribesSchema,
+} from "$lib/components/filters/filters";
 import { urlSearchParamsCodec } from "$lib/utils";
 
 export const searchProfileSchema = z.object({
@@ -20,7 +30,7 @@ export const gridQuerySchema = z.object({
 	notRecentlyChatted: z.boolean().optional(),
 	hasAlbum: z.boolean().optional(),
 	fresh: z.boolean().optional(),
-	genders: z.string().optional(),
+	genders: filterGendersSchema.optional(),
 	pageNumber: z.int().nonnegative().optional(),
 });
 
@@ -32,13 +42,13 @@ export const searchQuerySchema = gridQuerySchema.extend({
 	heightMaximum: z.number().nonnegative().optional(),
 	weightMinimum: z.number().nonnegative().optional(),
 	weightMaximum: z.number().nonnegative().optional(),
-	grindrTribesIds: z.string().optional(),
-	lookingForIds: z.string().optional(),
-	relationshipStatusIds: z.string().optional(),
-	bodyTypeIds: z.string().optional(),
-	sexualPositionIds: z.string().optional(),
-	meetAtIds: z.string().optional(),
-	nsfwIds: z.string().optional(),
+	grindrTribesIds: filterTribesSchema.optional(),
+	lookingForIds: filterLookingForSchema.optional(),
+	relationshipStatusIds: filterRelationshipStatusSchema.optional(),
+	bodyTypeIds: filterBodyTypeSchema.optional(),
+	sexualPositionIds: filterPositionSchema.optional(),
+	meetAtIds: filterMeetAtSchema.optional(),
+	nsfwIds: filterAcceptNSFWPicsSchema.optional(),
 	profileTags: z.string().optional(),
 	searchAfterDistance: z.string().optional(),
 	searchAfterProfileId: z.string().optional(),
@@ -47,7 +57,10 @@ export const searchQuerySchema = gridQuerySchema.extend({
 
 export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
 	return await fetchRest(
-		"/v7/search?" + urlSearchParamsCodec(searchQuerySchema).encode(query),
+		"/v7/search?" +
+			new URLSearchParams(
+				urlSearchParamsCodec(searchQuerySchema).encode(query),
+			),
 	)
 		.then((res) => res.json())
 		.then((data) =>

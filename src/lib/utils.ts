@@ -27,6 +27,7 @@ function schemaToStringRecord<T extends z.ZodObject>(
 	for (const [key, value] of Object.entries(data)) {
 		if (value === undefined || value === null) continue;
 		if (typeof value === "boolean") result[key] = value ? "true" : "false";
+		else if (Array.isArray(value)) result[key] = value.map(String).join(",");
 		else result[key] = String(value);
 	}
 	return result;

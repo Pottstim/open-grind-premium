@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { tribes, type TribeId } from "$lib/model/profile";
+	import type { FilterTribeId } from "$lib/components/filters/filters";
+	import { tribes } from "$lib/model/profile";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {
 		checked = $bindable(),
 		value = $bindable(),
-	}: { checked: boolean; value: TribeId[] } = $props();
+	}: { checked: boolean; value: FilterTribeId[] } = $props();
 </script>
 
 <FilterSimpleArray
@@ -13,9 +14,15 @@
 	bind:value
 	id="tribes"
 	label="Tribes"
-	items={Object.entries(tribes).map(([value, label]) => ({
-		value: Number(value),
-		label,
-	}))}
+	items={[
+		...Object.entries(tribes).map(([value, label]) => ({
+			value: Number(value),
+			label,
+		})),
+		{
+			value: -1,
+			label: "Not Specified",
+		},
+	]}
 	convert={Number}
 />

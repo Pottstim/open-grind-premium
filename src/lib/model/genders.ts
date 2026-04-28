@@ -1,8 +1,10 @@
 import z from "zod";
 
+export const genderIdSchema = z.number().int().nonnegative();
+
 export const gendersSchema = z.array(
 	z.object({
-		genderId: z.number().int().nonnegative(),
+		genderId: genderIdSchema,
 		gender: z.string().min(1),
 		genderPlural: z.string().min(1),
 		displayGroup: z.number().int().nonnegative(),

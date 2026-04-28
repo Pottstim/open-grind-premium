@@ -1,11 +1,12 @@
 import {
-	acceptNSFWPicsOptionSchema,
-	bodyTypeSchema,
-	healthPracticesOptionsSchema,
-	lookingForOptionSchema,
-	meetAtOptionsSchema,
-	relationshipStatusSchema,
-	tribeSchema,
+	acceptNSFWPicsSchema,
+	BodyType,
+	HealthPractice,
+	LookingFor,
+	MeetAt,
+	RelationshipStatus,
+	SexualPosition,
+	Tribe,
 } from "$lib/model/profile";
 import z from "zod";
 
@@ -16,21 +17,17 @@ export const filterIsRightNowSchema = z.boolean();
 export const filterAgeEnabledSchema = z.boolean();
 export const filterAgeSchema = z.array(z.number().min(18).max(102)).length(2);
 
-export const filterGenderEnabledSchema = z.boolean();
+export const filterGendersEnabledSchema = z.boolean();
 export const filterGendersSchema = z.array(z.number().int().nonnegative());
 
 export const filterPositionEnabledSchema = z.boolean();
-export const filterPositionsSchema = z.array(
-	z.union([
-		z.literal("top"),
-		z.literal("vers-top"),
-		z.literal("versatile"),
-		z.literal("vers-bottom"),
-		z.literal("bottom"),
-		z.literal("side"),
-		z.literal("not-specified"),
-	]),
-);
+export const FilterPosition = {
+	...SexualPosition,
+	NotSpecified: -1,
+} as const;
+export type FilterPositionId =
+	(typeof FilterPosition)[keyof typeof FilterPosition];
+export const filterPositionSchema = z.array(z.enum(FilterPosition));
 
 export const filterPhotosEnabledSchema = z.boolean();
 export const filterPhotosSchema = z.array(
@@ -38,10 +35,21 @@ export const filterPhotosSchema = z.array(
 );
 
 export const filterTribesEnabledSchema = z.boolean();
-export const filterTribesSchema = z.array(tribeSchema);
+export const FilterTribe = {
+	...Tribe,
+	NotSpecified: -1,
+} as const;
+export type FilterTribeId = (typeof FilterTribe)[keyof typeof FilterTribe];
+export const filterTribesSchema = z.array(z.enum(FilterTribe));
 
-export const filterBodyTypesEnabledSchema = z.boolean();
-export const filterBodyTypesSchema = z.array(bodyTypeSchema);
+export const filterBodyTypeEnabledSchema = z.boolean();
+export const FilterBodyType = {
+	...BodyType,
+	NotSpecified: -1,
+} as const;
+export type FilterBodyTypeId =
+	(typeof FilterBodyType)[keyof typeof FilterBodyType];
+export const filterBodyTypeSchema = z.array(z.enum(FilterBodyType));
 
 export const filterHeightEnabledSchema = z.boolean();
 export const filterHeightSchema = z
@@ -53,25 +61,48 @@ export const filterWeightSchema = z
 	.array(z.number().min(40).max(273))
 	.length(2);
 
-export const filterRelationshipStatusesEnabledSchema = z.boolean();
-export const filterRelationshipStatusesSchema = z.array(
-	relationshipStatusSchema,
+export const filterRelationshipStatusEnabledSchema = z.boolean();
+export const FilterRelationshipStatus = {
+	...RelationshipStatus,
+	NotSpecified: -1,
+} as const;
+export type FilterRelationshipStatusId =
+	(typeof FilterRelationshipStatus)[keyof typeof FilterRelationshipStatus];
+export const filterRelationshipStatusSchema = z.array(
+	z.enum(FilterRelationshipStatus),
 );
 
 export const filterAcceptNSFWPicsEnabledSchema = z.boolean();
-export const filterAcceptNSFWPicsSchema = z.array(acceptNSFWPicsOptionSchema);
+export const filterAcceptNSFWPicsSchema = z.array(acceptNSFWPicsSchema);
 
 export const filterLookingForEnabledSchema = z.boolean();
-export const filterLookingForSchema = z.array(lookingForOptionSchema);
+export const FilterLookingFor = {
+	...LookingFor,
+	NotSpecified: -1,
+} as const;
+export type FilterLookingForId =
+	(typeof FilterLookingFor)[keyof typeof FilterLookingFor];
+export const filterLookingForSchema = z.array(z.enum(FilterLookingFor));
 
 export const filterMeetAtEnabledSchema = z.boolean();
-export const filterMeetAtSchema = z.array(meetAtOptionsSchema);
+export const FilterMeetAt = {
+	...MeetAt,
+	NotSpecified: -1,
+} as const;
+export type FilterMeetAtId = (typeof FilterMeetAt)[keyof typeof FilterMeetAt];
+export const filterMeetAtSchema = z.array(z.enum(FilterMeetAt));
 
 export const filterHaventChattedTodayEnabledSchema = z.boolean();
 
 export const filterHealthPracticesEnabledSchema = z.boolean();
+export const FilterHealthPractice = {
+	...HealthPractice,
+	NotSpecified: -1,
+} as const;
+export type FilterHealthPracticeId =
+	(typeof FilterHealthPractice)[keyof typeof FilterHealthPractice];
 export const filterHealthPracticesSchema = z.array(
-	healthPracticesOptionsSchema,
+	z.enum(FilterHealthPractice),
 );
 
 export const gridSearchFiltersSchema = z.object({
@@ -82,11 +113,11 @@ export const gridSearchFiltersSchema = z.object({
 	ageEnabled: filterAgeEnabledSchema,
 	age: filterAgeSchema,
 
-	genderEnabled: filterGenderEnabledSchema,
+	genderEnabled: filterGendersEnabledSchema,
 	genders: filterGendersSchema,
 
 	positionEnabled: filterPositionEnabledSchema,
-	positions: filterPositionsSchema,
+	positions: filterPositionSchema,
 
 	photosEnabled: filterPhotosEnabledSchema,
 	photos: filterPhotosSchema,
@@ -94,8 +125,8 @@ export const gridSearchFiltersSchema = z.object({
 	tribesEnabled: filterTribesEnabledSchema,
 	tribes: filterTribesSchema,
 
-	bodyTypesEnabled: filterBodyTypesEnabledSchema,
-	bodyTypes: filterBodyTypesSchema,
+	bodyTypesEnabled: filterBodyTypeEnabledSchema,
+	bodyTypes: filterBodyTypeSchema,
 
 	heightEnabled: filterHeightEnabledSchema,
 	height: filterHeightSchema,
@@ -103,8 +134,8 @@ export const gridSearchFiltersSchema = z.object({
 	weightEnabled: filterWeightEnabledSchema,
 	weight: filterWeightSchema,
 
-	relationshipStatusesEnabled: filterRelationshipStatusesEnabledSchema,
-	relationshipStatuses: filterRelationshipStatusesSchema,
+	relationshipStatusesEnabled: filterRelationshipStatusEnabledSchema,
+	relationshipStatuses: filterRelationshipStatusSchema,
 
 	acceptNSFWPicsEnabled: filterAcceptNSFWPicsEnabledSchema,
 	acceptNSFWPics: filterAcceptNSFWPicsSchema,

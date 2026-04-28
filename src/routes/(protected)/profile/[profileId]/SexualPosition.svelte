@@ -11,7 +11,6 @@
 		ArrowsLeftRightIcon,
 		ArrowUpIcon,
 		ArrowUpRightIcon,
-		XIcon,
 	} from "phosphor-svelte";
 
 	let { sexualPosition }: { sexualPosition: SexualPositionId } = $props();

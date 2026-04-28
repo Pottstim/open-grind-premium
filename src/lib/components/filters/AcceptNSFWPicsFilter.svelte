@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { acceptNSFWPicsOptions } from "$lib/model/profile";
+	import { acceptNSFWPics } from "$lib/model/profile";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {
@@ -13,7 +13,7 @@
 	bind:value
 	id="accept-nsfw-pics"
 	label="Accept NSFW Pics"
-	items={Object.entries(acceptNSFWPicsOptions).map(([value, label]) => ({
+	items={Object.entries(acceptNSFWPics).map(([value, label]) => ({
 		value: Number(value),
 		label,
 	}))}

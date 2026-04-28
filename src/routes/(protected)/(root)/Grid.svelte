@@ -29,8 +29,57 @@
 
 	async function fetchProfiles() {
 		try {
+			const { gridSearchFilters } = await getPreferences();
 			return await searchProfiles({
 				nearbyGeoHash: geohash,
+				// favorite || undefined
+				online: gridSearchFilters?.isOnline || undefined,
+				// right now || undefined
+				...(gridSearchFilters?.ageEnabled && {
+					ageMinimum: gridSearchFilters?.age[0],
+					ageMaximum: gridSearchFilters?.age[1],
+				}),
+				...(gridSearchFilters?.genderEnabled && {
+					genders: gridSearchFilters?.genders,
+				}),
+				...(gridSearchFilters?.positionEnabled && {
+					sexualPositionIds: gridSearchFilters?.positions,
+				}),
+				...(gridSearchFilters?.photosEnabled && {
+					photoOnly: gridSearchFilters?.photos.includes("has-photos"),
+					hasAlbum: gridSearchFilters?.photos.includes("has-albums"),
+					faceOnly: gridSearchFilters?.photos.includes("has-face-pics"),
+				}),
+				...(gridSearchFilters?.tribesEnabled && {
+					grindrTribesIds: gridSearchFilters?.tribes,
+				}),
+				...(gridSearchFilters?.bodyTypesEnabled && {
+					bodyTypeIds: gridSearchFilters?.bodyTypes,
+				}),
+				...(gridSearchFilters?.heightEnabled && {
+					heightMinimum: gridSearchFilters?.height[0],
+					heightMaximum: gridSearchFilters?.height[1],
+				}),
+				...(gridSearchFilters?.weightEnabled && {
+					weightMinimum: gridSearchFilters?.weight[0],
+					weightMaximum: gridSearchFilters?.weight[1],
+				}),
+				...(gridSearchFilters?.relationshipStatusesEnabled && {
+					relationshipStatusIds: gridSearchFilters?.relationshipStatuses,
+				}),
+				...(gridSearchFilters?.acceptNSFWPicsEnabled &&
+					gridSearchFilters?.acceptNSFWPics !== undefined && {
+						nsfwIds: gridSearchFilters?.acceptNSFWPics,
+					}),
+				...(gridSearchFilters?.lookingForEnabled && {
+					lookingForIds: gridSearchFilters?.lookingFor,
+				}),
+				...(gridSearchFilters?.meetAtEnabled && {
+					meetAtIds: gridSearchFilters?.meetAt,
+				}),
+				notRecentlyChatted:
+					gridSearchFilters?.haventChattedTodayEnabled || undefined,
+				// healthPractices
 			});
 		} catch (e) {
 			console.error(e);
@@ -39,7 +88,7 @@
 	}
 </script>
 
-<Filters />
+<Filters onUpdate={() => (profiles = fetchProfiles())} />
 <div
 	class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 w-full gap-0.5 px-1"
 >

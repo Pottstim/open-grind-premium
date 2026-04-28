@@ -28,7 +28,7 @@
 - `lookingFor` — string, see [Looking for](/grindr-api/users/profiles#looking-for), optional
 - `relationshipStatuses` — string, see [Relationship status](/grindr-api/users/profiles#relationship-status), optional
 - `bodyTypes` — string, see [Body type](/grindr-api/users/profiles#body-type), optional
-- `sexualPositions` — string, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id), optional
+- `sexualPositions` — array of integers concatenated with a `,`, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id), optional
 - `meetAt` — string, see [Meet at](/grindr-api/users/profiles#meet-at), optional
 - `nsfwPics` — string, see [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics), optional
 - `tags` — string, see [Profile tags](/grindr-api/users/profiles#profile-tags), optional
@@ -235,13 +235,13 @@ GET /v7/search
 - `heightMaximum` — float, optional
 - `weightMinimum` — float, optional
 - `weightMaximum` — float, optional
-- `grindrTribesIds` — string, see [Tribes](/grindr-api/users/profiles#tribes), optional
-- `lookingForIds` — string, see [Looking for](/grindr-api/users/profiles#looking-for), optional
-- `relationshipStatusIds` — string, see [Relationship status](/grindr-api/users/profiles#relationship-status), optional
+- `grindrTribesIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Tribes](/grindr-api/users/profiles#tribes), optional
+- `lookingForIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Looking for](/grindr-api/users/profiles#looking-for), optional
+- `relationshipStatusIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Relationship status](/grindr-api/users/profiles#relationship-status), optional
 - `bodyTypeIds` — string, see [Body type](/grindr-api/users/profiles#body-type), optional
-- `sexualPositionIds` — string, see [Sexual position](#position-id), optional
-- `meetAtIds` — string, see [Meet at](/grindr-api/users/profiles#meet-at), optional
-- `nsfwIds` — string, see [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics), optional
+- `sexualPositionIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Sexual position](#position-id), optional
+- `meetAtIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Meet at](/grindr-api/users/profiles#meet-at), optional
+- `nsfwIds` — array of integers concatenated with a `,`, `-1` means "Not Specified", see [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics), optional
 - `profileTags` — string, see [Profile tags](/grindr-api/users/profiles#profile-tags), optional
 - `searchAfterDistance` — string, optional
 - `searchAfterProfileId` — string, optional

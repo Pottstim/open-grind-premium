@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { UsersThreeIcon } from "phosphor-svelte";
-	import {
-		lookingForOptions,
-		type LookingForOptionId,
-	} from "$lib/model/profile";
+	import { type LookingForId } from "$lib/model/profile";
 
 	let {
 		lookingFor,
 	}: {
-		lookingFor: LookingForOptionId[] | null;
+		lookingFor: LookingForId[] | null;
 	} = $props();
 </script>
 
@@ -17,7 +14,7 @@
 		<UsersThreeIcon class="shrink-0" />
 		<div class="gap-1">
 			<span class="text-neutral-500">Looking For</span>
-			{lookingFor.map((option) => lookingForOptions[option]).join(", ")}
+			{lookingFor.map((option) => lookingFor[option]).join(", ")}
 		</div>
 	</div>
 {/if}

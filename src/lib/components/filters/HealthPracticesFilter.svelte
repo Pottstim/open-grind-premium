@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { healthPracticesOptions } from "$lib/model/profile";
+	import { healthPractices } from "$lib/model/profile";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {
@@ -13,7 +13,7 @@
 	bind:value
 	id="health-practices"
 	label="Health Practices"
-	items={Object.entries(healthPracticesOptions).map(([value, label]) => ({
+	items={Object.entries(healthPractices).map(([value, label]) => ({
 		value: Number(value),
 		label,
 	}))}

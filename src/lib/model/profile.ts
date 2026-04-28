@@ -23,38 +23,45 @@ export const sexualPositions = {
 
 export const sexualPositionSchema = z.enum(SexualPosition);
 
-export type SexualPositionId = keyof typeof sexualPositions;
+export type SexualPositionId = z.infer<typeof sexualPositionSchema>;
 
-export const lookingForOptions = {
-	2: "Chat",
-	3: "Dates",
-	4: "Friends",
-	5: "Networking",
-	6: "Relationship",
-	7: "Hookups",
+export const LookingFor = {
+	Chat: 2,
+	Dates: 3,
+	Friends: 4,
+	Networking: 5,
+	Relationship: 6,
+	Hookups: 7,
 } as const;
 
-export const lookingForOptionSchema = z.union(
-	Object.keys(lookingForOptions).map((key) =>
-		z.literal(Number(key) as keyof typeof lookingForOptions),
-	),
-);
-
-export type LookingForOptionId = keyof typeof lookingForOptions;
-
-export const acceptNSFWPicsOptions = {
-	1: "Never",
-	2: "Not At First",
-	3: "Yes Please",
+export const lookingFor = {
+	[LookingFor.Chat]: "Chat",
+	[LookingFor.Dates]: "Dates",
+	[LookingFor.Friends]: "Friends",
+	[LookingFor.Networking]: "Networking",
+	[LookingFor.Relationship]: "Relationship",
+	[LookingFor.Hookups]: "Hookups",
 } as const;
 
-export const acceptNSFWPicsOptionSchema = z.union(
-	Object.keys(acceptNSFWPicsOptions).map((key) =>
-		z.literal(Number(key) as keyof typeof acceptNSFWPicsOptions),
-	),
-);
+export const lookingForSchema = z.enum(LookingFor);
 
-export type AcceptNSFWPicsOptionId = keyof typeof acceptNSFWPicsOptions;
+export type LookingForId = z.infer<typeof lookingForSchema>;
+
+export const AcceptNSFWPics = {
+	Never: 1,
+	NotAtFirst: 2,
+	YesPlease: 3,
+} as const;
+
+export const acceptNSFWPics = {
+	[AcceptNSFWPics.Never]: "Never",
+	[AcceptNSFWPics.NotAtFirst]: "Not At First",
+	[AcceptNSFWPics.YesPlease]: "Yes Please",
+} as const;
+
+export const acceptNSFWPicsSchema = z.enum(AcceptNSFWPics);
+
+export type AcceptNSFWPicsId = z.infer<typeof acceptNSFWPicsSchema>;
 
 export const RelationshipStatus = {
 	Single: 1,
@@ -78,13 +85,9 @@ export const relationshipStatuses = {
 	[RelationshipStatus.OpenRelationship]: "Open Relationship",
 } as const;
 
-export const relationshipStatusSchema = z.union(
-	Object.keys(relationshipStatuses).map((key) =>
-		z.literal(Number(key) as keyof typeof relationshipStatuses),
-	),
-);
+export const relationshipStatusSchema = z.enum(RelationshipStatus);
 
-export type RelationshipStatusId = keyof typeof relationshipStatuses;
+export type RelationshipStatusId = z.infer<typeof relationshipStatusSchema>;
 
 export const BodyType = {
 	Toned: 1,
@@ -104,15 +107,11 @@ export const bodyTypes = {
 	[BodyType.Stocky]: "Stocky",
 } as const;
 
-export type BodyTypeId = keyof typeof bodyTypes;
+export const bodyTypeSchema = z.enum(BodyType);
 
-export const bodyTypeSchema = z.union(
-	Object.keys(bodyTypes).map((key) =>
-		z.literal(Number(key) as keyof typeof bodyTypes),
-	),
-);
+export type BodyTypeId = z.infer<typeof bodyTypeSchema>;
 
-export const Tribes = {
+export const Tribe = {
 	Bear: 1,
 	CleanCut: 2,
 	Daddy: 3,
@@ -129,44 +128,44 @@ export const Tribes = {
 } as const;
 
 export const tribes = {
-	[Tribes.Bear]: "Bear",
-	[Tribes.CleanCut]: "Clean-Cut",
-	[Tribes.Daddy]: "Daddy",
-	[Tribes.Discreet]: "Discreet",
-	[Tribes.Geek]: "Geek",
-	[Tribes.Jock]: "Jock",
-	[Tribes.Leather]: "Leather",
-	[Tribes.Otter]: "Otter",
-	[Tribes.Poz]: "Poz",
-	[Tribes.Rugged]: "Rugged",
-	[Tribes.Sober]: "Sober",
-	[Tribes.Trans]: "Trans",
-	[Tribes.Twink]: "Twink",
+	[Tribe.Bear]: "Bear",
+	[Tribe.CleanCut]: "Clean-Cut",
+	[Tribe.Daddy]: "Daddy",
+	[Tribe.Discreet]: "Discreet",
+	[Tribe.Geek]: "Geek",
+	[Tribe.Jock]: "Jock",
+	[Tribe.Leather]: "Leather",
+	[Tribe.Otter]: "Otter",
+	[Tribe.Poz]: "Poz",
+	[Tribe.Rugged]: "Rugged",
+	[Tribe.Sober]: "Sober",
+	[Tribe.Trans]: "Trans",
+	[Tribe.Twink]: "Twink",
 } as const;
 
-export const tribeSchema = z.union(
-	Object.keys(tribes).map((key) =>
-		z.literal(Number(key) as keyof typeof tribes),
-	),
-);
+export const tribeSchema = z.enum(Tribe);
 
-export type TribeId = keyof typeof tribes;
+export type TribeId = z.infer<typeof tribeSchema>;
 
-export const meetAtOptions = {
-	1: "My Place",
-	2: "Your Place",
-	3: "Bar",
-	4: "Coffee Shop",
-	5: "Restaurant",
+export const MeetAt = {
+	MyPlace: 1,
+	YourPlace: 2,
+	Bar: 3,
+	CoffeeShop: 4,
+	Restaurant: 5,
 } as const;
 
-export const meetAtOptionsSchema = z.union(
-	Object.keys(meetAtOptions).map((key) =>
-		z.literal(Number(key) as keyof typeof meetAtOptions),
-	),
-);
+export const meetAt = {
+	[MeetAt.MyPlace]: "My Place",
+	[MeetAt.YourPlace]: "Your Place",
+	[MeetAt.Bar]: "Bar",
+	[MeetAt.CoffeeShop]: "Coffee Shop",
+	[MeetAt.Restaurant]: "Restaurant",
+} as const;
 
-export type MeetAtOptionId = keyof typeof meetAtOptions;
+export const meetAtSchema = z.enum(MeetAt);
+
+export type MeetAtId = z.infer<typeof meetAtSchema>;
 
 export const Ethnicity = {
 	Asian: 1,
@@ -192,58 +191,63 @@ export const ethnicities = {
 	[Ethnicity.SouthAsian]: "South Asian",
 } as const;
 
-export const ethnicitySchema = z.union(
-	Object.keys(ethnicities).map((key) =>
-		z.literal(Number(key) as keyof typeof ethnicities),
-	),
-);
+export const ethnicitySchema = z.enum(Ethnicity);
 
-export type EthnicityId = keyof typeof ethnicities;
+export type EthnicityId = z.infer<typeof ethnicitySchema>;
+
+export const HivStatus = {
+	Negative: 1,
+	NegativeOnPrep: 2,
+	Positive: 3,
+	PositiveUndetectable: 4,
+} as const;
 
 export const hivStatuses = {
-	1: "Negative",
-	2: "Negative, on PrEP",
-	3: "Positive",
-	4: "Positive, undetectable",
+	[HivStatus.Negative]: "Negative",
+	[HivStatus.NegativeOnPrep]: "Negative, on PrEP",
+	[HivStatus.Positive]: "Positive",
+	[HivStatus.PositiveUndetectable]: "Positive, undetectable",
 } as const;
 
-export const hivStatusSchema = z.union(
-	Object.keys(hivStatuses).map((key) =>
-		z.literal(Number(key) as keyof typeof hivStatuses),
-	),
-);
+export const hivStatusSchema = z.enum(HivStatus);
 
-export type HivStatusId = keyof typeof hivStatuses;
+export type HivStatusId = z.infer<typeof hivStatusSchema>;
 
-export const healthPracticesOptions = {
-	1: "Condoms",
-	2: "I'm on doxyPEP",
-	3: "I'm on PrEP",
-	4: "I'm HIV undetectable",
-	5: "Prefer to discuss",
+export const HealthPractice = {
+	Condoms: 1,
+	DoxyPEP: 2,
+	PrEP: 3,
+	HIVUndetectable: 4,
+	PreferToDiscuss: 5,
 } as const;
 
-export const healthPracticesOptionsSchema = z.union(
-	Object.keys(healthPracticesOptions).map((key) =>
-		z.literal(Number(key) as keyof typeof healthPracticesOptions),
-	),
-);
-
-export type HealthPracticeOptionId = keyof typeof healthPracticesOptions;
-
-export const vaccinesOptions = {
-	1: "COVID-19",
-	2: "Monkeypox",
-	3: "Meningitis",
+export const healthPractices = {
+	[HealthPractice.Condoms]: "Condoms",
+	[HealthPractice.DoxyPEP]: "I'm on doxyPEP",
+	[HealthPractice.PrEP]: "I'm on PrEP",
+	[HealthPractice.HIVUndetectable]: "I'm HIV undetectable",
+	[HealthPractice.PreferToDiscuss]: "Prefer to discuss",
 } as const;
 
-export const vaccinesOptionsSchema = z.union(
-	Object.keys(vaccinesOptions).map((key) =>
-		z.literal(Number(key) as keyof typeof vaccinesOptions),
-	),
-);
+export const healthPracticesSchema = z.enum(HealthPractice);
 
-export type VaccineOptionId = keyof typeof vaccinesOptions;
+export type HealthPracticeId = z.infer<typeof healthPracticesSchema>;
+
+export const Vaccine = {
+	COVID19: 1,
+	Monkeypox: 2,
+	Meningitis: 3,
+} as const;
+
+export const vaccines = {
+	[Vaccine.COVID19]: "COVID-19",
+	[Vaccine.Monkeypox]: "Monkeypox",
+	[Vaccine.Meningitis]: "Meningitis",
+} as const;
+
+export const vaccinesSchema = z.enum(Vaccine);
+
+export type VaccineId = z.infer<typeof vaccinesSchema>;
 
 export const socialNetworksSchema = z.object({
 	twitter: z
@@ -329,8 +333,8 @@ export const profileShortSchema = profileMaskedSchema
 	});
 
 export const profileFieldsSchema = z.object({
-	meetAt: z.array(meetAtOptionsSchema),
-	vaccines: z.array(vaccinesOptionsSchema),
+	meetAt: z.array(meetAtSchema),
+	vaccines: z.array(vaccinesSchema),
 	genders: z.array(z.number().int().nonnegative()),
 	pronouns: z.array(z.number().int().nonnegative()),
 });
@@ -342,7 +346,7 @@ export const profileSchema = profileShortSchema
 		ethnicity: ethnicitySchema.nullable(),
 		relationshipStatus: relationshipStatusSchema.nullable(),
 		grindrTribes: z.array(tribeSchema),
-		lookingFor: z.array(lookingForOptionSchema),
+		lookingFor: z.array(lookingForSchema),
 		bodyType: bodyTypeSchema.nullable(),
 		hivStatus: hivStatusSchema.nullable(),
 		lastTestedDate: z.number().nullable(),
@@ -350,7 +354,7 @@ export const profileSchema = profileShortSchema
 		weight: z.number().nullable(),
 		socialNetworks: socialNetworksSchema,
 		identity: z.unknown().nullable(),
-		nsfw: acceptNSFWPicsOptionSchema.nullable(),
+		nsfw: acceptNSFWPicsSchema.nullable(),
 		hashtags: z.array(z.unknown()),
 		profileTags: z.array(z.string()),
 		tapped: z.boolean(),
@@ -370,7 +374,7 @@ export const profileSchema = profileShortSchema
 		verifiedInstagramId: z.string().nullable(),
 		lastThrobTimestamp: z.unknown(),
 		isBlockable: z.boolean(),
-		sexualHealth: z.array(healthPracticesOptionsSchema),
+		sexualHealth: z.array(healthPracticesSchema),
 		isVisiting: z.boolean(),
 		travelPlans: z.array(travelPlanSchema),
 		isInAList: z.boolean(),

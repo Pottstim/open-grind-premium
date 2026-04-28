@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { UsersThreeIcon } from "phosphor-svelte";
-	import { meetAtOptions, type MeetAtOptionId } from "$lib/model/profile";
+	import { type MeetAtId } from "$lib/model/profile";
 
 	let {
 		meetAt,
 	}: {
-		meetAt: MeetAtOptionId[] | null;
+		meetAt: MeetAtId[] | null;
 	} = $props();
 </script>
 
@@ -14,7 +14,7 @@
 		<UsersThreeIcon class="shrink-0" />
 		<div class="gap-1">
 			<span class="text-neutral-500">Meet At</span>
-			{meetAt.map((option) => meetAtOptions[option]).join(", ")}
+			{meetAt.map((option) => meetAt[option]).join(", ")}
 		</div>
 	</div>
 {/if}

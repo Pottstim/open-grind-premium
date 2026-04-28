@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { lookingForOptions } from "$lib/model/profile";
+	import { lookingFor } from "$lib/model/profile";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {
@@ -13,7 +13,7 @@
 	bind:value
 	id="looking-for"
 	label="Looking for"
-	items={Object.entries(lookingForOptions).map(([value, label]) => ({
+	items={Object.entries(lookingFor).map(([value, label]) => ({
 		value: Number(value),
 		label,
 	}))}

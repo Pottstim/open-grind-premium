@@ -28,6 +28,8 @@
 		setPreferences,
 	} from "$lib/app-data/preferences.svelte";
 
+	let { onUpdate }: { onUpdate: () => void } = $props();
+
 	let open = $state(false);
 
 	let filters: z.infer<typeof gridSearchFiltersSchema> = $state({
@@ -82,7 +84,10 @@
 	async function onSubmit() {
 		setPreferences({
 			gridSearchFilters: filters,
-		}).then(loadSavedFilters);
+		}).then(() => {
+			loadSavedFilters();
+			onUpdate();
+		});
 		open = false;
 	}
 
