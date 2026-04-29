@@ -147,12 +147,12 @@ export const cascadeV4ResponseAdvertV1Schema = z.object({
 
 export const cascadeV3ResponseTopPicksV1Schema = z.object({
 	type: z.literal("top_picks_v1"),
-	data: z.object({}).passthrough(),
+	data: z.object({}),
 });
 
 export const cascadeV4ResponseTopPicksV1Schema = z.object({
 	type: z.literal("top_picks_v1"),
-	data: z.object({}).passthrough(),
+	data: z.object({}),
 });
 
 const exploreAggregationLocationItemSchema = z.object({

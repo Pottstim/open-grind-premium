@@ -10,26 +10,34 @@
 		| false = $state(false);
 	const id = $props.id();
 
-	function onclick(event: MouseEvent) {
-		focused = !focused;
-		if (focused) {
-			document.documentElement.classList.add(`scroll-lock-${id}`);
-		} else {
-			document.documentElement.classList.remove(`scroll-lock-${id}`);
-		}
-		event.clientX;
-	}
+	// function onclick(event: MouseEvent) {
+	// 	focused = !focused;
+	// 	if (focused) {
+	// 		document.documentElement.classList.add(`scroll-lock-${id}`);
+	// 	} else {
+	// 		document.documentElement.classList.remove(`scroll-lock-${id}`);
+	// 	}
+	// 	event.clientX;
+	// }
 </script>
 
-<button {onclick} class="item">
+<a
+	class="item"
+	data-cropped="true"
+	data-pswp-width="600"
+	data-pswp-height="400"
+	href="https://placehold.co/600x400"
+	aria-label="Open image"
+>
 	<img
 		src="https://placehold.co/600x400"
-		alt=""
 		draggable="false"
 		class="w-full h-full aspect-[inherit] absolute top-0 left-0 object-cover"
+		alt=""
 	/>
-</button>
-{#if focused}
+</a>
+
+<!-- {#if focused}
 	<button
 		class="bg-black/50 fixed top-0 left-0 size-full z-99"
 		transition:fade={{ duration: 500, easing: expoOut }}
@@ -46,7 +54,7 @@
 			class="z-100 w-full h-full object-contain"
 		/>
 	</div>
-{/if}
+{/if} -->
 
 <style lang="postcss">
 	@reference "$layout";

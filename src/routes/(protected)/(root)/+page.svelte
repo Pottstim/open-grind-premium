@@ -18,7 +18,7 @@
 			</div>
 		</main>
 	{:else}
-		<main class="min-h-dvh flex flex-col p-4 gap-4">
+		<main class="min-h-dvh flex flex-col p-4 gap-4 pb-24">
 			<LocationChange onUpdate={() => (preferences = getPreferences())} />
 			<Grid {geohash} />
 		</main>

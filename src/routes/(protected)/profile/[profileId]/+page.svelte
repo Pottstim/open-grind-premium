@@ -53,23 +53,32 @@
 			lastTestedDate: lastTestedDateValue,
 			sexualHealth: sexualHealthValue,
 			socialNetworks,
+			profileImageMediaHash,
+			medias,
 		} = profile}
 		<ImageCarousel />
+		{profileImageMediaHash}
+		{medias.map((m) => m.mediaHash)}
 		<div class="flex flex-col p-4 pb-12">
 			<h1 class="text-2xl wrap-break-word">
 				{#if displayName !== null}
 					<span class="font-semibold">
 						{displayName}
-					</span>{/if}{#if age !== null}, {age}{/if}
+					</span>{:else}<span
+						class="font-normal tracking-tight italic text-muted-foreground"
+					>
+						Someone
+					</span>{/if}{#if age !== null}, {age}
+				{/if}
 			</h1>
 			<div class="flex items-center gap-3 text-sm mt-1">
-				<OnlineStatus {onlineUntil} {seen} />
+				<OnlineStatus onlineUntil={onlineUntil ?? null} {seen} />
 				<Distance {distance} />
 				{showDistance}
 			</div>
 			{#if sexualPosition !== null || height !== null || weight !== null || bodyType !== null}
 				<div class="flex items-center gap-3 text-sm mt-2">
-					{#if sexualPosition !== null}
+					{#if sexualPosition !== null && sexualPosition !== undefined}
 						<SexualPosition {sexualPosition} />
 					{/if}
 					<Height {height} {weight} {bodyType} />
@@ -90,15 +99,15 @@
 			{/if}
 			{#if (lookingFor && lookingFor.length > 0) || (meetAt && meetAt.length > 0) || nsfw !== null}
 				<div class="flex flex-col gap-2 mt-4">
-					<span class="uppercase text-sm text-muted-foreground"
-						>Expectations</span
-					>
+					<span class="uppercase text-sm text-muted-foreground">
+						Expectations
+					</span>
 					<LookingFor {lookingFor} />
 					<MeetAt {meetAt} />
 					<NSFWPics nsfwPics={nsfw} />
 				</div>
 			{/if}
-			{#if hivStatus !== null || lastTestedDateValue !== null || sexualHealthValue !== null}
+			{#if hivStatus !== null || lastTestedDateValue !== null || (sexualHealthValue && sexualHealthValue.length > 0)}
 				<div class="flex flex-col gap-2 mt-4">
 					<span class="uppercase text-sm text-muted-foreground">Health</span>
 					<HivStatus {hivStatus} />
@@ -106,7 +115,7 @@
 					<HealthPractices healthPractices={sexualHealthValue} />
 				</div>
 			{/if}
-			{#if socialNetworks}
+			{#if socialNetworks && Object.keys(socialNetworks).length > 0}
 				<div class="flex flex-col gap-2 mt-4">
 					<span class="uppercase text-sm text-muted-foreground">Socials</span>
 					<Socials socials={socialNetworks} />

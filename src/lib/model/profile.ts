@@ -299,15 +299,15 @@ export const profileMaskedMinSchema = z.object({
 export const profileMaskedSchema = profileMaskedMinSchema.extend({
 	lastViewed: z.number().nullable(),
 	seen: z.number().int().nonnegative().nullable(),
-	sexualPosition: sexualPositionSchema.nullable(),
-	foundVia: viewSourceEnumSchema.nullable(),
 	rightNow: rightNowStatusSchema,
+	sexualPosition: sexualPositionSchema.nullable().optional(),
+	foundVia: viewSourceEnumSchema.nullable().optional(),
 });
 
 export const profileMinSchema = z.object({
 	profileId: z.coerce.number().int().nonnegative(),
 	displayName: z.string().nullable(),
-	onlineUntil: z.number().nullable(),
+	onlineUntil: z.number().nullable().optional(),
 });
 
 export const profileShortSchema = profileMaskedSchema
@@ -339,8 +339,26 @@ export const profileFieldsSchema = z.object({
 	pronouns: z.array(z.number().int().nonnegative()).optional(),
 });
 
+export const profileRightNowSchema = z.object({
+	rightNowText: z.string().nullable(),
+	rightNowPosted: z.number().nullable(),
+	rightNowDistance: z.number().nullable(),
+	rightNowThumbnailUrl: z.string().nullable(),
+	rightNowFullImageUrl: z.string().nullable(),
+});
+
+export const profileExtraFields = z.object({
+	nsfw: acceptNSFWPicsSchema.nullable(),
+	verifiedInstagramId: z.string().nullable(),
+	isBlockable: z.boolean(),
+	showTribes: z.boolean(),
+	showPosition: z.boolean(),
+});
+
 export const profileSchema = profileShortSchema
 	.extend(profileFieldsSchema.shape)
+	.extend(profileRightNowSchema.shape)
+	.extend(profileExtraFields.shape)
 	.extend({
 		aboutMe: z.string().nullable(),
 		ethnicity: ethnicitySchema.nullable(),
@@ -354,7 +372,6 @@ export const profileSchema = profileShortSchema
 		weight: z.number().nullable(),
 		socialNetworks: socialNetworksSchema,
 		identity: z.unknown().nullable(),
-		nsfw: acceptNSFWPicsSchema.nullable(),
 		hashtags: z.array(z.unknown()),
 		profileTags: z.array(z.string()),
 		tapped: z.boolean(),
@@ -364,24 +381,15 @@ export const profileSchema = profileShortSchema
 		isRoaming: z.boolean(),
 		arrivalDays: z.number().nullable(),
 		unreadCount: z.number(),
-		rightNowText: z.string().nullable(),
-		rightNowPosted: z.number().nullable(),
-		rightNowDistance: z.number().nullable(),
-		rightNowThumbnailUrl: z.string().nullable(),
-		rightNowFullImageUrl: z.string().nullable(),
-		rightNowShareLocation: z.null(),
-		rightNowMedias: z.array(rightNowMediaSchema),
-		verifiedInstagramId: z.string().nullable(),
 		lastThrobTimestamp: z.unknown(),
-		isBlockable: z.boolean(),
 		sexualHealth: z.array(healthPracticesSchema),
 		isVisiting: z.boolean(),
 		travelPlans: z.array(travelPlanSchema),
 		isInAList: z.boolean(),
-		showTribes: z.boolean(),
-		showPosition: z.boolean(),
 		tribesImInto: z.array(tribeSchema).nullable(),
 		showVipBadge: z.boolean(),
+		rightNowShareLocation: z.null(),
+		rightNowMedias: z.array(rightNowMediaSchema),
 	});
 
 export type Profile = z.infer<typeof profileSchema>;

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { getV3Cascade } from "./grid";
+	import z from "zod";
+	import { getGrid } from "./grid";
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 	import Filters from "./GridFilters.svelte";
 	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
-	import type z from "zod";
 
 	let {
 		geohash,
@@ -30,7 +30,7 @@
 	async function fetchProfiles() {
 		try {
 			const { gridSearchFilters } = await getPreferences();
-			const query: z.infer<typeof cascadeV3QuerySchema> = {
+			return await getGrid({
 				nearbyGeoHash: geohash,
 				favorites: gridSearchFilters?.isFavorite || undefined,
 				onlineOnly: gridSearchFilters?.isOnline || undefined,
@@ -89,9 +89,7 @@
 				...(gridSearchFilters?.healthPracticesEnabled && {
 					sexualHealth: gridSearchFilters?.healthPractices,
 				}),
-			} satisfies z.infer<typeof cascadeV3QuerySchema>;
-				console.log({ query });
-			return await getV3Cascade(query);
+			} satisfies z.infer<typeof cascadeV3QuerySchema>);
 		} catch (e) {
 			console.error(e);
 			throw new Error("Failed to fetch profiles");
@@ -108,17 +106,13 @@
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
 	{:then { items }}
-		{@const fullProfiles = items.filter(
-			(i) => i.type === "full_profile_v1" || i.type === "partial_profile_v1",
-		)}
-		{#each fullProfiles as { data: { displayName, profileId, isVisiting, onlineUntil, rightNow, unreadCount, ...props } } (profileId)}
+		{#each items as profile (profile.id)}
+			{@const { id, displayName, distance, profilePhotosHashes, } = profile}
 			<ProfileMiniCard
-				id={profileId}
-				displayName={displayName ?? null}
-				distance={null}
-				medias={"photoMediaHashes" in props
-					? (props.photoMediaHashes?.map((mediaHash) => ({ mediaHash })) ?? [])
-					: []}
+				{id}
+				{displayName}
+				{distance}
+				medias={profilePhotosHashes?.map((mediaHash) => ({ mediaHash })) ?? []}
 			/>
 		{/each}
 	{/await}

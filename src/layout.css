@@ -147,3 +147,7 @@ a {
 [class^="scroll-lock-"] {
 	overflow: hidden;
 }
+
+*[data-tauri-drag-region] {
+	background: red;
+}

@@ -22,15 +22,15 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
 - *everything from [ProfileMaskedMin](#profilemaskedmin)*
 - `lastViewed` — number or `null`
 - `seen` — unix timestamp in milliseconds or `null`
-- `sexualPosition` — integer or `null`, see [Sexual position ID](#sexual-position-id)
-- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`
 - `rightNow` — [RightNowStatus](/grindr-api/right-now#RightNowStatus)
+- `sexualPosition` — integer or `null`, see [Sexual position ID](#sexual-position-id), may be absent
+- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`, may be absent
 
 ## ProfileMin
 
 - `profileId` — string with numeric id
 - `displayName` — string or `null`
-- `onlineUntil` — long number or `null`
+- `onlineUntil` — long number or `null`, may be absent
 
 ## ProfileShort
 
@@ -58,10 +58,28 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
 - `genders` — array of integers, optional, see [Genders](#genders)
 - `pronouns` — array of integers, optional, see [Pronouns](#pronouns)
 
+## ProfileRightNow
+
+- `rightNowText` — string or `null`
+- `rightNowPosted` — long number or `null`
+- `rightNowDistance` — long number or `null`
+- `rightNowThumbnailUrl` — string or `null`
+- `rightNowFullImageUrl` — string or `null`
+
+## ProfileExtraFields
+
+- `nsfw` — integer or `null`, see [Accept NSFW pics](#accept-nsfw-pics)
+- `verifiedInstagramId` — string or `null`
+- `isBlockable` — boolean
+- `showTribes` — boolean
+- `showPosition` — boolean
+
 ## Profile
 
 - *everything from [ProfileShort](#profileshort)*
 - *everything from [ProfileFields](#profilefields)*
+- *everything from [ProfileRightNow](#profilerightnow)*
+- *everything from [ProfileExtraFields](#profileextrafields)*
 - `aboutMe` — string or `null`
 - `ethnicity` — integer or `null`, see [Ethnicity](#ethnicity)
 - `relationshipStatus` — integer or `null`, see [Relationship status](#relationship-status)
@@ -80,7 +98,6 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
   - `instagram` — object, may be absent
     - `userId` — string or `null`
 - `identity` — identity (unknown, wip) or `null`
-- `nsfw` — integer or `null`, see [Accept NSFW pics](#accept-nsfw-pics)
 - `hashtags` — unknown array
 - `profileTags` — array of strings, see [Profile tags](#profile-tags)
 - `tapped` — boolean
@@ -90,21 +107,7 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
 - `isRoaming` — boolean
 - `arrivalDays` — number or `null`
 - `unreadCount` — number, may be absent
-- `rightNowText` — string or `null`
-- `rightNowPosted` — long number or `null`
-- `rightNowDistance` — long number or `null`
-- `rightNowThumbnailUrl` — string or `null`
-- `rightNowFullImageUrl` — string or `null`
-- `rightNowShareLocation` — `null`
-- `rightNowMedias` — array of objects
-  - `mediaId` — long number or `null`
-  - `thumbnailUrl` — string
-  - `fullImageUrl` — string
-  - `contentType` — string
-  - `isNsfw` — boolean or `null`
-- `verifiedInstagramId` — string or `null`
 - `lastThrobTimestamp` — unknown
-- `isBlockable` — boolean
 - `sexualHealth` — array of integers, see [Sexual health](#sexual-health)
 - `isVisiting` — boolean
 - `travelPlans` — array of objects
@@ -115,10 +118,15 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
   - `showOnProfile` — boolean or `null`
   - `startDateUtc` — long number or `null`
 - `isInAList` — boolean
-- `showTribes` — boolean
-- `showPosition` — boolean
 - `tribesImInto` — array of [Tribes](#tribes) IDs or null
 - `showVipBadge` — boolean
+- `rightNowShareLocation` — `null`
+- `rightNowMedias` — array of objects
+  - `mediaId` — long number or `null`
+  - `thumbnailUrl` — string
+  - `fullImageUrl` — string
+  - `contentType` — string
+  - `isNsfw` — boolean or `null`
 
 ## Profile tags
 
@@ -281,11 +289,13 @@ POST /v3/profiles
 
 Body:
 
-- `targetProfileIds` — array of strings with numeric ids
+- `targetProfileIds` — array of strings with numeric ids, max profiles number per one request is 150
 
 Response:
 
-- `profiles` — array of [Profile](#profile)
+- `profiles` — array of objects:
+  - *everything from [ProfileShort](#profileshort)*
+  - *everything from [ProfileRightNow](#profilerightnow)*
 
 ## Update own profile (full)
 

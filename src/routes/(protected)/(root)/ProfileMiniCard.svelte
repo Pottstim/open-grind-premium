@@ -4,16 +4,18 @@
 
 	let {
 		id,
-		displayName,
+		displayName = null,
 		age = null,
-		distance,
-		medias,
+		distance = null,
+		medias = null,
+		unread = null,
 	}: {
 		id: number;
-		displayName: string | null;
+		displayName?: string | null;
 		age?: number | null;
-		distance: number | null;
-		medias: { mediaHash: string }[] | null;
+		distance?: number | null;
+		medias?: { mediaHash: string }[] | null;
+		unread?: number | null;
 	} = $props();
 
 	const profilePicture = $derived(medias?.[0]);
@@ -38,13 +40,18 @@
 		{/if}
 	</div>
 	{#if distance}
-		<Badge class="absolute top-2 right-2 bg-popover/20 backdrop-blur-2xl" variant="outline">
-			{Math.round(distance)}m
-		</Badge>
+		<span
+			class="absolute top-1 right-1 border-transparent bg-transparent text-[11px] px-1 h-4 tracking-tight font-medium text-white/80 text-shadow-stroke"
+		>
+			{(distance / 1000).toFixed(1)} km
+		</span>
 	{/if}
 	<div class="w-full z-1 flex p-0.5 gap-0.5">
 		{#if displayName !== null || age !== null}
-			<Badge variant="secondary" class="gap-0 max-w-full">
+			<Badge
+				variant="outline"
+				class="gap-0 max-w-full bg-popover/20 backdrop-blur-2xl min-w-0 shrink"
+			>
 				{#if displayName !== null}
 					<span class="truncate block shrink font-semibold">
 						{displayName}
@@ -60,5 +67,20 @@
 				{/if}
 			</Badge>
 		{/if}
+		{#if unread !== null && unread > 0}
+			<span
+				class="size-5 bg-primary inline-block rounded-full border border-black/20 shrink-0"
+			>
+				{unread}
+			</span>
+		{/if}
 	</div>
 </a>
+
+<style>
+	.text-shadow-stroke {
+		text-shadow:
+			0px 1px 1px rgba(0, 0, 0, 0.2),
+			0px 0px 2px rgba(0, 0, 0, 0.2);
+	}
+</style>
