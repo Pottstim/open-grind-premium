@@ -9,7 +9,6 @@
 	} from "./grid";
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
-	import Filters from "./GridFilters.svelte";
 	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
 
 	let {
@@ -24,6 +23,15 @@
 	let nextPage: number | null = $state(0);
 	let loadingMore = $state(false);
 	let currentQuery: z.infer<typeof cascadeV3QuerySchema> | null = null;
+
+	export function refresh() {
+		items = [];
+		partialBatches = [];
+		nextPage = 0;
+		loadingMore = false;
+		currentQuery = null;
+		profiles = fetchProfiles();
+	}
 
 	const loadingBatches = new Set<number>();
 
@@ -200,7 +208,6 @@
 	}
 </script>
 
-<Filters onUpdate={() => (profiles = fetchProfiles())} />
 <div
 	class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 w-full gap-0.5 px-1"
 >

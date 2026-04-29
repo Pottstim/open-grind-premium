@@ -1,14 +1,16 @@
 <script lang="ts">
 	import toast from "svelte-french-toast";
-	import { PencilSimpleIcon } from "phosphor-svelte";
+	import { GpsFixIcon, PencilSimpleIcon } from "phosphor-svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { setPreferences } from "$lib/app-data/preferences.svelte";
 	import LocationChooser from "$lib/components/location-chooser/LocationChooser.svelte";
 
 	let {
 		onUpdate,
+		expanded,
 	}: {
 		onUpdate?: () => void;
+		expanded?: boolean;
 	} = $props();
 
 	let geoMapPickerOpen = $state(false);
@@ -28,10 +30,14 @@
 
 <Button
 	variant="secondary"
-	class="w-full"
+	class={{ "w-full": expanded }}
 	onclick={() => (geoMapPickerOpen = true)}
 >
-	<PencilSimpleIcon weight="fill" />
-	Change location
+	{#if expanded}
+		<PencilSimpleIcon weight="fill" />
+		Change location
+	{:else}
+		<GpsFixIcon weight="fill" />
+	{/if}
 </Button>
 <LocationChooser {onSubmit} bind:open={geoMapPickerOpen} />

@@ -7,8 +7,8 @@
 	import { SlidersHorizontalIcon } from "phosphor-svelte";
 
 	import FilterBoolean from "$lib/components/filters/FilterBoolean.svelte";
-
 	import type { gridSearchFiltersSchema } from "$lib/components/filters/filters";
+
 	import AgeFilter from "$lib/components/filters/AgeFilter.svelte";
 	import GendersFilter from "$lib/components/filters/GendersFilter.svelte";
 	import PositionFilter from "$lib/components/filters/PositionFilter.svelte";
@@ -22,6 +22,7 @@
 	import LookingForFilter from "$lib/components/filters/LookingForFilter.svelte";
 	import MeetAtFilter from "$lib/components/filters/MeetAtFilter.svelte";
 	import HealthPracticesFilter from "$lib/components/filters/HealthPracticesFilter.svelte";
+	import isEqual from "lodash-es/isEqual";
 
 	import {
 		getPreferences,
@@ -82,12 +83,15 @@
 	let contentScroll = $state(0);
 
 	async function onSubmit() {
-		setPreferences({
-			gridSearchFilters: filters,
-		}).then(() => {
-			loadSavedFilters();
-			onUpdate();
-		});
+		const { gridSearchFilters: currentValue } = await getPreferences();
+		if (!isEqual(currentValue, filters)) {
+			setPreferences({
+				gridSearchFilters: filters,
+			}).then(() => {
+				loadSavedFilters();
+				onUpdate();
+			});
+		}
 		open = false;
 	}
 
