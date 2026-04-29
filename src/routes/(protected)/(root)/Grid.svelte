@@ -1,6 +1,7 @@
 <script lang="ts">
 	import z from "zod";
-	import { getGrid } from "./grid";
+	import toast from "svelte-french-toast";
+	import { getGrid, resolvePartialBatch, type GridProfile } from "./grid";
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 	import Filters from "./GridFilters.svelte";
@@ -12,25 +13,61 @@
 		geohash: string;
 	} = $props();
 
-	// <button
-	// 	onclick={async () => {
-	// 		const profile = await fetchRest("/v7/profiles/22323233");
-	// 		console.log(await profile?.json());
-	// 	}}>Fetch profile</button
-	// >
-	// <button
-	// 	onclick={async () => {
-	// 		await callMethod("logout");
-	// 		goto("/auth/sign-in");
-	// 	}}>Log out</button
-	// >
+	let items = $state<GridProfile[]>([]);
+	let partialBatches: { batch: { profileId: number }[] }[] = [];
+
+	const loadingBatches = new Set<number>();
+
+	async function loadBatch(batchIndex: number) {
+		if (loadingBatches.has(batchIndex)) return;
+		loadingBatches.add(batchIndex);
+		try {
+			const profileIds = partialBatches[batchIndex].batch.map(
+				(p) => p.profileId,
+			);
+			const resolved = await resolvePartialBatch(profileIds);
+			for (const profile of resolved) {
+				const idx = items.findIndex((i) => i.id === profile.id);
+				if (idx !== -1) items[idx] = profile;
+			}
+			const unresolved = profileIds.filter(
+				(id) => !resolved.some((profile) => profile.id === id),
+			);
+			for (const unresolvedProfileId of unresolved) {
+				const idx = items.findIndex((i) => i.id === unresolvedProfileId);
+				if (idx !== -1) items.splice(idx, 1);
+			}
+		} catch (e) {
+			loadingBatches.delete(batchIndex);
+			console.error(batchIndex, e);
+			toast.error("Failed to load profiles");
+		}
+	}
+
+	function observePartial(node: HTMLElement, params: { batchIndex: number }) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					loadBatch(params.batchIndex);
+					observer.disconnect();
+				}
+			},
+			{ rootMargin: "200px" },
+		);
+		observer.observe(node);
+		return {
+			destroy() {
+				observer.disconnect();
+			},
+		};
+	}
 
 	let profiles = $state(fetchProfiles());
 
 	async function fetchProfiles() {
 		try {
 			const { gridSearchFilters } = await getPreferences();
-			return await getGrid({
+			const result = await getGrid({
 				nearbyGeoHash: geohash,
 				favorites: gridSearchFilters?.isFavorite || undefined,
 				onlineOnly: gridSearchFilters?.isOnline || undefined,
@@ -90,6 +127,9 @@
 					sexualHealth: gridSearchFilters?.healthPractices,
 				}),
 			} satisfies z.infer<typeof cascadeV3QuerySchema>);
+			loadingBatches.clear();
+			items = result.items;
+			partialBatches = result.partialBatches;
 		} catch (e) {
 			console.error(e);
 			throw new Error("Failed to fetch profiles");
@@ -105,15 +145,27 @@
 		{#each Array.from({ length: 20 })}
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
-	{:then { items }}
-		{#each items as profile (profile.id)}
-			{@const { id, displayName, distance, profilePhotosHashes, } = profile}
-			<ProfileMiniCard
-				{id}
-				{displayName}
-				{distance}
-				medias={profilePhotosHashes?.map((mediaHash) => ({ mediaHash })) ?? []}
-			/>
+	{:then}
+		{#each items as item (item.id)}
+			{#if item.type === "full"}
+				<ProfileMiniCard
+					id={item.id}
+					displayName={item.displayName}
+					distance={item.distance}
+					medias={item.profilePhotosHashes?.map((mediaHash) => ({
+						mediaHash,
+					})) ?? []}
+				/>
+			{:else}
+				<div
+					class="aspect-square bg-stone-700 animate-pulse"
+					use:observePartial={{ batchIndex: item.batchIndex }}
+				></div>
+			{/if}
 		{/each}
+	{:catch error}
+		<p class="col-span-full text-center text-sm text-red-400">
+			{error.message}
+		</p>
 	{/await}
 </div>

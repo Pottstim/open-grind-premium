@@ -52,20 +52,69 @@ export async function getV3Cascade(
 		});
 }
 
+export type FullGridProfile = {
+	type: "full";
+	id: number;
+	displayName: string | null;
+	distance: number | null;
+	profilePhotosHashes: string[] | null;
+	unread: number | null;
+};
+
+export type PartialGridProfile = {
+	type: "partial";
+	id: number;
+	batchIndex: number;
+};
+
+export type GridProfile = FullGridProfile | PartialGridProfile;
+
+export async function resolvePartialBatch(
+	profileIds: number[],
+): Promise<FullGridProfile[]> {
+	return fetchRest("/v3/profiles", {
+		method: "POST",
+		body: { targetProfileIds: profileIds },
+	})
+		.then((res) => res.json())
+		.then((data) =>
+			z
+				.object({
+					profiles: z.array(
+						z.object({
+							...profileShortSchema.shape,
+							...profileRightNowSchema.shape,
+						}),
+					),
+				})
+				.parse(data)
+				.profiles.filter(({ profileId }) => profileIds.includes(profileId))
+				.sort(
+					(a, b) =>
+						profileIds.indexOf(a.profileId) - profileIds.indexOf(b.profileId),
+				)
+				.map((profile) => ({
+					type: "full" as const,
+					id: profile.profileId,
+					displayName: profile.displayName ?? null,
+					distance: profile.distance ?? null,
+					profilePhotosHashes: profile.medias?.map((m) => m.mediaHash) ?? null,
+					unread: null,
+				})),
+		);
+}
+
 export async function getGrid(query: Parameters<typeof getV3Cascade>[0]) {
 	const response = await getV3Cascade(query);
-	const profiles: {
-		id: number;
-		displayName: string | null;
-		distance: number | null;
-		profilePhotosHashes: string[] | null;
-		unread: number | null;
-	}[] = [];
-	const partialProfileBatchStack: { profileId: number }[] = [];
+	const items: GridProfile[] = [];
+	const partialBatches: { batch: { profileId: number }[] }[] = [];
+	let currentBatch: { profileId: number }[] = [];
+
 	for (const item of response.items) {
 		if (item.type === "full_profile_v1") {
 			const profile = item.data;
-			profiles.push({
+			items.push({
+				type: "full",
 				id: profile.profileId,
 				displayName: profile.displayName ?? null,
 				distance: profile.distanceMeters ?? null,
@@ -73,59 +122,26 @@ export async function getGrid(query: Parameters<typeof getV3Cascade>[0]) {
 				unread: profile.unreadCount ?? null,
 			});
 		} else if (item.type === "partial_profile_v1") {
-			partialProfileBatchStack.push({ profileId: item.data.profileId });
-		}
-		if (partialProfileBatchStack.length >= 150) {
-			const partialProfileIds = partialProfileBatchStack
-				.splice(0, 150)
-				.map((p) => p.profileId);
-			console.log({ partialProfileIds });
-			const partialProfilesResolved = await fetchRest("/v3/profiles", {
-				method: "POST",
-				body: { targetProfileIds: partialProfileIds },
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					console.log(data);
-					return z
-						.object({
-							profiles: z.array(
-								z.object({
-									...profileShortSchema.shape,
-									...profileRightNowSchema.shape,
-								}),
-							),
-						})
-						.parse(data)
-						.profiles.filter(({ profileId }) =>
-							partialProfileIds.includes(profileId),
-						)
-						.sort(
-							(a, b) =>
-								partialProfileIds.indexOf(a.profileId) -
-								partialProfileIds.indexOf(b.profileId),
-						);
-				});
-			for (const profile of partialProfilesResolved) {
-				profiles.push({
-					id: profile.profileId,
-					displayName: profile.displayName ?? null,
-					distance: profile.distance ?? null,
-					profilePhotosHashes: profile.medias?.map((m) => m.mediaHash) ?? null,
-					unread: null, // TODO: fetch unread count for partial profiles
-				});
+			if (currentBatch.length === 150) {
+				partialBatches.push({ batch: currentBatch });
+				currentBatch = [];
 			}
+			const batchIndex = partialBatches.length;
+			currentBatch.push({ profileId: item.data.profileId });
+			items.push({
+				type: "partial",
+				id: item.data.profileId,
+				batchIndex,
+			});
 		}
 	}
+	if (currentBatch.length > 0) {
+		partialBatches.push({ batch: currentBatch });
+	}
+
 	return {
-		items: profiles.toSorted((a, b) => {
-			const aDis = a.distance;
-			const bDis = b.distance;
-			if (aDis === null && bDis === null) return 0;
-			if (aDis === null) return 1;
-			if (bDis === null) return -1;
-			return aDis - bDis;
-		}),
+		items,
+		partialBatches,
 		nextPage: response.nextPage,
 		shuffled: response.shuffled,
 	};
