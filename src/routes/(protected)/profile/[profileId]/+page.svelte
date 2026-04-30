@@ -53,12 +53,9 @@
 			lastTestedDate: lastTestedDateValue,
 			sexualHealth: sexualHealthValue,
 			socialNetworks,
-			profileImageMediaHash,
 			medias,
 		} = profile}
-		<ImageCarousel />
-		{profileImageMediaHash}
-		{medias.map((m) => m.mediaHash)}
+		<ImageCarousel {medias} />
 		<div class="flex flex-col p-4 pb-12">
 			<h1 class="text-2xl wrap-break-word">
 				{#if displayName !== null}

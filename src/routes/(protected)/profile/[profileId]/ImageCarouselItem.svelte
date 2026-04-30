@@ -2,6 +2,14 @@
 	import { expoOut } from "svelte/easing";
 	import { fade } from "svelte/transition";
 
+	let {
+		src,
+		thumb,
+	}: {
+		src: string;
+		thumb: string;
+	} = $props();
+
 	let focused:
 		| {
 				startX: number;
@@ -9,6 +17,9 @@
 		  }
 		| false = $state(false);
 	const id = $props.id();
+
+	let width: number | null = $state(null);
+	let height: number | null = $state(null);
 
 	// function onclick(event: MouseEvent) {
 	// 	focused = !focused;
@@ -22,18 +33,25 @@
 </script>
 
 <a
-	class="item"
+	class="item h-full w-full aspect-auto block relative max-h-[inherit] shrink-0"
 	data-cropped="true"
-	data-pswp-width="600"
-	data-pswp-height="400"
-	href="https://placehold.co/600x400"
+	data-pswp-width={width}
+	data-pswp-height={height}
+	href={src}
 	aria-label="Open image"
 >
 	<img
-		src="https://placehold.co/600x400"
+		src={thumb}
 		draggable="false"
-		class="w-full h-full aspect-[inherit] absolute top-0 left-0 object-cover"
+		class="w-full h-full absolute top-0 left-0 object-cover object-center bg-stone-700"
 		alt=""
+		onload={(event) => {
+			const img = event.currentTarget;
+			if (img instanceof HTMLImageElement) {
+				width = img.naturalWidth;
+				height = img.naturalHeight;
+			}
+		}}
 	/>
 </a>
 
@@ -59,7 +77,6 @@
 <style lang="postcss">
 	@reference "$layout";
 	.item {
-		@apply w-full h-full aspect-[inherit] relative block;
 		scroll-snap-stop: always;
 	}
 </style>

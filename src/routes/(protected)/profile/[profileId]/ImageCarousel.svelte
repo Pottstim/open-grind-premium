@@ -1,7 +1,19 @@
 <script lang="ts">
+	import { UserIcon } from "phosphor-svelte";
 	import ImageCarouselItem from "./ImageCarouselItem.svelte";
 	import PhotoSwipeLightbox from "photoswipe/lightbox";
 	import "photoswipe/style.css";
+	import toast from "svelte-french-toast";
+
+	let {
+		medias,
+	}: {
+		medias: {
+			mediaHash: string;
+			takenOnGrindr: boolean | null;
+			createdAt: number | null;
+		}[];
+	} = $props();
 
 	let gallery: HTMLDivElement;
 
@@ -37,9 +49,7 @@
 
 		lightbox.on("change", () => {
 			gallery.scrollTo({
-				top:
-					lightbox.pswp?.currSlide?.data.element?.offsetTop ??
-					0,
+				top: lightbox.pswp?.currSlide?.data.element?.offsetTop ?? 0,
 				behavior: "instant",
 			});
 		});
@@ -54,15 +64,115 @@
 		lightbox.init();
 		return () => lightbox.destroy();
 	});
+
+	// const mediasLoaded: {
+	// 	url: string;
+	// 	width: number;
+	// 	height: number;
+	// 	metadata: { createdAt?: number; takenOnGrindr?: boolean };
+	// }[] = $state();
+	// $effect(() => {
+	// 	const abortController = new AbortController();
+	// 	let blobUrls = new Set<string>();
+	// 	async function loadMedias(media: typeof medias) {
+	// 		await Promise.all(
+	// 			medias.map(async (media) => {
+	// 				try {
+	// 					const request = await fetch(
+	// 						`https://cdns.grindr.com/images/profile/1024x1024/${media.mediaHash}`,
+	// 						{
+	// 							signal: abortController.signal,
+	// 						},
+	// 					);
+	// 					const blob = await request.blob();
+	// 					if (abortController.signal.aborted) return;
+	// 					const url = URL.createObjectURL(blob);
+	// 					blobUrls.add(url);
+	// 					const img = new Image();
+	// 					img.onload = () => {
+	// 						mediasLoaded.push({
+	// 							url,
+	// 							width: img.naturalWidth,
+	// 							height: img.naturalHeight,
+	// 							metadata: {
+	// 								createdAt: media.createdAt ?? undefined,
+	// 								takenOnGrindr: media.takenOnGrindr ?? undefined,
+	// 							},
+	// 						});
+	// 					};
+	// 					img.src = url;
+	// 				} catch (e) {
+	// 					toast.error("Failed to load profile image");
+	// 				}
+	// 			}),
+	// 		);
+	// 	}
+	// 	loadMedias(medias);
+	// 	return () => {
+	// 		abortController.abort();
+	// 		blobUrls.forEach((url) => URL.revokeObjectURL(url));
+	// 	};
+	// });
+
+	const GAP = 4; //px
+	const PADDING_VERTICAL = 8; //px
+	const PADDING_HORIZONTAL = PADDING_VERTICAL;
+	const BULLET_SIZE = 8; //px
+
+	let indicatorY = $state(PADDING_VERTICAL);
+	let indicatorHeight = $state(BULLET_SIZE);
 </script>
 
-<div
-	class="w-full flex flex-col h-auto aspect-3/4 snap-y snap-mandatory *:snap-center overflow-auto carousel"
-	bind:this={gallery}
->
-	<ImageCarouselItem />
-	<ImageCarouselItem />
-	<ImageCarouselItem />
+<div class="w-full h-auto aspect-3/4 max-h-[min(70vh,500px)] relative">
+	{#if medias.length}
+		<div
+			class="size-full max-h-[inherit] flex flex-col snap-y snap-mandatory *:snap-center overflow-auto carousel relative"
+			bind:this={gallery}
+			onscroll={() => {
+				const item = gallery.scrollTop / gallery.clientHeight;
+				const frac = item % 1;
+				const stretch = Math.min(frac, 1 - frac);
+				const index = Math.floor(item);
+				const tipYp =
+					Math.min(item > 0 ? index : item, medias.length - 1) +
+					(item < medias.length - 1 ? Math.max(0, (frac - 0.5) * 2) : frac);
+				indicatorY = PADDING_VERTICAL + tipYp * (BULLET_SIZE + GAP);
+				const indicatorStretch = stretch * (BULLET_SIZE * 2 + GAP + 4);
+				indicatorHeight =
+					BULLET_SIZE +
+					(item > 0 && item < medias.length - 1 ? indicatorStretch : 0);
+			}}
+		>
+			{#each medias as { mediaHash }}
+				<ImageCarouselItem
+					src="https://cdns.grindr.com/images/profile/1024x1024/{mediaHash}"
+					thumb="https://cdns.grindr.com/images/profile/1024x1024/{mediaHash}"
+				/>
+			{/each}
+		</div>
+		<div
+			class="absolute right-2 top-1/2 -translate-y-1/2 p-2 backdrop-blur-sm bg-background/30 rounded-full flex flex-col"
+			style:gap="{GAP}px"
+			style:padding="{PADDING_VERTICAL}px {PADDING_HORIZONTAL}px"
+		>
+			{#each medias as _, i (i)}
+				<span class="bg-neutral-200/40 size-2 block rounded-full"></span>
+			{/each}
+			<span
+				class="absolute left-2 bg-neutral-300 w-2 block rounded-full"
+				style="top: {indicatorY}px; height: {BULLET_SIZE}px"
+				style:height="{indicatorHeight}px"
+			></span>
+		</div>
+	{:else}
+		<div class="bg-neutral-700 size-full absolute">
+			<UserIcon
+				weight="fill"
+				color="var(--color-stone-400)"
+				class="size-3/4 top-1/2 left-1/2 -translate-1/2 absolute"
+			/>
+		</div>
+	{/if}
 </div>
 
 <style lang="postcss">
