@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LocationChange from "./LocationChange.svelte";
 	import Filters from "./GridFilters.svelte";
+	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 
 	let {
 		onUpdatePreferences,
@@ -14,16 +15,19 @@
 </script>
 
 <svelte:window onscroll={() => (expanded = window.scrollY === 0)} />
-<div
-	class={[
-		"fixed top-0 left-0 w-full flex gap-2 p-4 z-10 bg-background/80 backdrop-blur-2xl border border-x-0 border-t-0",
+<ProgressiveBlur
+	class={["fixed top-0 left-0 w-full z-10"]}
+	bgClass="bg-linear-to-b from-background to-transparent"
+	contentClass={[
+		"flex gap-2 p-4",
 		{
-			"flex-col border-transparent overflow-auto": expanded,
-			"border-row border-popover-foreground/20": !expanded,
+			"flex-col overflow-auto": expanded,
+			"": !expanded,
 		},
 	]}
+	direction="topToBottom"
 >
 	<LocationChange onUpdate={onUpdatePreferences} {expanded} />
 	<Filters onUpdate={onRefreshGrid} />
-</div>
+</ProgressiveBlur>
 <div class="h-20"></div>

@@ -5,9 +5,16 @@
 	import DropIcon from "phosphor-svelte/lib/DropIcon";
 	import FireIcon from "phosphor-svelte/lib/FireIcon";
 	import ChatCircleIcon from "phosphor-svelte/lib/ChatCircleIcon";
+	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 </script>
 
-<nav class="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 max-w-full overflow-auto no-scrollbar">
+<ProgressiveBlur
+	direction="bottomToTop"
+	tag="nav"
+	class="fixed bottom-0 z-50 w-full py-2"
+	bgClass="bg-linear-to-t from-background to-transparent"
+	contentClass="overflow-auto no-scrollbar left-1/2 -translate-x-1/2 m-auto flex justify-center"
+>
 	<div class={[tabsListVariants({ variant: "default" }), "[&>a>svg]:size-5!"]}>
 		<a href="/" data-active={page.route.id === "/(protected)/(root)"}>
 			<DotsNineIcon weight="fill" />
@@ -29,7 +36,7 @@
 			Inbox
 		</a>
 	</div>
-</nav>
+</ProgressiveBlur>
 
 <style lang="postcss">
 	@reference "../../layout.css";
