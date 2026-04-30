@@ -5,7 +5,10 @@
 	import { Button } from "$lib/components/ui/button";
 	import * as Sheet from "$lib/components/ui/sheet";
 	import FilterBoolean from "$lib/components/filters/FilterBoolean.svelte";
-	import type { gridSearchFiltersSchema } from "$lib/components/filters/filters";
+	import {
+		defaultFilters,
+		type gridSearchFiltersSchema,
+	} from "$lib/components/filters/filters";
 
 	import AgeFilter from "$lib/components/filters/AgeFilter.svelte";
 	import GendersFilter from "$lib/components/filters/GendersFilter.svelte";
@@ -31,64 +34,18 @@
 		open = $bindable(),
 	}: { onUpdate: () => void; open: boolean } = $props();
 
-	let filters: z.infer<typeof gridSearchFiltersSchema> = $state({
-		isFavorite: false,
-		isOnline: false,
-		isRightNow: false,
-
-		ageEnabled: false,
-		age: [18, 102],
-
-		genderEnabled: false,
-		genders: [],
-
-		positionEnabled: false,
-		positions: [],
-
-		photosEnabled: false,
-		photos: [],
-
-		tribesEnabled: false,
-		tribes: [],
-
-		bodyTypesEnabled: false,
-		bodyTypes: [],
-
-		heightEnabled: false,
-		height: [120, 242],
-
-		weightEnabled: false,
-		weight: [40, 273],
-
-		relationshipStatusesEnabled: false,
-		relationshipStatuses: [],
-
-		acceptNSFWPicsEnabled: false,
-		acceptNSFWPics: [],
-
-		lookingForEnabled: false,
-		lookingFor: [],
-
-		meetAtEnabled: false,
-		meetAt: [],
-
-		haventChattedTodayEnabled: false,
-
-		healthPracticesEnabled: false,
-		healthPractices: [],
-	});
+	let filters: z.infer<typeof gridSearchFiltersSchema> = $state(defaultFilters);
 
 	let contentScroll = $state(0);
 
 	async function onSubmit() {
 		const { gridSearchFilters: currentValue } = await getPreferences();
 		if (!isEqual(currentValue, filters)) {
-			setPreferences({
+			await setPreferences({
 				gridSearchFilters: filters,
-			}).then(() => {
-				loadSavedFilters();
-				onUpdate();
 			});
+			loadSavedFilters();
+			onUpdate();
 		}
 		open = false;
 	}

@@ -1,13 +1,19 @@
 <script lang="ts">
+	import toast from "svelte-french-toast";
 	import LocationChange from "./LocationChange.svelte";
 	import Filters from "./GridFilters.svelte";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
-	import { Button } from "$lib/components/ui/button";
+	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import { SlidersHorizontalIcon } from "phosphor-svelte";
-	import * as ButtonGroup from "$lib/components/ui/button-group";
 	import { Tween } from "svelte/motion";
 	import { expoOut } from "svelte/easing";
 	import { onMount, untrack } from "svelte";
+	import * as ToggleGroup from "$lib/components/ui/toggle-group";
+	import {
+		getPreferences,
+		setPreferences,
+	} from "$lib/app-data/preferences.svelte";
+	import { defaultFilters } from "$lib/components/filters/filters";
 
 	let {
 		onUpdatePreferences,
@@ -21,6 +27,8 @@
 	let expansion = new Tween(0, { duration: 600, easing: expoOut });
 	let openFilters = $state({
 		all: false,
+		age: false,
+		position: false,
 	});
 
 	let from: HTMLDivElement;
@@ -29,9 +37,15 @@
 	let fromPos = $state({ left: 0, top: 0 });
 	let toPos = $state({ left: 0, top: 0 });
 
-	function onScroll() {
+	function onScroll(instant: boolean) {
 		expanded = window.scrollY === 0;
-		expansion.target = expanded ? 1 : 0;
+		if (instant) {
+			expansion.set(expanded ? 1 : 0, {
+				duration: 0,
+			});
+		} else {
+			expansion.target = expanded ? 1 : 0;
+		}
 		fromPos = from.getBoundingClientRect();
 		toPos = to.getBoundingClientRect();
 	}
@@ -52,10 +66,34 @@
 		});
 	});
 
-	onMount(() => onScroll());
+	onMount(() => onScroll(true));
+
+	let booleanFilters = $state({
+		isFavorite: false,
+		isOnline: false,
+		isRightNow: false,
+		isFresh: false,
+	});
+
+	onMount(() => {
+		getPreferences().then(({ gridSearchFilters = defaultFilters }) => {
+			booleanFilters = {
+				isFavorite: gridSearchFilters.isFavorite,
+				isOnline: gridSearchFilters.isOnline,
+				isRightNow: gridSearchFilters.isRightNow,
+				isFresh: gridSearchFilters.isFresh || false,
+			};
+		});
+	});
+
+	const booleanFiltersValue = $derived(
+		Object.entries(booleanFilters)
+			.filter(([_, v]) => v)
+			.map(([k, _]) => k),
+	);
 </script>
 
-<svelte:window onscroll={onScroll} />
+<svelte:window onscroll={() => onScroll(false)} />
 <ProgressiveBlur
 	class="fixed top-0 left-0 w-full z-10"
 	bgClass="bg-linear-to-b from-background to-transparent"
@@ -69,10 +107,7 @@
 			: '0'}; pointer-events: {expansion.current > 0.5 ? 'auto' : 'none'};"
 		bind:this={to}
 	>
-		<LocationChange
-			expansion={1}
-			onUpdate={onUpdatePreferences}
-		/>
+		<LocationChange expansion={1} onUpdate={onUpdatePreferences} />
 	</div>
 
 	<div class="flex overflow-x-auto scrollbar-thin p-4 pt-0 gap-0.5">
@@ -100,23 +135,64 @@
 		<Button variant="secondary" onclick={() => (openFilters.all = true)}>
 			<SlidersHorizontalIcon />
 		</Button>
-		<Button variant="secondary" onclick={() => (openFilters.all = true)}>
+		<Button variant="secondary" onclick={() => (openFilters.age = true)}>
 			Age
 		</Button>
-		<Button variant="secondary" onclick={() => (openFilters.all = true)}>
+		<Button variant="secondary" onclick={() => (openFilters.position = true)}>
 			Position
 		</Button>
-		<ButtonGroup.Root>
-			<Button variant="secondary" onclick={() => (openFilters.all = true)}>
+		<ToggleGroup.Root
+			type="multiple"
+			variant="default"
+			bind:value={
+				() => booleanFiltersValue,
+				(values) => {
+					async function updateFilters() {
+						const oldBooleanFilters = booleanFilters;
+						booleanFilters = {
+							...oldBooleanFilters,
+							isFavorite: values.includes("isFavorite"),
+							isOnline: values.includes("isOnline"),
+							isRightNow: values.includes("isRightNow"),
+							isFresh: values.includes("isFresh"),
+						};
+						try {
+							const { gridSearchFilters: oldFilters = defaultFilters } =
+								await getPreferences();
+							await setPreferences({
+								gridSearchFilters: { ...oldFilters, ...booleanFilters },
+							});
+							onRefreshGrid();
+						} catch (e) {
+							toast.error("Failed to update filters");
+							booleanFilters = oldBooleanFilters;
+						}
+					}
+					updateFilters();
+				}
+			}
+			size="sm"
+			class="h-9"
+		>
+			<ToggleGroup.Item
+				value="isOnline"
+				class={buttonVariants({ variant: "secondary" })}
+			>
 				Online
-			</Button>
-			<Button variant="secondary" onclick={() => (openFilters.all = true)}>
+			</ToggleGroup.Item>
+			<ToggleGroup.Item
+				value="isRightNow"
+				class={buttonVariants({ variant: "secondary" })}
+			>
 				Right now
-			</Button>
-			<Button variant="secondary" onclick={() => (openFilters.all = true)}>
+			</ToggleGroup.Item>
+			<ToggleGroup.Item
+				value="isFresh"
+				class={buttonVariants({ variant: "secondary" })}
+			>
 				Fresh
-			</Button>
-		</ButtonGroup.Root>
+			</ToggleGroup.Item>
+		</ToggleGroup.Root>
 	</div>
 </ProgressiveBlur>
 <div class="h-20"></div>

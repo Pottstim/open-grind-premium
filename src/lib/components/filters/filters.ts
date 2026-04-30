@@ -13,6 +13,7 @@ import z from "zod";
 export const filterIsFavoriteSchema = z.boolean();
 export const filterIsOnlineSchema = z.boolean();
 export const filterIsRightNowSchema = z.boolean();
+export const filterIsFreshSchema = z.boolean();
 
 export const filterAgeEnabledSchema = z.boolean();
 export const filterAgeSchema = z.array(z.number().min(18).max(102)).length(2);
@@ -150,6 +151,57 @@ export const gridSearchFiltersSchema = z.object({
 
 	healthPracticesEnabled: filterHealthPracticesEnabledSchema,
 	healthPractices: filterHealthPracticesSchema,
+
+	isFresh: filterIsFreshSchema,
 });
 
 export type GridSearchFilters = z.infer<typeof gridSearchFiltersSchema>;
+
+export const defaultFilters = {
+	isFavorite: false,
+	isOnline: false,
+	isRightNow: false,
+
+	ageEnabled: false,
+	age: [18, 102],
+
+	genderEnabled: false,
+	genders: [],
+
+	positionEnabled: false,
+	positions: [],
+
+	photosEnabled: false,
+	photos: [],
+
+	tribesEnabled: false,
+	tribes: [],
+
+	bodyTypesEnabled: false,
+	bodyTypes: [],
+
+	heightEnabled: false,
+	height: [120, 242],
+
+	weightEnabled: false,
+	weight: [40, 273],
+
+	relationshipStatusesEnabled: false,
+	relationshipStatuses: [],
+
+	acceptNSFWPicsEnabled: false,
+	acceptNSFWPics: [],
+
+	lookingForEnabled: false,
+	lookingFor: [],
+
+	meetAtEnabled: false,
+	meetAt: [],
+
+	haventChattedTodayEnabled: false,
+
+	healthPracticesEnabled: false,
+	healthPractices: [],
+
+	isFresh: false,
+} satisfies GridSearchFilters;

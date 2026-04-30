@@ -194,6 +194,7 @@
 				...(gridSearchFilters?.healthPracticesEnabled && {
 					sexualHealth: gridSearchFilters?.healthPractices,
 				}),
+				fresh: gridSearchFilters?.isFresh || undefined,
 			} satisfies z.infer<typeof cascadeV3QuerySchema>;
 			currentQuery = query;
 			const result = await getGrid(query);
