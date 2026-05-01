@@ -7,7 +7,12 @@
 	import QuickFilters from "./QuickFilters.svelte";
 	import LocationChange from "../LocationChange.svelte";
 	import Filters from "../GridFilters.svelte";
-	import { defaultFilters } from "$lib/components/filters/filters";
+	import {
+		defaultFilters,
+		filterPositionSchema,
+	} from "$lib/components/filters/filters";
+	import PositionQuickFilter from "./PositionQuickFilter.svelte";
+	import type z from "zod";
 
 	let {
 		onUpdatePreferences,
@@ -59,7 +64,7 @@
 	let filters: {
 		age: number[];
 		ageEnabled: boolean;
-		position: number[] | null;
+		position: z.infer<typeof filterPositionSchema>;
 		positionEnabled: boolean;
 	} = $state({
 		age: defaultFilters.age,
@@ -125,5 +130,11 @@
 	bind:open={openFilters.age}
 	bind:enabled={filters.ageEnabled}
 	bind:value={filters.age}
+	{onRefreshGrid}
+/>
+<PositionQuickFilter
+	bind:open={openFilters.position}
+	bind:enabled={filters.positionEnabled}
+	bind:value={filters.position}
 	{onRefreshGrid}
 />

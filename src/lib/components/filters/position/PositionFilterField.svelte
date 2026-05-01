@@ -1,0 +1,29 @@
+<script lang="ts">
+	import type z from "zod";
+	import FilterBoolean from "../FilterBoolean.svelte";
+	import { filterPositionSchema } from "$lib/components/filters/filters";
+	import PositionFilterToggle from "$lib/components/filters/position/PositionFilterToggle.svelte";
+
+	let {
+		value = $bindable(),
+		checked = $bindable(),
+	}: {
+		value: z.infer<typeof filterPositionSchema>;
+		checked: boolean;
+	} = $props();
+</script>
+
+<div class="flex flex-col gap-2 min-w-0">
+	<FilterBoolean id="position" bind:checked>Position</FilterBoolean>
+	<div class="ps-6">
+		<PositionFilterToggle
+			bind:value={
+				() => value,
+				(v) => {
+					value = v;
+					checked = v.length > 0;
+				}
+			}
+		/>
+	</div>
+</div>

@@ -12,7 +12,7 @@
 
 	import AgeFilter from "$lib/components/filters/age/AgeFilterField.svelte";
 	import GendersFilter from "$lib/components/filters/GendersFilter.svelte";
-	import PositionFilter from "$lib/components/filters/PositionFilter.svelte";
+	import PositionFilter from "$lib/components/filters/position/PositionFilterField.svelte";
 	import PhotosFilter from "$lib/components/filters/PhotosFilter.svelte";
 	import TribesFilter from "$lib/components/filters/TribesFilter.svelte";
 	import BodyTypeFilter from "$lib/components/filters/BodyTypeFilter.svelte";

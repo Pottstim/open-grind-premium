@@ -1,10 +1,14 @@
 <script lang="ts">
+	import type z from "zod";
 	import {
 		getPreferences,
 		setPreferences,
 	} from "$lib/app-data/preferences.svelte";
-	import AgeFilterSlider from "$lib/components/filters/age/AgeFilterSlider.svelte";
-	import { defaultFilters } from "$lib/components/filters/filters";
+	import {
+		defaultFilters,
+		filterPositionSchema,
+	} from "$lib/components/filters/filters";
+	import PositionFilterToggle from "$lib/components/filters/position/PositionFilterToggle.svelte";
 	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import * as Drawer from "$lib/components/ui/drawer";
 	import { Switch } from "$lib/components/ui/switch";
@@ -17,23 +21,24 @@
 	}: {
 		open: boolean;
 		enabled: boolean;
-		value: number[];
+		value: z.infer<typeof filterPositionSchema>;
 		onRefreshGrid: () => void;
 	} = $props();
 
-	let filtersChanges: { age: number[]; ageEnabled: boolean } = $state({
-		age: defaultFilters.age,
-		ageEnabled: defaultFilters.ageEnabled,
+	let filtersChanges: {
+		positions: z.infer<typeof filterPositionSchema>;
+		positionEnabled: boolean;
+	} = $state({
+		positions: defaultFilters.positions,
+		positionEnabled: defaultFilters.positionEnabled,
 	});
 
 	$effect(() => {
 		if (open) {
-			filtersChanges.age = value;
-			filtersChanges.ageEnabled = enabled;
+			filtersChanges.positions = value;
+			filtersChanges.positionEnabled = enabled;
 		}
 	});
-
-	let label = $state("");
 </script>
 
 <Drawer.Root bind:open>
@@ -44,31 +49,29 @@
 					variant="link"
 					class="cursor-pointer"
 					onclick={() => {
-						filtersChanges.age = defaultFilters.age;
+						filtersChanges.positions = defaultFilters.positions;
 					}}
 				>
 					Reset
 				</Button>
 			</div>
-			<Drawer.Title>Age</Drawer.Title>
+			<Drawer.Title>Positions</Drawer.Title>
 			<div class="flex-1 flex justify-end">
 				<Switch
-					id="age-filter-enabled"
-					bind:checked={filtersChanges.ageEnabled}
+					id="positions-filter-enabled"
+					bind:checked={filtersChanges.positionEnabled}
 				/>
 			</div>
 		</Drawer.Header>
 		<div class="px-4 flex flex-col gap-1.5 mb-2">
-			<div class="w-full text-center mb-2">{label}</div>
-			<AgeFilterSlider
+			<PositionFilterToggle
 				bind:value={
-					() => filtersChanges.age,
+					() => filtersChanges.positions,
 					(v) => {
-						filtersChanges.ageEnabled = true;
-						filtersChanges.age = v;
+						filtersChanges.positionEnabled = true;
+						filtersChanges.positions = v;
 					}
 				}
-				bind:label
 			/>
 		</div>
 		<Drawer.Footer>
@@ -76,18 +79,18 @@
 				class={buttonVariants({ variant: "default" })}
 				onclick={async () => {
 					if (
-						value !== filtersChanges.age ||
-						enabled !== filtersChanges.ageEnabled
+						value !== filtersChanges.positions ||
+						enabled !== filtersChanges.positionEnabled
 					) {
-						value = filtersChanges.age;
-						enabled = filtersChanges.ageEnabled;
+						value = filtersChanges.positions;
+						enabled = filtersChanges.positionEnabled;
 						const { gridSearchFilters: oldGridSearchFilters = defaultFilters } =
 							await getPreferences();
 						await setPreferences({
 							gridSearchFilters: {
 								...oldGridSearchFilters,
-								age: filtersChanges.age,
-								ageEnabled: filtersChanges.ageEnabled,
+								positions: filtersChanges.positions,
+								positionEnabled: filtersChanges.positionEnabled,
 							},
 						});
 						onRefreshGrid();
