@@ -10,6 +10,7 @@
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
+	import { Button } from "$lib/components/ui/button";
 
 	let {
 		geohash,
@@ -210,7 +211,7 @@
 </script>
 
 <div
-	class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 w-full gap-0.5 px-1"
+	class="grid grid-cols-2 xxs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 w-full gap-0.5 px-1 flex-1"
 >
 	{#await profiles}
 		{#each Array.from({ length: 20 })}
@@ -243,8 +244,13 @@
 			<div class="col-span-full h-0" use:observeSentinel></div>
 		{/if}
 	{:catch error}
-		<p class="col-span-full text-center text-sm text-red-400">
-			{error.message}
-		</p>
+		<div class="p-4 flex col-span-full">
+			<div class="m-auto flex flex-col gap-4">
+				<p class="text-center text-red-400 font-medium">
+					{error.message}
+				</p>
+				<Button onclick={() => (profiles = fetchProfiles())}>Retry</Button>
+			</div>
+		</div>
 	{/await}
 </div>

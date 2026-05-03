@@ -15,11 +15,11 @@ export async function getProfile(profileId: number) {
 		method: "GET",
 	})
 		.then((res) => res.json())
-		.then((res) => {
-			console.log(res);
-			return z.object({ profiles: z.array(profileSchema).length(1) }).parse(res)
-				.profiles[0];
-		});
+		.then(
+			(res) =>
+				z.object({ profiles: z.array(profileSchema).length(1) }).parse(res)
+					.profiles[0],
+		);
 	profilesCache.set(profileId, { profile, updatedAt: Date.now() });
 	return profile;
 }
