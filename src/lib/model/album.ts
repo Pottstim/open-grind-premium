@@ -14,8 +14,8 @@ export const albumMinSchema = albumPreviewSchema.extend({
 
 export const albumDetailsSchema = z.object({
 	sharedCount: z.number().int(),
-	createdAt: z.iso.datetime(),
-	updatedAt: z.iso.datetime(),
+	createdAt: z.iso.datetime({ local: true }),
+	updatedAt: z.iso.datetime({ local: true }),
 });
 
 export const AlbumExpiration = {
@@ -33,4 +33,18 @@ export type AlbumExpirationType = z.infer<typeof albumExpirationTypeSchema>;
 export const albumExpirationSchema = z.object({
 	expiresAt: unixTimestampMsSchema.nullable(),
 	expirationType: albumExpirationTypeSchema.optional(),
+});
+
+export const albumContentMin = z.object({
+	contentId: z.number().int(),
+	contentType: z.string(),
+	coverUrl: z.url(),
+	statusId: z.number().int(),
+});
+
+export const albumContentSchema = albumContentMin.extend({
+	thumbUrl: z.url(),
+	url: z.url().or(z.literal("")),
+	processing: z.boolean().nullable(),
+	rejectionId: z.unknown().nullable(),
 });

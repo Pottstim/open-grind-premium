@@ -11,7 +11,7 @@ export async function getProfile(profileId: number) {
 	if (cached && Date.now() - cached.updatedAt < 1000 * 60) {
 		return cached.profile;
 	}
-	const profile = await fetchRest("/v7/profiles/" + profileId, {
+	const profile = await fetchRest(`/v7/profiles/${profileId}`, {
 		method: "GET",
 	})
 		.then((res) => res.json())

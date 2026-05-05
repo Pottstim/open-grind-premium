@@ -8,17 +8,20 @@
 - [X] Geo service
   - [ ] Location self-reporting
 - [ ] Messaging
-  - [ ] Text messages
+  - [X] Text messages
   - [ ] Replies
   - [ ] Read indicators
   - [ ] Media
-    - [ ] Images
+    - [X] Images
     - [ ] Videos
+    - [X] Albums
     - [ ] GIF
-  - [ ] Location
   - [ ] Saved phrases
-  - [ ] Voice messages
+  - [ ] Voice messages / Audio
+  - [ ] Calls
   - [ ] Reactions
+  - [ ] Location
+  - [ ] Unsent
 - [X] Profiles
   - [X] Fetching
   - [ ] Favoring/unfavoring
@@ -33,6 +36,10 @@
   - [ ] Profile view self-reporting
   - [ ] Taps history
 - [ ] Albums
+  - [ ] Creation
+  - [ ] Editing
+  - [ ] Uploading
+  - [ ] Separate tab
 - [ ] "Right now"
   - [ ] Fetching
   - [ ] Filtering

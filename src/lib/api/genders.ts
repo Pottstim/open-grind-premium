@@ -3,7 +3,7 @@ import { gendersSchema } from "$lib/model/genders";
 import { fetchRest } from "$lib/api";
 
 let cachedGenders: z.infer<typeof gendersSchema> | null = null;
-export async function fetchGenders() {
+export async function getGenders() {
 	if (cachedGenders) return cachedGenders;
 	const genders = await fetchRest("/public/v2/genders")
 		.then((data) => data.json())

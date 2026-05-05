@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { UserIcon } from "phosphor-svelte";
-	import ImageCarouselItem from "./ImageCarouselItem.svelte";
-	import PhotoSwipeLightbox from "photoswipe/lightbox";
 	import "photoswipe/style.css";
-	import toast from "svelte-french-toast";
-	import { format } from "date-fns";
 	import z from "zod";
+	import { format } from "date-fns";
+	import { UserIcon } from "phosphor-svelte";
+	import PhotoSwipeLightbox from "photoswipe/lightbox";
+	import ImageCarouselItem from "./ImageCarouselItem.svelte";
 
 	let {
 		medias,
