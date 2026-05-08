@@ -4,25 +4,30 @@
 
 	let {
 		message,
+		ref = $bindable(),
+		clone,
 	}: {
 		message: TextMessage["body"];
+		ref?: HTMLDivElement;
+		clone?: boolean;
 	} = $props();
 
-	const { lastInStack, msgOut } = $derived(
-		getMessageContext()(),
-	);
+	const { lastInStack, msgOut } = $derived(getMessageContext()());
 </script>
 
 <div
 	class={[
 		"py-2 px-3 rounded-xl w-fit text-black shrink-0 relative overflow-visible select-text",
 		{
-			"bg-message-bubble-in me-auto ms-3": !msgOut,
+			"bg-message-bubble-in": !msgOut,
+			"ms-3": !msgOut && !clone,
 			"rounded-es-none": lastInStack && !msgOut,
-			"bg-message-bubble-out ms-auto me-3": msgOut,
+			"bg-message-bubble-out": msgOut,
+			"me-3": msgOut && !clone,
 			"rounded-ee-none": lastInStack && msgOut,
 		},
 	]}
+	bind:this={ref}
 >
 	{#if lastInStack}
 		<svg

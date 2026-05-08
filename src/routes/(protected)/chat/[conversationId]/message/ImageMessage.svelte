@@ -4,14 +4,16 @@
 
 	let {
 		message,
+		ref = $bindable(),
 	}: {
 		message: ImageMessage["body"] | ExpiringImageMessage["body"];
+		ref?: HTMLDivElement;
 	} = $props();
 
 	const { lastInStack, msgOut } = $derived(getMessageContext()());
 </script>
 
-<div class="w-2/5 min-w-35 max-w-60 ms-3">
+<div class="w-2/5 min-w-35 max-w-60 ms-3" bind:this={ref}>
 	<img
 		src={message.url}
 		alt=""

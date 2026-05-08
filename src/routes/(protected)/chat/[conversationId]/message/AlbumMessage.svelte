@@ -9,21 +9,27 @@
 
 	let {
 		message,
+		ref = $bindable(),
+		clone,
 	}: {
 		message: AlbumMessage["body"];
+		ref?: HTMLDivElement | HTMLButtonElement;
+		clone?: boolean;
 	} = $props();
 
 	const { lastInStack, msgOut } = $derived(getMessageContext()());
 
 	const className: import("svelte/elements").ClassValue = $derived([
-		"w-2/5 min-w-35 max-w-60 ms-3 aspect-3/4 h-auto relative",
+		"aspect-3/4 h-auto relative",
 		{
 			"ring ring-accent": message.hasUnseenContent,
+			"w-2/5 min-w-35 max-w-60 ms-3": !clone,
+			"size-full": clone
 		},
 	]);
 
 	const contentClass: import("svelte/elements").ClassValue = $derived([
-		"rounded-lg",
+		"rounded-xl",
 		{
 			"rounded-es-[6px]": lastInStack && !msgOut,
 			"rounded-ee-[6px]": lastInStack && msgOut,
@@ -173,6 +179,7 @@
 		]}
 		onclick={() => (open = true)}
 		disabled={loading || open}
+		bind:this={ref}
 	>
 		<img
 			src={message.coverUrl}
@@ -207,7 +214,7 @@
 		</div>
 	</button>
 {:else}
-	<div class={[className, contentClass]}>
+	<div class={[className, contentClass]} bind:this={ref}>
 		<div
 			class="size-full flex justify-center items-center bg-card-foreground/10 rounded-lg"
 		>
