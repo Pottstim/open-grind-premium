@@ -1,6 +1,5 @@
 import z from "zod";
 import {
-	mediaHashPrivateSchema,
 	mediaHashPublicSchema,
 } from "$lib/model/media";
 import { rightNowStatusSchema } from "$lib/model/right-now";
@@ -25,7 +24,7 @@ export const fullConversationSchema = z.object({
 			type: z.string(),
 			text: z.string().nullable(),
 			albumId: z.number().nullable(),
-			imageHash: mediaHashPrivateSchema.nullable(),
+			imageHash: mediaHashPublicSchema.nullable(),
 			// lat, lon, duration, photoContentReply
 		}),
 		muted: z.boolean(),
