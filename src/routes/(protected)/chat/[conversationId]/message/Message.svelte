@@ -111,6 +111,7 @@
 		<ImageMessage
 			message={message.body}
 			bind:ref={() => messageElement, (el) => !clone && (messageElement = el)}
+			{clone}
 		/>
 	{:else if message.type === "Album" || message.type === "ExpiringAlbum" || message.type === "ExpiringAlbumV2"}
 		<AlbumMessage

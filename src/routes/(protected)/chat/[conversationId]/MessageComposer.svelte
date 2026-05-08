@@ -1,11 +1,10 @@
 <script lang="ts">
+	import { expoOut } from "svelte/easing";
+	import { fade } from "svelte/transition";
 	import toast from "svelte-french-toast";
 	import { MicrophoneIcon, PaperPlaneRightIcon } from "phosphor-svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Textarea } from "$lib/components/ui/textarea";
-	import { expoOut } from "svelte/easing";
-	import { fade } from "svelte/transition";
-	import { fetchRest } from "$lib/api";
 
 	let { onSend }: { onSend: (params: { text: string }) => Promise<void> } =
 		$props();

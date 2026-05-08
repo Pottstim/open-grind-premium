@@ -5,15 +5,17 @@
 	let {
 		message,
 		ref = $bindable(),
+		clone,
 	}: {
 		message: ImageMessage["body"] | ExpiringImageMessage["body"];
 		ref?: HTMLDivElement;
+		clone?: boolean;
 	} = $props();
 
 	const { lastInStack, msgOut } = $derived(getMessageContext()());
 </script>
 
-<div class="w-2/5 min-w-35 max-w-60 ms-3" bind:this={ref}>
+<div class={{ "w-2/5 min-w-35 max-w-60 ms-3": !clone }} bind:this={ref}>
 	<img
 		src={message.url}
 		alt=""

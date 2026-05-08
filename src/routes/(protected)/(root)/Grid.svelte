@@ -1,6 +1,7 @@
 <script lang="ts">
 	import z from "zod";
 	import toast from "svelte-french-toast";
+	import { uniqBy } from "lodash-es";
 	import {
 		getGrid,
 		resolvePartialBatch,
@@ -208,6 +209,8 @@
 			throw new Error("Failed to fetch profiles");
 		}
 	}
+
+	const gridProfiles = $derived(uniqBy(items, "id"));
 </script>
 
 <div
@@ -218,7 +221,7 @@
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
 	{:then}
-		{#each items as item (item.id)}
+		{#each gridProfiles as item (item.id)}
 			{#if item.type === "full"}
 				<ProfileMiniCard
 					id={item.id}
