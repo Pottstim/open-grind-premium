@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { CaretRightIcon, SignOutIcon } from "phosphor-svelte";
 	import * as Item from "$lib/components/ui/item";
-	import { Button } from "$lib/components/ui/button";
+	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import { callMethod } from "$lib/api";
 	import ButtonItemContent from "./ButtonItemContent.svelte";
+	import * as AlertDialog from "$lib/components/ui/alert-dialog";
 
 	async function onSignOut() {
 		try {
@@ -14,11 +15,17 @@
 			return null;
 		}
 	}
+
+	let alertOpen = $state(false);
 </script>
 
 <Item.Root variant="outline">
 	{#snippet child({ props })}
-		<ButtonItemContent {...props} variant="outline" onclick={() => onSignOut()}>
+		<ButtonItemContent
+			{...props}
+			variant="outline"
+			onclick={() => (alertOpen = true)}
+		>
 			<Item.Media>
 				<SignOutIcon weight="fill" class="size-5" />
 			</Item.Media>
@@ -33,3 +40,19 @@
 		</ButtonItemContent>
 	{/snippet}
 </Item.Root>
+<AlertDialog.Root bind:open={alertOpen}>
+	<AlertDialog.Content preventOverflowTextSelection={false}>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Sign out?</AlertDialog.Title>
+			<AlertDialog.Description>
+				Are you sure you want to sign out? You can sign back in at any time.
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel size="lg">Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action onclick={() => onSignOut()} size="lg">
+				Continue
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
