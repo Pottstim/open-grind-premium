@@ -26,8 +26,8 @@
 
 	$effect(() => {
 		if (map) {
-			const onMapClick: LeafletMouseEventHandlerFn = (e) => {
-				pinPos = { lat: e.latlng.lat, lon: e.latlng.lng };
+			const onMapClick: LeafletMouseEventHandlerFn = ({ latlng }) => {
+				pinPos = { lat: latlng.lat, lon: latlng.lng };
 			};
 			map.on("click", onMapClick);
 			return () => {
@@ -44,8 +44,8 @@
 			if (!query) return;
 			const response = await getPlaces({ query });
 			return response;
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error(error);
 			toast.error("Failed to search places");
 		}
 	});
@@ -69,7 +69,11 @@
 
 <div class="w-[inherit] h-[inherit] relative">
 	<Map
-		options={{ center: [40.42267869390329, -3.697633348267032], zoom: 2, attributionControl: false }}
+		options={{
+			center: [40.42267869390329, -3.697633348267032],
+			zoom: 2,
+			attributionControl: false,
+		}}
 		bind:instance={map}
 	>
 		<TileLayer

@@ -165,22 +165,22 @@
 		role="button"
 		tabindex="0"
 		aria-label="Message"
-		ondblclick={(e) => {
+		ondblclick={(event) => {
 			if (!msgOut && onReact) {
-				e.preventDefault();
+				event.preventDefault();
 				onReact(1);
 			}
 			window.getSelection()?.removeAllRanges();
 		}}
-		onkeydown={(e) => {
-			if (e.key === "Enter" || e.key === " ") {
-				if (e.key === " ") e.preventDefault();
-				onContextMenu(e);
+		onkeydown={(event) => {
+			if (event.key === "Enter" || event.key === " ") {
+				if (event.key === " ") event.preventDefault();
+				onContextMenu(event);
 			}
 		}}
-		oncontextmenu={(e) => {
-			e.preventDefault();
-			onContextMenu(e);
+		oncontextmenu={(event) => {
+			event.preventDefault();
+			onContextMenu(event);
 		}}
 		style:visibility={contextMenuOpen ? "hidden" : undefined}
 	>

@@ -51,16 +51,15 @@
 		}
 	}
 
-	function submitGeohash(geohash: string) {
-		setPreferences({ geohash })
-			.then(() => {
-				geoMapPickerOpen = false;
-				onUpdate?.();
-			})
-			.catch((e) => {
-				console.error(e);
-				toast.error("Failed to save location");
-			});
+	async function submitGeohash(geohash: string) {
+		try {
+			await setPreferences({ geohash });
+			geoMapPickerOpen = false;
+			onUpdate?.();
+		} catch (error) {
+			console.error(error);
+			toast.error("Failed to save location");
+		}
 	}
 </script>
 
@@ -77,7 +76,7 @@
 	<Empty.Content>
 		<div class="flex gap-2">
 			{#if geoApiSupported}
-				<Button variant="default" onclick={handleDetectLocation} disabled={disabled}>
+				<Button variant="default" onclick={handleDetectLocation} {disabled}>
 					<GpsFixIcon color="currentColor" weight="fill" />
 					Use current location
 				</Button>

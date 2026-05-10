@@ -67,8 +67,11 @@
 <dialog
 	class="fixed top-0 left-0 z-9999 size-full bg-transparent max-w-none max-h-none backdrop:bg-transparent backdrop:backdrop-blur-xl"
 	bind:this={contextMenuDialog}
-	onmousedown={(e) => {
-		if (e.currentTarget === contextMenuDialog && e.currentTarget === e.target) {
+	onmousedown={(event) => {
+		if (
+			event.currentTarget === contextMenuDialog &&
+			event.currentTarget === event.target
+		) {
 			contextMenuDialog.close();
 		}
 	}}

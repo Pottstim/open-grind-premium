@@ -136,11 +136,11 @@
 		</Sheet.Header>
 		<div
 			class="flex max-md:flex-col *:flex-col gap-8 lg:gap-12 *:flex-1 *:gap-4 flex-1 px-4 w-full **:break-inside-avoid overflow-auto max-h-full min-h-0 shrink py-1 pb-4"
-			onscroll={(e) => {
-				if (e.target instanceof HTMLDivElement) {
+			onscroll={(event) => {
+				if (event.target instanceof HTMLDivElement) {
 					contentScroll =
-						e.target.scrollTop /
-						(e.target.scrollHeight - e.target.clientHeight);
+						event.target.scrollTop /
+						(event.target.scrollHeight - event.target.clientHeight);
 				}
 			}}
 		>

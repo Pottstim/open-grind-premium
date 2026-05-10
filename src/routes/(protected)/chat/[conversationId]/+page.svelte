@@ -10,6 +10,7 @@
 	import { getConversation } from "./messages";
 	import MessagesList from "./MessagesList.svelte";
 	import MessageComposer from "./MessageComposer.svelte";
+	import DisplayName from "$lib/components/DisplayName.svelte";
 
 	let { data }: import("./$types").PageProps = $props();
 
@@ -91,11 +92,7 @@
 							},
 						]}
 					>
-						{#if profile.name === null}
-							<span class="font-normal tracking-tight italic">Someone</span>
-						{:else}
-							{profile.name}
-						{/if}
+						<DisplayName name={profile.name} />
 					</Card.Title>
 					{#if profile.distance === null}
 						<Card.Description class="truncate">

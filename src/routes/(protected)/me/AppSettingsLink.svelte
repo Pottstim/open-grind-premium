@@ -1,0 +1,22 @@
+<script lang="ts">
+	import { CaretRightIcon, GearIcon } from "phosphor-svelte";
+	import * as Item from "$lib/components/ui/item";
+</script>
+
+<Item.Root variant="outline" size="sm">
+	{#snippet child({ props })}
+		<a href="/settings/app" {...props}>
+			<Item.Media>
+				<GearIcon weight="fill" class="size-5" />
+			</Item.Media>
+			<Item.Content class="min-w-0">
+				<Item.Title class="truncate min-w-0 w-full inline-block text-left">
+					App Settings
+				</Item.Title>
+			</Item.Content>
+			<Item.Actions>
+				<CaretRightIcon class="size-4" />
+			</Item.Actions>
+		</a>
+	{/snippet}
+</Item.Root>

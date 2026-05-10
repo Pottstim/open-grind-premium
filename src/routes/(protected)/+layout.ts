@@ -4,8 +4,8 @@ import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async () => {
 	console.log("Checking auth state...");
-	const profileId = await callMethod("auth_state").catch((e) => {
-		console.error(e);
+	const profileId = await callMethod("auth_state").catch((error) => {
+		console.error(error);
 		return null;
 	});
 	console.log("Auth state:", profileId);

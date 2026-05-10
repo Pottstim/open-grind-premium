@@ -129,12 +129,12 @@
 				// TODO: thumburl?
 			};
 		});
-		lightbox.on("contentLoad", (e) => {
-			const { content } = e;
+		lightbox.on("contentLoad", (event) => {
+			const { content } = event;
 
 			const slide = album?.content[content.index];
 			if (slide?.contentType.startsWith("video/")) {
-				e.preventDefault();
+				event.preventDefault();
 
 				content.element = document.createElement("div");
 				const video = document.createElement("video");
@@ -153,7 +153,7 @@
 						content.onLoaded();
 					});
 
-					video.addEventListener("error", (e) => {
+					video.addEventListener("error", (event) => {
 						content.onError();
 					});
 				}

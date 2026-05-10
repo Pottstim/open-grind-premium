@@ -1,6 +1,6 @@
 {
 	"name": "open-grind",
-	"version": "0.1.0",
+	"version": "0.0.0-mvp.rc-1",
 	"license": "MIT",
 	"author": "Open Grind Governance (https://opengrind.org/governance)",
 	"type": "module",

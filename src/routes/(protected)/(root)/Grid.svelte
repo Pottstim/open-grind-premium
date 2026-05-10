@@ -52,8 +52,8 @@
 			}
 			partialBatches.push(...result.partialBatches);
 			nextPage = result.nextPage;
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error(error);
 			toast.error("Failed to load more profiles");
 		} finally {
 			loadingMore = false;
@@ -107,10 +107,10 @@
 				const idx = items.findIndex((i) => i.id === unresolvedProfileId);
 				if (idx !== -1) items.splice(idx, 1);
 			}
-		} catch (e) {
-			loadingBatches.delete(batchIndex);
-			console.error(batchIndex, e);
+		} catch (error) {
+			console.error(batchIndex, error);
 			toast.error("Failed to load profiles");
+			loadingBatches.delete(batchIndex);
 		}
 	}
 
@@ -204,8 +204,8 @@
 			items = result.items;
 			partialBatches = result.partialBatches;
 			nextPage = result.nextPage;
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to fetch profiles");
 		}
 	}

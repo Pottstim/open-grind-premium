@@ -73,7 +73,6 @@
 
 	async function onUpdateFilters() {
 		try {
-			// await tick();
 			const { gridSearchFilters: oldFilters = defaultFilters } =
 				await getPreferences();
 			if (!isEqual(oldFilters, filters)) {
@@ -82,7 +81,8 @@
 				});
 				onRefreshGrid();
 			}
-		} catch (e) {
+		} catch (error) {
+			console.error(error);
 			toast.error("Failed to update filters");
 		}
 	}
