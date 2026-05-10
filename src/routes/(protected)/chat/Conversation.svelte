@@ -86,6 +86,7 @@
 		<span
 			class="text-muted-foreground font-medium text-right truncate max-w-full"
 		>
+			<!-- TODO: update in real time -->
 			{formatDistanceCustom(conversation.data.lastActivityTimestamp)}
 		</span>
 		{#if conversation.data.unreadCount > 0}

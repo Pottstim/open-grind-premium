@@ -6,6 +6,7 @@ import {
 	profileShortSchema,
 	type Profile,
 } from "$lib/model/profile";
+import { mediaHashPublicSchema } from "$lib/model/media";
 
 const profileResponseSchema = z.object({
 	profiles: z.array(profileSchema).length(1),
@@ -48,4 +49,26 @@ export async function getProfiles(
 			targetProfileIds: profileIds,
 		},
 	}).then((res) => res.jsonParsed(getProfilesResponseSchema).profiles);
+}
+
+export async function getMyProfile() {
+	return await fetchRest("/v4/me/profile").then(
+		(res) => res.jsonParsed(getProfilesResponseSchema).profiles[0],
+	);
+}
+
+export async function getProfileUploadedPhotos() {
+	return await fetchRest("/v3.1/me/profile/images").then((res) =>
+		res.jsonParsed(
+			z.object({
+				medias: z.array(
+					z.object({
+						mediaHash: mediaHashPublicSchema,
+						type: z.number().int(),
+						state: z.number().int(),
+					}),
+				),
+			}),
+		),
+	);
 }

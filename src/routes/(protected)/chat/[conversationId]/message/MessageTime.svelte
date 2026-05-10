@@ -5,6 +5,7 @@
 	const { timestamp, msgOut } = getMessageContext()();
 </script>
 
+<!-- TODO: read indicator -->
 <span
 	class={[
 		"text-xs text-muted-foreground mx-3 mt-0.5",

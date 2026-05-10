@@ -13,7 +13,7 @@
 
 	let { data }: import("./$types").PageProps = $props();
 
-	const ourProfileId = $derived(data.profileId);
+	const ourProfileId = $derived(data.ourProfileId);
 
 	if (page.params.conversationId === undefined)
 		throw new Error("conversationId is required");
