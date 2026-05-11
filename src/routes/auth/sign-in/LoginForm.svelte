@@ -30,10 +30,10 @@
 				if (
 					z
 						.object({
-							kind: z.string("Api"),
+							kind: z.literal("Api"),
 							message: z.object({
 								code: z.literal(4),
-								message: z.string("Invalid input parameters"),
+								message: z.literal("Invalid input parameters"),
 							}),
 						})
 						.safeParse(appError).success
