@@ -52,12 +52,14 @@
 		</a>
 	</div>
 	<a
-		href="/me"
-		class={["size-14 flex shrink-0 rounded-full border p-1 bg-muted",
+		href="/settings"
+		class={[
+			"size-14 flex shrink-0 rounded-full border p-1 bg-muted",
 			{
-				"border-accent border-2": page.route.id === "/(protected)/me",
-				"border-border": page.route.id !== "/(protected)/me",
-			}
+				"border-accent border-2":
+					page.route.id === "/(protected)/settings/(me)",
+				"border-border": page.route.id !== "/(protected)/settings/(me)",
+			},
 		]}
 	>
 		{#await myProfilePhotos then photos}
