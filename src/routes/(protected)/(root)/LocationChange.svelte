@@ -23,16 +23,15 @@
 	let pinPos: { lat: number; lon: number } | undefined = $state();
 	let geoMapPickerOpen = $state(false);
 
-	function onSubmit(geohash: string) {
-		setPreferences({ geohash })
-			.then(() => {
-				geoMapPickerOpen = false;
-				onUpdate?.();
-			})
-			.catch((e) => {
-				console.error(e);
-				toast.error("Failed to save location");
-			});
+	async function onSubmit(geohash: string) {
+		try {
+			await setPreferences({ geohash });
+			geoMapPickerOpen = false;
+			onUpdate?.();
+		} catch (error) {
+			console.error(error);
+			toast.error("Failed to save location");
+		}
 	}
 
 	onMount(() => {
@@ -42,8 +41,8 @@
 					pinPos = decodeGeohash(geohash);
 				}
 			})
-			.catch((e) => {
-				console.error(e);
+			.catch((error) => {
+				console.error(error);
 				toast.error("Failed to load location");
 				pinPos = undefined;
 			});

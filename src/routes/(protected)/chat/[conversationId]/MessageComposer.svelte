@@ -17,8 +17,8 @@
 		try {
 			await onSend({ text });
 			textContent = "";
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error(error);
 			toast.error("Failed to send message");
 		}
 	}
@@ -26,18 +26,18 @@
 
 <form
 	class="relative mx-2 shrink-0 min-h-9.5 min-w-0"
-	onsubmit={(e) => {
-		e.preventDefault();
+	onsubmit={(event) => {
+		event.preventDefault();
 		onSubmit();
 	}}
 >
 	<Textarea
 		placeholder="Say something..."
 		class="min-h-9.5 rounded-[20px] shrink-0 max-h-31.5 py-2 pr-9.5 h-fit! leading-5 placeholder-shown:truncate"
-		onkeydown={(e) => {
-			if (e.key === "Enter" && !e.shiftKey) {
-				e.preventDefault();
-				e.currentTarget.form?.requestSubmit();
+		onkeydown={(event) => {
+			if (event.key === "Enter" && !event.shiftKey) {
+				event.preventDefault();
+				event.currentTarget.form?.requestSubmit();
 			}
 		}}
 		bind:value={textContent}
@@ -67,9 +67,6 @@
 				variant="ghost"
 				size="icon"
 				class="size-full cursor-pointer p-2"
-				onclick={() => {
-					onSubmit();
-				}}
 			>
 				<PaperPlaneRightIcon
 					weight="fill"

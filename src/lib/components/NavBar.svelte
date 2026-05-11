@@ -8,8 +8,6 @@
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 	import { getMyProfile } from "$lib/api/profile";
 
-	let { ourProfileId } = $props();
-
 	const myProfilePhotos = $derived(
 		getMyProfile().then((profile) => profile.medias),
 	);
@@ -54,8 +52,15 @@
 		</a>
 	</div>
 	<a
-		href="/profile/{ourProfileId}"
-		class="size-14 flex shrink-0 rounded-full bg-neutral-800 border border-border p-1"
+		href="/settings"
+		class={[
+			"size-14 flex shrink-0 rounded-full border p-1 bg-muted",
+			{
+				"border-accent border-2":
+					page.route.id === "/(protected)/settings/(me)",
+				"border-border": page.route.id !== "/(protected)/settings/(me)",
+			},
+		]}
 	>
 		{#await myProfilePhotos then photos}
 			{@const mainPhoto = photos[0]}

@@ -30,8 +30,8 @@
 		loadingMore = true;
 		try {
 			await load(nextPage);
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error(error);
 			toast.error("Failed to load more conversations");
 		} finally {
 			loadingMore = false;

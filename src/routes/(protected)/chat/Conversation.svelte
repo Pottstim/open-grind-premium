@@ -6,6 +6,7 @@
 	import * as Item from "$lib/components/ui/item";
 	import type { Conversation } from "$lib/model/conversation";
 	import { page } from "$app/state";
+	import DisplayName from "$lib/components/DisplayName.svelte";
 
 	let {
 		conversation,
@@ -58,11 +59,7 @@
 				},
 			]}
 		>
-			{#if conversation.data.name}
-				{conversation.data.name}
-			{:else}
-				<span class="font-normal tracking-tight italic">Someone</span>
-			{/if}
+			<DisplayName name={conversation.data.name} />
 		</Item.Title>
 		<Item.Description
 			class={{

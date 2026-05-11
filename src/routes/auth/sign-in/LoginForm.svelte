@@ -23,9 +23,9 @@
 				password,
 			});
 			goto("/");
-		} catch (e) {
-			console.error(e);
-			const appError = asAppError(e);
+		} catch (error) {
+			console.error(error);
+			const appError = asAppError(error);
 			if (appError) {
 				if (
 					z

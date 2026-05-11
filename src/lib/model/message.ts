@@ -170,7 +170,7 @@ const imageBaseMessageSchema = messageBaseSchema.safeExtend({
 		url: z.url(),
 		width: z.number().int().nonnegative().nullable(),
 		height: z.number().int().nonnegative().nullable(),
-		imageHash: mediaHashPrivateSchema,
+		imageHash: z.union([mediaHashPrivateSchema, mediaHashPublicSchema]),
 	}),
 });
 
