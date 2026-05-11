@@ -388,7 +388,7 @@ export const profileSchema = profileShortSchema
 		isInAList: z.boolean(),
 		tribesImInto: z.array(tribeSchema).nullable(),
 		showVipBadge: z.boolean(),
-		rightNowShareLocation: z.null(),
+		rightNowShareLocation: z.literal("NONE").nullable(),
 		rightNowMedias: z.array(rightNowMediaSchema),
 	});
 

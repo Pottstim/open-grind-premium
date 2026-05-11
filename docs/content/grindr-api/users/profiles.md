@@ -120,7 +120,7 @@ When used in query, stringified as follows: `y2,x1,x2,y1`.
 - `isInAList` — boolean
 - `tribesImInto` — array of [Tribes](#tribes) IDs or null
 - `showVipBadge` — boolean
-- `rightNowShareLocation` — `null`
+- `rightNowShareLocation` — `"NONE"` or `null`
 - `rightNowMedias` — array of objects
   - `mediaId` — long number or `null`
   - `thumbnailUrl` — string
