@@ -8,13 +8,22 @@ import svelteConfig from "./svelte.config.js";
 
 export default defineConfig(
 	js.configs.recommended,
-	ts.configs.recommended,
+	...ts.configs.recommendedTypeChecked,
 	prettier,
 	svelte.configs.prettier,
 	{
-		languageOptions: { globals: globals.node },
+		languageOptions: {
+			globals: globals.node,
+			parserOptions: {
+				projectService: true,
+			},
+		},
 		rules: {
 			"no-undef": "off",
+			"@typescript-eslint/require-array-sort-compare": [
+				"error",
+				{ ignoreStringArrays: true },
+			],
 		},
 	},
 	{
@@ -27,5 +36,15 @@ export default defineConfig(
 				svelteConfig,
 			},
 		},
+		rules: {
+			"@typescript-eslint/require-array-sort-compare": [
+				"error",
+				{ ignoreStringArrays: true },
+			],
+		},
+	},
+	{
+		files: ["**/*.config.{js,ts,mjs,cjs}", "*.config.{js,ts,mjs,cjs}"],
+		...ts.configs.disableTypeChecked,
 	},
 );

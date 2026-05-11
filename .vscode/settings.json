@@ -1,6 +1,6 @@
 {
 	"editor.tabCompletion": "on",
-	"eslint.validate": ["javascript", "typescript"],
+	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[javascript]": {
@@ -36,6 +36,5 @@
 	},
 	"editor.quickSuggestions": {
 		"strings": "on"
-	},
-	"paths"
+	}
 }

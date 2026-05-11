@@ -29,7 +29,7 @@
 	const ourProfileId = $derived(data.ourProfileId);
 	const isOurProfile = $derived(profileId === ourProfileId);
 	const conversationId = $derived(
-		[profileId, ourProfileId].toSorted().join(":"),
+		[profileId, ourProfileId].toSorted((a, b) => a - b).join(":"),
 	);
 
 	const profile = $derived(getProfile(profileId));
@@ -46,7 +46,6 @@
 				onlineUntil,
 				seen,
 				distance,
-				showDistance,
 				sexualPosition,
 				height,
 				weight,
