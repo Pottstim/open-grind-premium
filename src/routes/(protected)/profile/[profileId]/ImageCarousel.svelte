@@ -3,7 +3,7 @@
 	import z from "zod";
 	import { format } from "date-fns";
 	import { UserIcon } from "phosphor-svelte";
-	import PhotoSwipeLightbox from "photoswipe/lightbox";
+	import type PhotoSwipeLightbox from "photoswipe/lightbox";
 	import ImageCarouselItem from "./ImageCarouselItem.svelte";
 
 	let {
@@ -20,63 +20,69 @@
 
 	$effect(() => {
 		if (!gallery) return;
-		let lightbox = new PhotoSwipeLightbox({
-			gallery,
-			children: ".item",
-			pswpModule: () => import("photoswipe"),
-			mainClass: `pswp--buttons-visible`,
-		});
-		lightbox.addFilter("itemData", (itemData, index) => {
-			const img = itemData.element?.querySelector("img");
-			if (img?.naturalWidth) {
-				itemData.width = img.naturalWidth;
-				itemData.height = img.naturalHeight;
-			}
-			return itemData;
-		});
-		lightbox.on("openingAnimationStart", () => {
-			gallery?.querySelectorAll(".item").forEach((item) => {
-				if (item instanceof HTMLElement) {
-					item.style.visibility = "hidden";
-				}
-			});
-		});
-
-		lightbox.on("change", () => {
-			gallery?.scrollTo({
-				top: lightbox.pswp?.currSlide?.data.element?.offsetTop ?? 0,
-				behavior: "instant",
-			});
-		});
-
-		lightbox.on("destroy", () => {
-			gallery?.querySelectorAll(".item").forEach((item) => {
-				if (item instanceof HTMLElement) {
-					item.style.visibility = "visible";
-				}
-			});
-		});
-		lightbox.on("uiRegister", () => {
-			lightbox.pswp?.ui?.registerElement({
-				name: "created-at-label",
-				order: 9,
-				appendTo: "root",
-				onInit(element, pswp) {
-					setTimeout(() => {
-						const { data: createdAt } = z.coerce
-							.number()
-							.int()
-							.safeParse(pswp.currSlide?.data.element?.dataset.createdAt);
-						if (createdAt !== undefined) {
-							element.textContent = format(createdAt, "dd MMMM yyyy");
+		let lightbox: PhotoSwipeLightbox | undefined;
+		import("photoswipe/lightbox")
+			.then(({ default: PhotoSwipeLightbox }) => {
+				if (!gallery) return;
+				lightbox = new PhotoSwipeLightbox({
+					gallery,
+					children: ".item",
+					pswpModule: () => import("photoswipe"),
+					mainClass: `pswp--buttons-visible`,
+				});
+				lightbox.addFilter("itemData", (itemData) => {
+					const img = itemData.element?.querySelector("img");
+					if (img?.naturalWidth) {
+						itemData.width = img.naturalWidth;
+						itemData.height = img.naturalHeight;
+					}
+					return itemData;
+				});
+				lightbox.on("openingAnimationStart", () => {
+					gallery?.querySelectorAll(".item").forEach((item) => {
+						if (item instanceof HTMLElement) {
+							item.style.visibility = "hidden";
 						}
-					}, 0);
-				},
-			});
-		});
+					});
+				});
 
-		lightbox.init();
-		return () => lightbox.destroy();
+				lightbox.on("change", () => {
+					gallery?.scrollTo({
+						top: lightbox?.pswp?.currSlide?.data.element?.offsetTop ?? 0,
+						behavior: "instant",
+					});
+				});
+
+				lightbox.on("destroy", () => {
+					gallery?.querySelectorAll(".item").forEach((item) => {
+						if (item instanceof HTMLElement) {
+							item.style.visibility = "visible";
+						}
+					});
+				});
+				lightbox.on("uiRegister", () => {
+					lightbox?.pswp?.ui?.registerElement({
+						name: "created-at-label",
+						order: 9,
+						appendTo: "root",
+						onInit(element, pswp) {
+							setTimeout(() => {
+								const { data: createdAt } = z.coerce
+									.number()
+									.int()
+									.safeParse(pswp.currSlide?.data.element?.dataset.createdAt);
+								if (createdAt !== undefined) {
+									element.textContent = format(createdAt, "dd MMMM yyyy");
+								}
+							}, 0);
+						},
+					});
+				});
+
+				lightbox.init();
+			})
+			.catch((error) => console.error(error));
+		return () => lightbox?.destroy();
 	});
 
 	const GAP = 4; //px
