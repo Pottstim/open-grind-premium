@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type z from "zod";
-	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import {
 		defaultFilters,
 		filterPositionSchema,
@@ -64,7 +63,7 @@
 			<PositionFilterToggle
 				bind:value={
 					() => filtersChanges.positions,
-					(v) => {
+					(v: z.infer<typeof filterPositionSchema>) => {
 						filtersChanges.positionEnabled = true;
 						filtersChanges.positions = v;
 					}

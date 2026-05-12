@@ -111,21 +111,19 @@ export async function fetchRest(
 		if (appError) {
 			if (appError.kind === "Auth" && appError.message === "Not logged in") {
 				toast("Please log in to continue");
-				goto("/auth/sign-in");
+				goto("/auth/sign-in").catch((error) => console.error(error));
 			}
 		}
 		throw error;
 	}
 }
 
-export function parseApiResponse<TSchema extends z.ZodType>(
-	options: {
-		schema: TSchema;
-		data: unknown;
-		path: string;
-		method?: string;
-	},
-): z.infer<TSchema> {
+export function parseApiResponse<TSchema extends z.ZodType>(options: {
+	schema: TSchema;
+	data: unknown;
+	path: string;
+	method?: string;
+}): z.infer<TSchema> {
 	const parsed = options.schema.safeParse(options.data);
 	if (parsed.success) {
 		return parsed.data;

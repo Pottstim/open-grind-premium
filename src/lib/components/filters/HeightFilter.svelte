@@ -22,7 +22,7 @@
 			type="multiple"
 			bind:value={
 				() => value,
-				(v) => {
+				(v: number[]) => {
 					checked = true;
 					value = v;
 				}

@@ -28,7 +28,7 @@
 	class="relative mx-2 shrink-0 min-h-9.5 min-w-0"
 	onsubmit={(event) => {
 		event.preventDefault();
-		onSubmit();
+		onSubmit().catch((error) => console.error(error));
 	}}
 >
 	<Textarea

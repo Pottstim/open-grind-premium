@@ -40,7 +40,9 @@
 				const {
 					coords: { latitude, longitude },
 				} = await getCurrentPosition();
-				submitGeohash(encodeGeohash(latitude, longitude));
+				submitGeohash(encodeGeohash(latitude, longitude)).catch((error) =>
+					console.error(error),
+				);
 			} else {
 				toast.error(
 					"Location permission denied. Change this in your system settings to use this button.",

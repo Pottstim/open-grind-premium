@@ -26,7 +26,7 @@
 	class="flex-wrap w-full gap-1"
 	bind:value={
 		() => value.map(String),
-		(v) => (value = filterPositionSchema.parse(v.map(Number)))
+		(v: string[]) => (value = filterPositionSchema.parse(v.map(Number)))
 	}
 >
 	<ToggleGroup.Item value={FilterPosition.Top.toString()}>

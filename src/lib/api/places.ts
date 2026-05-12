@@ -18,7 +18,7 @@ export async function getPlaces({ query }: { query: string }) {
 		"/v3/places/search?" +
 			new URLSearchParams({
 				placeName: query,
-			}),
+			}).toString(),
 	).then((res) => res.jsonParsed(placesResponseSchema));
 	return response;
 }

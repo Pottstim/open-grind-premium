@@ -1,6 +1,6 @@
 <script lang="ts">
 	import toast from "svelte-french-toast";
-	import { onMount, tick, untrack } from "svelte";
+	import { onMount, untrack } from "svelte";
 	import { Tween } from "svelte/motion";
 	import { expoOut } from "svelte/easing";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
@@ -49,9 +49,13 @@
 	let lastScrollY: number = $state(0);
 
 	onMount(() => {
-		expansion.set(window.scrollY > 0 ? 0 : 1, {
-			duration: 0,
-		});
+		expansion
+			.set(window.scrollY > 0 ? 0 : 1, {
+				duration: 0,
+			})
+			.catch((error) => {
+				console.error("Failed to set initial expansion state", error);
+			});
 		lastScrollY = window.scrollY;
 	});
 
@@ -64,11 +68,14 @@
 	let filters = $state(defaultFilters);
 
 	onMount(() => {
-		getPreferences().then(
-			({ gridSearchFilters: preferredFilters = defaultFilters }) => {
+		getPreferences()
+			.then(({ gridSearchFilters: preferredFilters = defaultFilters }) => {
 				filters = preferredFilters;
-			},
-		);
+			})
+			.catch((error) => {
+				console.error(error);
+				toast.error("Failed to load filters");
+			});
 	});
 
 	async function onUpdateFilters() {

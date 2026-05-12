@@ -29,7 +29,7 @@ function schemaToStringRecord<T extends z.ZodObject>(
 		if (value === undefined || value === null) continue;
 		if (typeof value === "boolean") result[key] = value ? "true" : "false";
 		else if (Array.isArray(value)) result[key] = value.map(String).join(",");
-		else result[key] = String(value);
+		else if (typeof value === "number" || typeof value === "string") result[key] = String(value);
 	}
 	return result;
 }

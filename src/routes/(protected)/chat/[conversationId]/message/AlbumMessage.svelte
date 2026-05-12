@@ -51,63 +51,79 @@
 	$effect(() => {
 		if (albumState.status !== "loading") return;
 		(async () => {
-			try {
-				const loaded = await getAlbumContent(message.albumId).then(
-					async (res) => ({
-						...res,
-						content: await Promise.all(
-							res.content.map(async (slide) => {
-								if (slide.contentType.startsWith("video/")) {
-									const video = document.createElement("video");
-									video.src = slide.url ?? "";
-									video.load();
-									await new Promise<void>((resolve, reject) => {
-										if (video.readyState >= 1) resolve();
-										video.addEventListener("loadedmetadata", () => resolve(), {
-											once: true,
-										});
-										video.addEventListener("error", () => reject(), {
-											once: true,
-										});
+			const loaded = await getAlbumContent(message.albumId).then(
+				async (res) => ({
+					...res,
+					content: await Promise.all(
+						res.content.map(async (slide) => {
+							if (slide.contentType.startsWith("video/")) {
+								const video = document.createElement("video");
+								video.src = slide.url ?? "";
+								video.load();
+								await new Promise<void>((resolve, reject) => {
+									if (video.readyState >= 1) resolve();
+									video.addEventListener("loadedmetadata", () => resolve(), {
+										once: true,
 									});
-									video.remove();
-									return {
-										...slide,
-										width: video.videoWidth,
-										height: video.videoHeight,
-									};
-								} else {
-									const img = document.createElement("img");
-									img.src = slide.url ?? "";
-									await new Promise<void>((resolve, reject) => {
-										if (img.complete) resolve();
-										img.addEventListener("load", () => resolve(), {
+									video.addEventListener(
+										"error",
+										({ error }) =>
+											reject(
+												new Error(`Failed to load video: ${slide.url}`, {
+													cause: error,
+												}),
+											),
+										{
 											once: true,
-										});
-										img.addEventListener("error", () => reject(), {
-											once: true,
-										});
+										},
+									);
+								});
+								video.remove();
+								return {
+									...slide,
+									width: video.videoWidth,
+									height: video.videoHeight,
+								};
+							} else {
+								const img = document.createElement("img");
+								img.src = slide.url ?? "";
+								await new Promise<void>((resolve, reject) => {
+									if (img.complete) resolve();
+									img.addEventListener("load", () => resolve(), {
+										once: true,
 									});
-									img.remove();
-									return {
-										...slide,
-										src: img.src,
-										width: img.naturalWidth,
-										height: img.naturalHeight,
-									};
-								}
-							}),
-						),
-					}),
-				);
-				cachedAlbum = loaded;
-				albumState = { status: "open", album: loaded };
-			} catch (error) {
-				console.error(error);
-				toast.error("Failed to load album content");
-				albumState = { status: "idle" };
-			}
-		})();
+									img.addEventListener(
+										"error",
+										({ error }) =>
+											reject(
+												new Error(`Failed to load image: ${slide.url}`, {
+													cause: error,
+												}),
+											),
+										{
+											once: true,
+										},
+									);
+								});
+								img.remove();
+								return {
+									...slide,
+									src: img.src,
+									width: img.naturalWidth,
+									height: img.naturalHeight,
+								};
+							}
+						}),
+					),
+				}),
+			);
+			cachedAlbum = loaded;
+			albumState = { status: "open", album: loaded };
+		})().catch((error) => {
+			console.error(error);
+			toast.error("Failed to load album content");
+			albumState = { status: "idle" };
+		});
 	});
 
 	$effect(() => {

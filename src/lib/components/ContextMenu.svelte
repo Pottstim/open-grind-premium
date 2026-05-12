@@ -42,13 +42,15 @@
 				shift(),
 			],
 			strategy: "fixed",
-		}).then(({ x, y, placement }) => {
-			contextMenuListPosition = { x, y, placement };
-		});
+		})
+			.then(({ x, y, placement }) => {
+				contextMenuListPosition = { x, y, placement };
+			})
+			.catch((error) => console.error(error));
 	});
 
 	$effect(() => {
-		if (contextMenuDialog) {
+		if (contextMenuDialog instanceof HTMLDialogElement) {
 			contextMenuDialog.showModal();
 			contextMenuDialog
 				.querySelector<HTMLElement>("[data-slot='context-menu-trigger']")

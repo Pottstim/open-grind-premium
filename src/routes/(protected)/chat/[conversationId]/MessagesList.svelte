@@ -32,12 +32,14 @@
 		conversation.then((res) => {
 			pageKey = res.pageKey;
 			responseMessages = res.messages;
-			tick().then(() => {
-				container?.scrollTo({
-					top: container!.scrollHeight,
-					behavior: "instant",
-				});
-			});
+			tick()
+				.then(() => {
+					container?.scrollTo({
+						top: container.scrollHeight,
+						behavior: "instant",
+					});
+				})
+				.catch((error) => console.error(error));
 		}),
 	);
 
@@ -65,7 +67,8 @@
 	function observeSentinel(node: HTMLElement) {
 		const observer = new IntersectionObserver(
 			(es) => {
-				if (es[0].isIntersecting) loadMore();
+				if (es[0].isIntersecting)
+					loadMore().catch((error) => console.error(error));
 			},
 			{ rootMargin: "400px" },
 		);
@@ -107,7 +110,7 @@
 				indexInStack={message.indexInStack}
 				stackLength={message.stackLength}
 				dayStart={message.dayStart}
-				onReact={async (reactionType) => {
+				onReact={async (reactionType: number) => {
 					try {
 						responseMessages
 							.find((m) => m.messageId === message.messageId)

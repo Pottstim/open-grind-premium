@@ -120,7 +120,9 @@
 					<Button
 						variant="outline"
 						onclick={() => {
-							writeText(page.error?.message || "No error message available");
+							writeText(
+								page.error?.message || "No error message available",
+							).catch((error) => console.error(error));
 							toast.success("Error message copied to clipboard");
 						}}
 					>

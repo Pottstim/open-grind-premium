@@ -8,7 +8,7 @@ export const load: LayoutLoad = async () => {
 		return null;
 	});
 	if (profileId === null) {
-		throw redirect(303, "/auth/sign-in");
+		redirect(303, "/auth/sign-in");
 	}
 	return { ourProfileId: profileId };
 	// TODO: consider typesafe context?

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		ArrowSquareOutIcon,
 		ChatsCircleIcon,
 		CodeIcon,
 		GlobeIcon,

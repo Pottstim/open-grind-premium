@@ -28,7 +28,7 @@
 			class="flex-wrap w-full gap-1"
 			bind:value={
 				() => value.map(String),
-				(v) => ((checked = v.length > 0), (value = v.map(convert)))
+				(v: string[]) => ((checked = v.length > 0), (value = v.map(convert)))
 			}
 		>
 			{#each items as { value, label }}

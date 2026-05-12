@@ -13,7 +13,7 @@ export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
 		"/v7/search?" +
 			new URLSearchParams(
 				urlSearchParamsCodec(searchQuerySchema).encode(query),
-			),
+			).toString(),
 	)
 		.then((res) => res.json())
 		.then((data) =>
@@ -51,6 +51,6 @@ export async function getCascadeV3(
 		"/v3/cascade?" +
 			new URLSearchParams(
 				urlSearchParamsCodec(cascadeV3QuerySchema).encode(query),
-			),
+			).toString(),
 	).then((res) => res.jsonParsed(cascadeV3ResponseSchema));
 }

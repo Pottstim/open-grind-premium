@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { CaretRightIcon, SignOutIcon } from "phosphor-svelte";
-	import * as Item from "$lib/components/ui/item";
-	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import { callMethod } from "$lib/api";
-	import ButtonItemContent from "./ButtonItemContent.svelte";
+	import * as Item from "$lib/components/ui/item";
 	import * as AlertDialog from "$lib/components/ui/alert-dialog";
+	import ButtonItemContent from "./ButtonItemContent.svelte";
 
 	async function onSignOut() {
 		try {

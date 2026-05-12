@@ -43,10 +43,12 @@
 				<Button
 					variant="ghost"
 					onclick={() => {
-						writeText(textContent).then(() => {
-							toast.success("Message copied to clipboard");
-							props.onClose();
-						});
+						writeText(textContent)
+							.then(() => {
+								toast.success("Message copied to clipboard");
+								props.onClose();
+							})
+							.catch((error) => console.error(error));
 					}}
 				>
 					<CopyIcon /> Copy message

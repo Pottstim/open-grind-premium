@@ -86,7 +86,7 @@
 		"quotes",
 	];
 
-	function onContextMenu(e: MouseEvent | KeyboardEvent) {
+	function onContextMenu() {
 		if (!messageElement) return;
 		const { x, y } = messageElement.getBoundingClientRect();
 		const computed = getComputedStyle(messageElement);
@@ -99,7 +99,9 @@
 			width: messageElement.clientWidth,
 			height: messageElement.offsetHeight,
 		};
-		tick().then(() => contextMenu?.showModal());
+		tick()
+			.then(() => contextMenu?.showModal())
+			.catch((error) => console.error(error));
 	}
 
 	let contextMenu: HTMLDialogElement | null = $state(null);
@@ -175,12 +177,12 @@
 		onkeydown={(event) => {
 			if (event.key === "Enter" || event.key === " ") {
 				if (event.key === " ") event.preventDefault();
-				onContextMenu(event);
+				onContextMenu();
 			}
 		}}
 		oncontextmenu={(event) => {
 			event.preventDefault();
-			onContextMenu(event);
+			onContextMenu();
 		}}
 		style:visibility={contextMenuOpen ? "hidden" : undefined}
 	>

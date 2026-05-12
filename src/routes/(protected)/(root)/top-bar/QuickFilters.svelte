@@ -55,7 +55,7 @@
 	variant="default"
 	bind:value={
 		() => booleanFiltersKeys.filter((value) => filters[value]),
-		(values) => {
+		(values: (typeof booleanFiltersKeys)[number][]) => {
 			booleanFiltersKeys.forEach((key) => {
 				filters[key] = values.includes(key);
 			});

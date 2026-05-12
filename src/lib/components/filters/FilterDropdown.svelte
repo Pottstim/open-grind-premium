@@ -44,7 +44,7 @@
 		endAdornment={endLabel !== undefined ? endAdornment : undefined}
 		bind:checked={
 			() => checked,
-			(v) => {
+			(v: boolean) => {
 				if (expanded && !checked) {
 					expanded = false;
 				} else {

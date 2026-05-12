@@ -9,7 +9,7 @@ const conversationsSchema = z.object({
 
 export async function getConversations(page: number = 1) {
 	const conversations = await fetchRest(
-		"/v4/inbox?" + new URLSearchParams({ page: String(page) }),
+		"/v4/inbox?" + new URLSearchParams({ page: String(page) }).toString(),
 		{
 			method: "POST",
 		},

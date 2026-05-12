@@ -19,7 +19,7 @@
 		<PositionFilterToggle
 			bind:value={
 				() => value,
-				(v) => {
+				(v: typeof value) => {
 					value = v;
 					checked = v.length > 0;
 				}

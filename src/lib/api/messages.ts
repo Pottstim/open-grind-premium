@@ -24,7 +24,7 @@ export async function getConversationMessages({
 	const params = new URLSearchParams({ profile: "true" });
 	if (pageKey !== undefined) params.set("pageKey", pageKey);
 	const messages = await fetchRest(
-		`/v5/chat/conversation/${conversationId}/message?` + params,
+		`/v5/chat/conversation/${conversationId}/message?` + params.toString(),
 		{ method: "GET" },
 	).then((res) => res.jsonParsed(conversationMessagesSchema));
 	return messages;

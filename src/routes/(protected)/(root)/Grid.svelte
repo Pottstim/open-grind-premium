@@ -63,7 +63,8 @@
 	function observeSentinel(node: HTMLElement) {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting) loadMore();
+				if (entries[0].isIntersecting)
+					loadMore().catch((error) => console.error(error));
 			},
 			{ rootMargin: "400px" },
 		);
@@ -118,7 +119,7 @@
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (entries[0].isIntersecting) {
-					loadBatch(params.batchIndex);
+					loadBatch(params.batchIndex).catch((error) => console.error(error));
 					observer.disconnect();
 				}
 			},
@@ -206,7 +207,7 @@
 			nextPage = result.nextPage;
 		} catch (error) {
 			console.error(error);
-			throw new Error("Failed to fetch profiles");
+			throw new Error("Failed to fetch profiles", { cause: error });
 		}
 	}
 

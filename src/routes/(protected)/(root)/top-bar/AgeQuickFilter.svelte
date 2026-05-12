@@ -59,7 +59,7 @@
 			<AgeFilterSlider
 				bind:value={
 					() => filtersChanges.age,
-					(v) => {
+					(v: number[]) => {
 						filtersChanges.ageEnabled = true;
 						filtersChanges.age = v;
 					}

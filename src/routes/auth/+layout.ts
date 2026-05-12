@@ -5,6 +5,6 @@ import type { LayoutLoad } from "./$types";
 export const load: LayoutLoad = async () => {
 	const profileId = await callMethod("auth_state");
 	if (profileId !== null) {
-		throw redirect(303, "/");
+		redirect(303, "/");
 	}
 };

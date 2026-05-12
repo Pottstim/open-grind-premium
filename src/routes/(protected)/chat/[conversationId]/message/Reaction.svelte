@@ -2,7 +2,7 @@
 	import fireEmoji from "$lib/assets/emojis/fire-sm.avif";
 	import { Badge } from "$lib/components/ui/badge";
 
-	let { type, count }: { type: number; count: number } = $props();
+	let { type }: { type: number; count: number } = $props();
 </script>
 
 <Badge
