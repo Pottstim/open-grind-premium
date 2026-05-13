@@ -74,7 +74,7 @@ Payload in [`body`](#message) based on [message's `type`](#message-type), might 
 
 - *everything from [AlbumPreview](/grindr-api/messaging/albums#albumpreview)*
 - *everything from [AlbumExpiration](/grindr-api/messaging/albums#albumexpiration)*
-- `coverUrl` — [AlbumCoverUrl](/grindr-api/messaging/albums#AlbumCoverUrl)
+- `coverUrl` — [AlbumCoverUrl](/grindr-api/messaging/albums#albumcoverurl)
 - `ownerProfileId` — number or `null` if album has expired or was locked
 - `isViewable` — boolean
 - `hasVideo` — boolean
@@ -229,7 +229,7 @@ Empty type
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-Invoking this endpoint does not [mark messages as read](#mark-messages-as-read-up-to-message-id).
+Invoking this endpoint does not [mark messages as read](/grindr-api/messaging/conversations#mark-messages-as-read).
 
 ```
 GET /v5/chat/conversation/{conversationId}/message

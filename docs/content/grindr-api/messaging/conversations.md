@@ -148,7 +148,7 @@ Empty.
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-Affects sorting position in [list conversations](#list-conversations) endpoint response.
+Affects sorting position in [get conversations](#get-conversations) endpoint response.
 
 Repeated requests are completed without errors. Requests on nonexistent conversations seem to be affecting them after they have been created.
 
@@ -166,7 +166,7 @@ Empty.
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-Affects sorting position in [list conversations](#list-conversations) endpoint response. Requests on nonexistent conversations seem to be affecting them after they have been created.
+Affects sorting position in [get conversations](#get-conversations) endpoint response. Requests on nonexistent conversations seem to be affecting them after they have been created.
 
 Repeated requests are completed without errors.
 
