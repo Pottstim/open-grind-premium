@@ -12,6 +12,7 @@
 	"app": {
 		"windows": [
 			{
+				"label": "main",
 				"title": "Open Grind",
 				"width": 1000,
 				"height": 800,

@@ -1,14 +1,13 @@
 {
 	"$schema": "../gen/schemas/desktop-schema.json",
 	"identifier": "default",
-	"description": "Capability for the main window",
+	"description": "Shared capability for all platforms",
 	"windows": [
 		"main"
 	],
 	"permissions": [
 		"core:default",
-		"opener:default",
-		"fs:default",
+		"os:default",
 		{
 			"identifier": "fs:allow-app-read",
 			"allow": [
@@ -32,12 +31,6 @@
 					"path": "$APPDATA/preferences.json"
 				}
 			]
-		},
-		"geolocation:allow-check-permissions",
-		"geolocation:allow-request-permissions",
-		"geolocation:allow-get-current-position",
-		"os:default",
-		"clipboard-manager:default",
-		"clipboard-manager:allow-write-text"
+		}
 	]
 }
