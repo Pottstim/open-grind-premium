@@ -11,7 +11,11 @@
 
 	let { data, children }: import("./$types").LayoutProps = $props();
 
-	setConversations(untrack(() => new ConversationsState(data.ourProfileId)));
+	const conversations = untrack(() => new ConversationsState(data.ourProfileId));
+	setConversations(conversations);
+	$effect(() => {
+		return () => void conversations.destroy();
+	});
 
 	let paneGroup: HTMLElement | null = $state(null);
 	let conversationsListCollapsedSizePercentage = $state(0);

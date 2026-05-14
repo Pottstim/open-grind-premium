@@ -127,7 +127,7 @@ async fn run_message_loop(
                     if let Ok(val) = serde_json::from_str::<Value>(&text) {
                         if let Some(event_type) = val["type"].as_str() {
                             let safe_type = event_type.replace('.', "_");
-                            app.emit(&format!("ws:{safe_type}"), &val).ok();
+                            app.emit(&format!("grindr:{safe_type}"), &val).ok();
                         }
                     }
                 }

@@ -12,8 +12,6 @@ import {
 } from "$lib/ws.svelte";
 import type { Conversation } from "$lib/model/conversation";
 
-const wsPromises: Promise<() => void>[] = [];
-
 class ConversationsState {
 	entries = $state<Conversation[]>([]);
 	nextPage = $state<number | null>(null);
@@ -22,12 +20,13 @@ class ConversationsState {
 
 	readonly ourProfileId: number;
 	#activeConversationId: string | null = null;
+	#wsPromises: Promise<() => void>[] = [];
 
 	constructor(ourProfileId: number) {
 		this.ourProfileId = ourProfileId;
 		this.initial = this.#load(1);
 
-		wsPromises.push(
+		this.#wsPromises.push(
 			ws.on("chat.v1.message_sent", chatV1MessageSentEventSchema, (event) => {
 				const message = event.payload;
 				const entry = this.entries.find(
@@ -58,6 +57,12 @@ class ConversationsState {
 				},
 			),
 		);
+	}
+
+	async destroy(): Promise<void> {
+		const unlisteners = await Promise.all(this.#wsPromises);
+		for (const unlisten of unlisteners) unlisten();
+		this.#wsPromises = [];
 	}
 
 	async #load(page: number): Promise<void> {
@@ -116,14 +121,12 @@ class ConversationsState {
 	}
 
 	setActive(conversationId: string): void {
-		console.log("Setting active conversation to", conversationId);
 		this.#activeConversationId = conversationId;
 		this.markRead(conversationId);
 	}
 
 	clearActive(conversationId: string): void {
 		if (this.#activeConversationId === conversationId) {
-			console.log("Clearing active conversation", conversationId);
 			this.#activeConversationId = null;
 		}
 	}

@@ -73,7 +73,7 @@ class WsState {
 		handler: (payload: T) => void,
 	): Promise<() => void> {
 		const safeName = eventType.replaceAll(".", "_");
-		return listen<unknown>(`ws:${safeName}`, (event) => {
+		return listen<unknown>(`grindr:${safeName}`, (event) => {
 			const result = schema.safeParse(event.payload);
 			if (result.success) {
 				handler(result.data);

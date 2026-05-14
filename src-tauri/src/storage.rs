@@ -8,10 +8,9 @@ mod file_store {
     use std::path::PathBuf;
     use std::sync::Arc;
 
-    fn credential_path(base: &PathBuf, service: &str, user: &str) -> PathBuf {
+    fn credential_path(base: &PathBuf, _service: &str, user: &str) -> PathBuf {
         let safe = |s: &str| s.replace(['/', '\\', '\0', ':'], "_");
         base.join("credentials")
-            .join(safe(service))
             .join(safe(user))
     }
 
@@ -24,8 +23,12 @@ mod file_store {
 
     impl CredentialApi for FileCredential {
         fn set_secret(&self, secret: &[u8]) -> Result<()> {
+            use std::os::unix::fs::PermissionsExt;
             let path = credential_path(&self.base, &self.service, &self.user);
-            fs::create_dir_all(path.parent().unwrap())
+            let dir = path.parent().unwrap();
+            fs::create_dir_all(dir)
+                .map_err(|e| Error::PlatformFailure(Box::new(e)))?;
+            fs::set_permissions(dir, fs::Permissions::from_mode(0o700))
                 .map_err(|e| Error::PlatformFailure(Box::new(e)))?;
             fs::write(&path, secret).map_err(|e| Error::PlatformFailure(Box::new(e)))
         }
@@ -99,6 +102,11 @@ mod file_store {
     }
 
     pub fn init(base: PathBuf) {
+        use std::os::unix::fs::PermissionsExt;
+        let creds_dir = base.join("credentials");
+        if let Ok(()) = fs::create_dir_all(&creds_dir) {
+            let _ = fs::set_permissions(&creds_dir, fs::Permissions::from_mode(0o700));
+        }
         let store = Arc::new(FileStore { base }) as Arc<CredentialStore>;
         keyring_core::set_default_store(store);
     }
