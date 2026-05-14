@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { UsersIcon } from "phosphor-svelte";
-	import ProfileField from "./ProfileField.svelte";
+
 	import {
 		relationshipStatuses,
 		type RelationshipStatusId,
 	} from "$lib/model/profile";
+	import ProfileField from "./ProfileField.svelte";
 
 	let {
 		relationshipStatus,

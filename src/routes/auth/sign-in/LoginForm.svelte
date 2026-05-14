@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import { Label } from "$lib/components/ui/label";
-	import { Input } from "$lib/components/ui/input";
-	import * as Card from "$lib/components/ui/card";
-	import { asAppError, callMethod } from "$lib/api";
+	import { goto } from "$app/navigation";
 	import toast from "svelte-french-toast";
 	import z from "zod";
-	import { goto } from "$app/navigation";
+
+	import { asAppError, callMethod } from "$lib/api";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import { Input } from "$lib/components/ui/input";
+	import { Label } from "$lib/components/ui/label";
 
 	let email = $state("");
 	let password = $state("");

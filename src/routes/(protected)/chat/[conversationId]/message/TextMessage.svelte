@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getMessageContext, getMessageMetaContext } from "./context";
 	import type { TextMessage } from "$lib/model/message";
+	import { getMessageContext, getMessageMetaContext } from "./context";
 
 	let { message }: { message: TextMessage["body"] } = $props();
 

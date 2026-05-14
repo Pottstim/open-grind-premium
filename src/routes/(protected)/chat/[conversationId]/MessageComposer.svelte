@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { MicrophoneIcon, PaperPlaneRightIcon } from "phosphor-svelte";
+	import toast from "svelte-french-toast";
 	import { expoOut } from "svelte/easing";
 	import { fade } from "svelte/transition";
-	import toast from "svelte-french-toast";
+
 	import { Button } from "$lib/components/ui/button";
 	import { Textarea } from "$lib/components/ui/textarea";
 	import type { Message } from "$lib/model/message";

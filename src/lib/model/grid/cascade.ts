@@ -1,4 +1,5 @@
 import z from "zod";
+
 import {
 	filterAcceptNSFWPicsSchema,
 	filterBodyTypeSchema,
@@ -10,7 +11,7 @@ import {
 	filterTribesSchema,
 } from "$lib/components/filters/filters";
 import { gridQuerySchema } from "$lib/model/grid";
-import { unixTimestampMsSchema } from "$lib/model/types";
+import { mediaHashPublicSchema } from "$lib/model/media";
 import {
 	bodyTypeSchema,
 	lookingForSchema,
@@ -19,7 +20,7 @@ import {
 	socialNetworksSchema,
 	tribeSchema,
 } from "$lib/model/profile";
-import { mediaHashPublicSchema } from "$lib/model/media";
+import { unixTimestampMsSchema } from "$lib/model/types";
 
 export const cascadeQuerySchema = gridQuerySchema.extend({
 	onlineOnly: z.boolean().optional(),
@@ -79,13 +80,14 @@ export const cascadeV3ResponseProfileSchema =
 		isBoostingSomewhereElse: z.boolean(),
 	});
 
-export const cascadeV4ResponseProfileSchema = cascadeResponseProfileSchema.extend({
-	primaryImageUrl: z.url(),
-	favorite: z.boolean().optional(),
-	viewed: z.boolean().optional(),
-	chatted: z.boolean().optional(),
-	roaming: z.boolean().optional(),
-});
+export const cascadeV4ResponseProfileSchema =
+	cascadeResponseProfileSchema.extend({
+		primaryImageUrl: z.url(),
+		favorite: z.boolean().optional(),
+		viewed: z.boolean().optional(),
+		chatted: z.boolean().optional(),
+		roaming: z.boolean().optional(),
+	});
 
 export const cascadeV3ResponseProfileFullProfileV1Schema = z.object({
 	type: z.literal("full_profile_v1"),
@@ -94,13 +96,15 @@ export const cascadeV3ResponseProfileFullProfileV1Schema = z.object({
 		"@type": z.literal("CascadeItemData$FullProfileV1"),
 		tribes: z.array(tribeSchema),
 		socialNetworks: z.array(socialNetworksSchema),
-		takenOnGrindrMetadata: z.record(
-			mediaHashPublicSchema,
-			z.object({
-				takenOnGrindr: z.boolean(),
-				createdAt: unixTimestampMsSchema.nullable(),
-			}),
-		).optional(),
+		takenOnGrindrMetadata: z
+			.record(
+				mediaHashPublicSchema,
+				z.object({
+					takenOnGrindr: z.boolean(),
+					createdAt: unixTimestampMsSchema.nullable(),
+				}),
+			)
+			.optional(),
 	}),
 });
 
@@ -263,4 +267,3 @@ export const cascadeV4ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV4ResponseUnlimitedMpuV1Schema,
 	cascadeV4ResponseXtraMpuV1Schema,
 ]);
-

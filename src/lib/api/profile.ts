@@ -1,12 +1,13 @@
 import z from "zod";
+
 import { fetchRest } from "$lib/api";
+import { mediaHashPublicSchema } from "$lib/model/media";
 import {
 	profileRightNowSchema,
 	profileSchema,
 	profileShortSchema,
 	type Profile,
 } from "$lib/model/profile";
-import { mediaHashPublicSchema } from "$lib/model/media";
 
 const profileResponseSchema = z.object({
 	profiles: z.array(profileSchema).length(1),

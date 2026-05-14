@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { UsersThreeIcon } from "phosphor-svelte";
+
 	import { tribes as allTribes, type TribeId } from "$lib/model/profile";
 	import ProfileField from "./ProfileField.svelte";
 

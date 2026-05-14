@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { setMessageMetaContext } from "./context";
 	import type { Snippet } from "svelte";
+
+	import { setMessageMetaContext } from "./context";
 
 	let {
 		clone = false,

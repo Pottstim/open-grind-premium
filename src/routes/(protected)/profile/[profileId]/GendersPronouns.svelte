@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Spinner } from "$lib/components/ui/spinner";
 	import { getGenders } from "$lib/api/genders";
 	import { fetchPronouns } from "$lib/api/pronouns";
 	import Separator from "$lib/components/ui/separator/separator.svelte";
+	import { Spinner } from "$lib/components/ui/spinner";
 	import ProfileField from "./ProfileField.svelte";
 
 	let allGenders = $derived(getGenders());

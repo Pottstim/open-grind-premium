@@ -1,10 +1,12 @@
 <script lang="ts">
 	import "@fontsource-variable/ibm-plex-sans/wght.css";
 	import "@fontsource-variable/ibm-plex-sans/wght-italic.css";
+
 	import "../layout.css";
-	import favicon from "$lib/assets/favicon.png";
-	import { Toaster } from "svelte-french-toast";
 	import { IconContext } from "phosphor-svelte";
+	import { Toaster } from "svelte-french-toast";
+
+	import favicon from "$lib/assets/favicon.png";
 
 	let {
 		children,

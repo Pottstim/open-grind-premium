@@ -5,6 +5,7 @@
 		GlobeIcon,
 		MegaphoneIcon,
 	} from "phosphor-svelte";
+
 	import Link from "./LinkItem.svelte";
 </script>
 

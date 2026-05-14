@@ -1,10 +1,5 @@
 <script lang="ts">
 	import {
-		SexualPosition,
-		sexualPositions,
-		type SexualPositionId,
-	} from "$lib/model/profile";
-	import {
 		ArrowDownIcon,
 		ArrowDownRightIcon,
 		ArrowsDownUpIcon,
@@ -12,6 +7,12 @@
 		ArrowUpIcon,
 		ArrowUpRightIcon,
 	} from "phosphor-svelte";
+
+	import {
+		SexualPosition,
+		type SexualPositionId,
+		sexualPositions,
+	} from "$lib/model/profile";
 
 	let { sexualPosition }: { sexualPosition: SexualPositionId } = $props();
 </script>

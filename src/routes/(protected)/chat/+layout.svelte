@@ -1,9 +1,10 @@
 <script lang="ts">
-	import ConversationsList from "./ConversationsList.svelte";
-	import * as Card from "$lib/components/ui/card";
 	import { page } from "$app/state";
-	import * as Resizable from "$lib/components/ui/resizable";
 	import { MediaQuery } from "svelte/reactivity";
+
+	import * as Card from "$lib/components/ui/card";
+	import * as Resizable from "$lib/components/ui/resizable";
+	import ConversationsList from "./ConversationsList.svelte";
 
 	let {
 		children,

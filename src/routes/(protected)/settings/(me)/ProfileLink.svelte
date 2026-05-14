@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { CaretRightIcon } from "phosphor-svelte";
+
 	import { getMyProfile } from "$lib/api/profile";
+	import DisplayName from "$lib/components/DisplayName.svelte";
 	import * as Item from "$lib/components/ui/item";
 	import { Skeleton } from "$lib/components/ui/skeleton";
-	import DisplayName from "$lib/components/DisplayName.svelte";
 
 	let {
 		id,
@@ -17,7 +18,11 @@
 
 <Item.Root variant="outline">
 	{#snippet child({ props })}
-		<a href="/profile/{id}" {...props} class={["rounded-full", props.class, "flex-nowrap!"]}>
+		<a
+			href="/profile/{id}"
+			{...props}
+			class={["rounded-full", props.class, "flex-nowrap!"]}
+		>
 			<Item.Media class="size-14 bg-neutral-700 rounded-full translate-y-none">
 				{#await myProfilePhotos then photos}
 					{@const mainPhoto = photos[0]}

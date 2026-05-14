@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { expoOut } from "svelte/easing";
 	import { type TransitionConfig } from "svelte/transition";
+
 	import { getGenders } from "$lib/api/genders";
+	import Button from "$lib/components/ui/button/button.svelte";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import * as ToggleGroup from "$lib/components/ui/toggle-group";
-	import Button from "$lib/components/ui/button/button.svelte";
 	import FilterBoolean from "./FilterBoolean.svelte";
 
 	let {

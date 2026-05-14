@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { HeartbeatIcon } from "phosphor-svelte";
+
+	import {
+		type HealthPracticeId,
+		healthPractices as healthPracticesOptions,
+	} from "$lib/model/profile";
 	import ProfileField from "./ProfileField.svelte";
 	import ProfileValueLabel from "./ProfileValueLabel.svelte";
-	import {
-		healthPractices as healthPracticesOptions,
-		type HealthPracticeId,
-	} from "$lib/model/profile";
 
 	let {
 		healthPractices = null,

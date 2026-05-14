@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { apiResponseMessageSchema, messageSchema } from "$lib/model/message";
 
 describe("messageSchema", () => {

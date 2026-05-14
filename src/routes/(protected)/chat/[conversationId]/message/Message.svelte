@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { tick } from "svelte";
-	import type { ApiResponseMessage } from "$lib/model/message";
-	import AlbumMessage from "./AlbumMessage.svelte";
-	import ImageMessage from "./ImageMessage.svelte";
-	import TextMessage from "./TextMessage.svelte";
-	import MessageDateGroup from "./MessageDateGroup.svelte";
-	import UnsupportedMessage from "./UnsupportedMessage.svelte";
-	import MessageTime from "./MessageTime.svelte";
-	import MessageWrapper from "./MessageWrapper.svelte";
-	import { setMessageContext } from "./context";
-	import MessageContextMenu from "./MessageContextMenu.svelte";
-	import Reaction from "./Reaction.svelte";
 	import { expoOut } from "svelte/easing";
 	import { scale } from "svelte/transition";
+
+	import type { ApiResponseMessage } from "$lib/model/message";
+	import AlbumMessage from "./AlbumMessage.svelte";
+	import { setMessageContext } from "./context";
+	import ImageMessage from "./ImageMessage.svelte";
+	import MessageContextMenu from "./MessageContextMenu.svelte";
+	import MessageDateGroup from "./MessageDateGroup.svelte";
+	import MessageTime from "./MessageTime.svelte";
+	import MessageWrapper from "./MessageWrapper.svelte";
+	import Reaction from "./Reaction.svelte";
+	import TextMessage from "./TextMessage.svelte";
+	import UnsupportedMessage from "./UnsupportedMessage.svelte";
 
 	let {
 		message,

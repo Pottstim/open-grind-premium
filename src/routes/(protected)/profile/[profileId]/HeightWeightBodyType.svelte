@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Separator } from "$lib/components/ui/separator";
-	import { bodyTypes, type BodyTypeId } from "$lib/model/profile";
 	import { RulerIcon } from "phosphor-svelte";
+
+	import { Separator } from "$lib/components/ui/separator";
+	import { type BodyTypeId, bodyTypes } from "$lib/model/profile";
 
 	let {
 		height,

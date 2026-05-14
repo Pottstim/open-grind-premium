@@ -1,6 +1,7 @@
 import type z from "zod";
-import { gendersSchema } from "$lib/model/genders";
+
 import { fetchRest } from "$lib/api";
+import { gendersSchema } from "$lib/model/genders";
 
 let cachedGenders: z.infer<typeof gendersSchema> | null = null;
 export async function getGenders() {

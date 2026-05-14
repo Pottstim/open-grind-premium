@@ -1,13 +1,14 @@
 <script lang="ts">
+	import { GpsFixIcon, PencilSimpleIcon } from "phosphor-svelte";
 	import { onMount } from "svelte";
 	import toast from "svelte-french-toast";
-	import { GpsFixIcon, PencilSimpleIcon } from "phosphor-svelte";
-	import { Button } from "$lib/components/ui/button";
+
 	import {
 		getPreferences,
 		setPreferences,
 	} from "$lib/app-data/preferences.svelte";
 	import LocationChooser from "$lib/components/location-chooser/LocationChooser.svelte";
+	import { Button } from "$lib/components/ui/button";
 	import { decodeGeohash } from "$lib/model/geohash";
 
 	let {

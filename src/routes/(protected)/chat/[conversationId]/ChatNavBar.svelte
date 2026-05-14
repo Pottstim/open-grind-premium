@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { ArrowLeftIcon, UserIcon } from "phosphor-svelte";
-	import * as Card from "$lib/components/ui/card";
-	import * as Avatar from "$lib/components/ui/avatar";
-	import { Skeleton } from "$lib/components/ui/skeleton";
-	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
+
 	import DisplayName from "$lib/components/DisplayName.svelte";
+	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
+	import * as Avatar from "$lib/components/ui/avatar";
+	import * as Card from "$lib/components/ui/card";
+	import { Skeleton } from "$lib/components/ui/skeleton";
 	import type { ConversationState } from "./conversation-state.svelte";
 
-	let { conversationState }: { conversationState: ConversationState } = $props();
+	let { conversationState }: { conversationState: ConversationState } =
+		$props();
 </script>
 
 <ProgressiveBlur

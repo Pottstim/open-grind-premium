@@ -1,17 +1,18 @@
 <script lang="ts">
-	import z from "zod";
-	import toast from "svelte-french-toast";
 	import { uniqBy } from "lodash-es";
+	import toast from "svelte-french-toast";
+	import z from "zod";
+
+	import { getPreferences } from "$lib/app-data/preferences.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
 	import {
 		getGrid,
-		resolvePartialBatch,
 		type GridProfile,
 		profileCache,
+		resolvePartialBatch,
 	} from "./grid";
-	import { getPreferences } from "$lib/app-data/preferences.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
-	import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
-	import { Button } from "$lib/components/ui/button";
 
 	let {
 		geohash,

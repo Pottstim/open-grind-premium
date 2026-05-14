@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { untrack } from "svelte";
 	import { page } from "$app/state";
+	import { untrack } from "svelte";
+
 	import * as Card from "$lib/components/ui/card";
 	import type { Message } from "$lib/model/message";
-	import { ConversationState } from "./conversation-state.svelte";
-	import MessagesList from "./MessagesList.svelte";
-	import MessageComposer from "./MessageComposer.svelte";
 	import ChatNavBar from "./ChatNavBar.svelte";
+	import { ConversationState } from "./conversation-state.svelte";
+	import MessageComposer from "./MessageComposer.svelte";
+	import MessagesList from "./MessagesList.svelte";
 
 	let { data }: import("./$types").PageProps = $props();
 

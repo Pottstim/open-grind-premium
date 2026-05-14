@@ -1,7 +1,6 @@
 import z from "zod";
-import {
-	mediaHashPublicSchema,
-} from "$lib/model/media";
+
+import { mediaHashPublicSchema } from "$lib/model/media";
 import { rightNowStatusSchema } from "$lib/model/right-now";
 import { unixTimestampMsSchema } from "$lib/model/types";
 

@@ -1,5 +1,5 @@
 import z from "zod";
-import { mediaHashPublicSchema } from "$lib/model/media";
+
 import {
 	filterAcceptNSFWPicsSchema,
 	filterBodyTypeSchema,
@@ -10,6 +10,7 @@ import {
 	filterTribesSchema,
 } from "$lib/components/filters/filters";
 import { gridQuerySchema } from "$lib/model/grid";
+import { mediaHashPublicSchema } from "$lib/model/media";
 
 export const searchQuerySchema = gridQuerySchema.extend({
 	online: z.boolean().optional(),

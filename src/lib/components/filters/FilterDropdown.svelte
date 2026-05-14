@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { TransitionConfig } from "svelte/transition";
-	import FilterBoolean from "./FilterBoolean.svelte";
 	import { CaretDownIcon } from "phosphor-svelte";
 	import { expoOut } from "svelte/easing";
+	import type { TransitionConfig } from "svelte/transition";
+
+	import FilterBoolean from "./FilterBoolean.svelte";
 
 	let {
 		checked = $bindable(),

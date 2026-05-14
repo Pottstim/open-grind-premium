@@ -1,12 +1,13 @@
 import z from "zod";
+
 import { fetchRest } from "$lib/api";
-import { urlSearchParamsCodec } from "$lib/utils";
-import { searchProfileSchema, searchQuerySchema } from "$lib/model/grid/search";
 import {
 	cascadeV3QuerySchema,
 	cascadeV3ResponseItemSchema,
 	cascadeV4ResponseItemSchema,
 } from "$lib/model/grid/cascade";
+import { searchProfileSchema, searchQuerySchema } from "$lib/model/grid/search";
+import { urlSearchParamsCodec } from "$lib/utils";
 
 export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
 	return await fetchRest(

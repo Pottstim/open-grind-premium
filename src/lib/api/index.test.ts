@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import z from "zod";
+
 import { asAppError, parseApiResponse } from "$lib/api";
 
 describe("asAppError", () => {

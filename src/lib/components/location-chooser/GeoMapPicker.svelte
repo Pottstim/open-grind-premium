@@ -1,20 +1,21 @@
 <script lang="ts">
-	import { Map, TileLayer, Marker, ControlAttribution } from "sveaflet";
-	import type { Map as LeafletMap, LeafletMouseEventHandlerFn } from "leaflet";
-	import { divIcon } from "leaflet";
-	import { GpsFixIcon } from "phosphor-svelte";
-	import toast from "svelte-french-toast";
-	import Button from "$lib/components/ui/button/button.svelte";
 	import {
 		checkPermissions,
 		getCurrentPosition,
 		requestPermissions,
 	} from "@tauri-apps/plugin-geolocation";
 	import { platform } from "@tauri-apps/plugin-os";
+	import { divIcon } from "leaflet";
+	import type { Map as LeafletMap, LeafletMouseEventHandlerFn } from "leaflet";
+	import { GpsFixIcon } from "phosphor-svelte";
+	import { ControlAttribution, Map, Marker, TileLayer } from "sveaflet";
+	import toast from "svelte-french-toast";
+
+	import { getPlaces } from "$lib/api/places";
+	import Alert from "$lib/components/ui/alert/alert.svelte";
+	import Button from "$lib/components/ui/button/button.svelte";
 	import { Input } from "$lib/components/ui/input";
 	import Spinner from "$lib/components/ui/spinner/spinner.svelte";
-	import Alert from "$lib/components/ui/alert/alert.svelte";
-	import { getPlaces } from "$lib/api/places";
 
 	let {
 		pinPos = $bindable(),

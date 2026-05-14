@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { MediaQuery } from "svelte/reactivity";
-	import type { LatLng } from "leaflet";
-	import * as Drawer from "$lib/components/ui/drawer/index";
-	import * as Dialog from "$lib/components/ui/dialog";
+
 	import GeoMapPicker from "$lib/components/location-chooser/GeoMapPicker.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
+	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Drawer from "$lib/components/ui/drawer/index";
 	import { encodeGeohash } from "$lib/model/geohash";
 
 	let {

@@ -1,6 +1,7 @@
 import type z from "zod";
-import { pronounsSchema } from "$lib/model/pronouns";
+
 import { fetchRest } from "$lib/api";
+import { pronounsSchema } from "$lib/model/pronouns";
 
 let cachedPronouns: z.infer<typeof pronounsSchema> | null = null;
 export async function fetchPronouns() {

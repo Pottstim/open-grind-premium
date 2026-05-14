@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { page } from "$app/state";
-	import { Tween } from "svelte/motion";
-	import toast from "svelte-french-toast";
-	import * as Empty from "$lib/components/ui/empty";
-	import { Button } from "$lib/components/ui/button";
-	import * as Tooltip from "$lib/components/ui/tooltip";
-	import QuestionMarkIcon from "phosphor-svelte/lib/QuestionMarkIcon";
-	import ExclamationMarkIcon from "phosphor-svelte/lib/ExclamationMarkIcon";
-	import ArrowUpRightIcon from "phosphor-svelte/lib/ArrowUpRightIcon";
-	import clippy from "$lib/assets/clippy.avif";
 	import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+	import { page } from "$app/state";
+	import ArrowUpRightIcon from "phosphor-svelte/lib/ArrowUpRightIcon";
+	import ExclamationMarkIcon from "phosphor-svelte/lib/ExclamationMarkIcon";
+	import QuestionMarkIcon from "phosphor-svelte/lib/QuestionMarkIcon";
+	import toast from "svelte-french-toast";
+	import { Tween } from "svelte/motion";
+
+	import clippy from "$lib/assets/clippy.avif";
+	import { Button } from "$lib/components/ui/button";
+	import * as Empty from "$lib/components/ui/empty";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 
 	let flip = $state(false);
 	let flipProgress = new Tween(0, { duration: 500 });

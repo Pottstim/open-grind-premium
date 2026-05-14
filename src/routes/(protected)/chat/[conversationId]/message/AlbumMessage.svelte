@@ -1,11 +1,12 @@
 <script lang="ts">
 	import "photoswipe/style.css";
-	import toast from "svelte-french-toast";
-	import PhotoSwipeLightbox from "photoswipe/lightbox";
 	import { ImagesIcon, LockIcon, VideoIcon } from "phosphor-svelte";
+	import PhotoSwipeLightbox from "photoswipe/lightbox";
+	import toast from "svelte-french-toast";
+
+	import { type AlbumContentResponse, getAlbumContent } from "$lib/api/album";
 	import type { AlbumMessage } from "$lib/model/message";
 	import { MessageMediaState } from "./message-media.svelte";
-	import { getAlbumContent, type AlbumContentResponse } from "$lib/api/album";
 
 	let { message }: { message: AlbumMessage["body"] } = $props();
 

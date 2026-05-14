@@ -1,8 +1,9 @@
-import z from "zod";
-import { invoke } from "@tauri-apps/api/core";
 import { decode, encode } from "@msgpack/msgpack";
-import { goto } from "$app/navigation";
+import { invoke } from "@tauri-apps/api/core";
 import toast from "svelte-french-toast";
+import z from "zod";
+
+import { goto } from "$app/navigation";
 
 export const methods = {
 	login: {

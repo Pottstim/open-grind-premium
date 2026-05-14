@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "photoswipe/style.css";
 	import PhotoSwipeLightbox from "photoswipe/lightbox";
+
 	import type { ExpiringImageMessage, ImageMessage } from "$lib/model/message";
 	import { MessageMediaState } from "./message-media.svelte";
 

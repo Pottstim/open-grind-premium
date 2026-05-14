@@ -1,10 +1,11 @@
+import z from "zod";
+
 import { albumExpirationSchema, albumPreviewSchema } from "$lib/model/album";
 import {
 	mediaHashPrivateSchema,
 	mediaHashPublicSchema,
 } from "$lib/model/media";
 import { unixTimestampMsSchema } from "$lib/model/types";
-import z from "zod";
 
 const messageBaseSchema = z.object({
 	type: z.string(),

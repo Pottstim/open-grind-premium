@@ -1,9 +1,10 @@
 <script lang="ts">
 	import "photoswipe/style.css";
-	import z from "zod";
 	import { format } from "date-fns";
 	import { UserIcon } from "phosphor-svelte";
+	import z from "zod";
 	import type PhotoSwipeLightbox from "photoswipe/lightbox";
+
 	import ImageCarouselItem from "./ImageCarouselItem.svelte";
 
 	let {

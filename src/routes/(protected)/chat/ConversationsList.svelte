@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { ChatCircleSlashIcon } from "phosphor-svelte";
+
 	import * as Empty from "$lib/components/ui/empty";
-	import { conversations } from "./conversations.svelte";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import Conversation from "./Conversation.svelte";
-	import { ChatCircleSlashIcon } from "phosphor-svelte";
+	import { conversations } from "./conversations.svelte";
 
 	let {
 		class: className,

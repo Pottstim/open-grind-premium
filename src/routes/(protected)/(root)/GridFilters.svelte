@@ -1,27 +1,26 @@
 <script lang="ts">
 	import type z from "zod";
 
-	import { Button } from "$lib/components/ui/button";
-	import * as Sheet from "$lib/components/ui/sheet";
+	import AcceptNSFWPicsFilter from "$lib/components/filters/AcceptNSFWPicsFilter.svelte";
+	import AgeFilter from "$lib/components/filters/age/AgeFilterField.svelte";
+	import BodyTypeFilter from "$lib/components/filters/BodyTypeFilter.svelte";
 	import FilterBoolean from "$lib/components/filters/FilterBoolean.svelte";
 	import {
 		defaultFilters,
 		gridSearchFiltersSchema,
 	} from "$lib/components/filters/filters";
-
-	import AgeFilter from "$lib/components/filters/age/AgeFilterField.svelte";
 	import GendersFilter from "$lib/components/filters/GendersFilter.svelte";
-	import PositionFilter from "$lib/components/filters/position/PositionFilterField.svelte";
-	import PhotosFilter from "$lib/components/filters/PhotosFilter.svelte";
-	import TribesFilter from "$lib/components/filters/TribesFilter.svelte";
-	import BodyTypeFilter from "$lib/components/filters/BodyTypeFilter.svelte";
+	import HealthPracticesFilter from "$lib/components/filters/HealthPracticesFilter.svelte";
 	import HeightFilter from "$lib/components/filters/HeightFilter.svelte";
-	import WeightFilter from "$lib/components/filters/WeightFilter.svelte";
-	import RelationshipStatusFilter from "$lib/components/filters/RelationshipStatusFilter.svelte";
-	import AcceptNSFWPicsFilter from "$lib/components/filters/AcceptNSFWPicsFilter.svelte";
 	import LookingForFilter from "$lib/components/filters/LookingForFilter.svelte";
 	import MeetAtFilter from "$lib/components/filters/MeetAtFilter.svelte";
-	import HealthPracticesFilter from "$lib/components/filters/HealthPracticesFilter.svelte";
+	import PhotosFilter from "$lib/components/filters/PhotosFilter.svelte";
+	import PositionFilter from "$lib/components/filters/position/PositionFilterField.svelte";
+	import RelationshipStatusFilter from "$lib/components/filters/RelationshipStatusFilter.svelte";
+	import TribesFilter from "$lib/components/filters/TribesFilter.svelte";
+	import WeightFilter from "$lib/components/filters/WeightFilter.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Sheet from "$lib/components/ui/sheet";
 
 	let {
 		open = $bindable(),

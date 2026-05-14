@@ -1,14 +1,15 @@
-import { sendMessage, reactToMessage } from "$lib/api/messages";
+import toast from "svelte-french-toast";
+import z from "zod";
+
 import { markConversationAsRead } from "$lib/api/conversation";
+import { reactToMessage, sendMessage } from "$lib/api/messages";
+import { getPreferences } from "$lib/app-data/preferences.svelte";
 import type {
 	ApiResponseMessage,
 	Message as MessageType,
 } from "$lib/model/message";
 import { conversations } from "../conversations.svelte";
 import { getConversation } from "./messages";
-import toast from "svelte-french-toast";
-import z from "zod";
-import { getPreferences } from "$lib/app-data/preferences.svelte";
 
 export type OptimisticMessage = ApiResponseMessage & {
 	status: "sent" | "pending" | "error";

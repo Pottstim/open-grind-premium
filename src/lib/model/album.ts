@@ -1,5 +1,6 @@
-import { unixTimestampMsSchema } from "$lib/model/types";
 import z from "zod";
+
+import { unixTimestampMsSchema } from "$lib/model/types";
 
 export const albumPreviewSchema = z.object({
 	albumId: z.number().int(),

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type z from "zod";
 	import { SlidersHorizontalIcon } from "phosphor-svelte";
+	import type z from "zod";
+
 	import { Button, buttonVariants } from "$lib/components/ui/button";
 	import * as ToggleGroup from "$lib/components/ui/toggle-group";
 	import type { gridSearchFiltersSchema } from "$lib/components/filters/filters";

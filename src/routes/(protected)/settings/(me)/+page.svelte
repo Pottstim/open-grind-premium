@@ -1,9 +1,10 @@
 <script lang="ts">
-	import ProfileLink from "./ProfileLink.svelte";
+	import { version } from "$app/environment";
+
 	import AccountSettingsLink from "./AccountSettingsLink.svelte";
 	import AppSettingsLink from "./AppSettingsLink.svelte";
+	import ProfileLink from "./ProfileLink.svelte";
 	import SignOutButton from "./SignOutButton.svelte";
-	import { version } from "$app/environment";
 	import Socials from "./Socials.svelte";
 
 	const { data }: import("./$types").PageProps = $props();

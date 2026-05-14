@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CaretRightIcon, UserCircleIcon } from "phosphor-svelte";
+
 	import * as Item from "$lib/components/ui/item";
 </script>
 

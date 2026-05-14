@@ -1,18 +1,19 @@
 <script lang="ts">
-	import toast from "svelte-french-toast";
+	import isEqual from "lodash-es/isEqual";
 	import { onMount, untrack } from "svelte";
-	import { Tween } from "svelte/motion";
+	import toast from "svelte-french-toast";
 	import { expoOut } from "svelte/easing";
-	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
-	import { defaultFilters } from "$lib/components/filters/filters";
+	import { Tween } from "svelte/motion";
+
 	import {
 		getPreferences,
 		setPreferences,
 	} from "$lib/app-data/preferences.svelte";
-	import QuickFilters from "./QuickFilters.svelte";
-	import LocationChange from "../LocationChange.svelte";
+	import { defaultFilters } from "$lib/components/filters/filters";
+	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 	import Filters from "../GridFilters.svelte";
-	import isEqual from "lodash-es/isEqual";
+	import LocationChange from "../LocationChange.svelte";
+	import QuickFilters from "./QuickFilters.svelte";
 
 	let {
 		onUpdatePreferences,

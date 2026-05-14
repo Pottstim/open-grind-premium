@@ -1,3 +1,5 @@
+import z from "zod";
+
 import {
 	acceptNSFWPicsSchema,
 	BodyType,
@@ -8,7 +10,6 @@ import {
 	SexualPosition,
 	Tribe,
 } from "$lib/model/profile";
-import z from "zod";
 
 export const filterIsFavoriteSchema = z.boolean();
 export const filterIsOnlineSchema = z.boolean();

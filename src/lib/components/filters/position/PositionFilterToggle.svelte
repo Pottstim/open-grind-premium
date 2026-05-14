@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type z from "zod";
 	import {
 		ArrowDownIcon,
 		ArrowDownRightIcon,
@@ -9,11 +8,13 @@
 		ArrowUpRightIcon,
 		XIcon,
 	} from "phosphor-svelte";
-	import * as ToggleGroup from "$lib/components/ui/toggle-group";
+	import type z from "zod";
+
 	import {
 		FilterPosition,
 		filterPositionSchema,
 	} from "$lib/components/filters/filters";
+	import * as ToggleGroup from "$lib/components/ui/toggle-group";
 
 	let { value = $bindable() }: { value: z.infer<typeof filterPositionSchema> } =
 		$props();

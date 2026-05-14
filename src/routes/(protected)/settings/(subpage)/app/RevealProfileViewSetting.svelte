@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import toast from "svelte-french-toast";
+
 	import {
 		getPreferences,
 		// setPreferences,

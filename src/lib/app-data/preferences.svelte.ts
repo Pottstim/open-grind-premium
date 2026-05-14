@@ -1,8 +1,9 @@
-import z from "zod";
-import { existsAppDataFile, readAppDataFile, writeAppDataFile } from ".";
 import { decode, encode } from "@msgpack/msgpack";
-import { geohashSchema } from "$lib/model/geohash";
+import z from "zod";
+
 import { gridSearchFiltersSchema } from "$lib/components/filters/filters";
+import { geohashSchema } from "$lib/model/geohash";
+import { existsAppDataFile, readAppDataFile, writeAppDataFile } from ".";
 
 const preferencesSchema = z.object({
 	geohash: geohashSchema.nullable().default(null),

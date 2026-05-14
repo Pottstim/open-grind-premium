@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { tick, untrack } from "svelte";
+	import toast from "svelte-french-toast";
+
+	import { deleteMessageForMe } from "$lib/api/messages";
 	import { Skeleton } from "$lib/components/ui/skeleton";
+	import { Spinner } from "$lib/components/ui/spinner";
+	import type { ConversationState } from "./conversation-state.svelte";
 	import Message from "./message/Message.svelte";
 	import { processMessages } from "./messages";
-	import { Spinner } from "$lib/components/ui/spinner";
-	import toast from "svelte-french-toast";
-	import type { ConversationState } from "./conversation-state.svelte";
-	import { deleteMessageForMe } from "$lib/api/messages";
 
 	let { conversationState }: { conversationState: ConversationState } =
 		$props();

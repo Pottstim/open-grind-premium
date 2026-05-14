@@ -1,5 +1,6 @@
-import { callMethod } from "$lib/api";
 import { redirect } from "@sveltejs/kit";
+
+import { callMethod } from "$lib/api";
 import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async () => {

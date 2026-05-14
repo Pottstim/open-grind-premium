@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { Badge } from "$lib/components/ui/badge";
 	import { UserIcon } from "phosphor-svelte";
+
+	import { Badge } from "$lib/components/ui/badge";
 
 	let {
 		id,

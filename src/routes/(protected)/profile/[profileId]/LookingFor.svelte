@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { EyesIcon } from "phosphor-svelte";
-	import ProfileValueLabel from "./ProfileValueLabel.svelte";
-	import ProfileField from "./ProfileField.svelte";
+
 	import {
-		lookingFor as lookingForOptions,
 		type LookingForId,
+		lookingFor as lookingForOptions,
 	} from "$lib/model/profile";
+	import ProfileField from "./ProfileField.svelte";
+	import ProfileValueLabel from "./ProfileValueLabel.svelte";
 
 	let {
 		lookingFor,

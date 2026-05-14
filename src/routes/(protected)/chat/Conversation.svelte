@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { UserIcon } from "phosphor-svelte";
 	import { page } from "$app/state";
-	import { Badge } from "$lib/components/ui/badge";
+	import { UserIcon } from "phosphor-svelte";
+
+	import DisplayName from "$lib/components/DisplayName.svelte";
 	import * as Avatar from "$lib/components/ui/avatar";
+	import { Badge } from "$lib/components/ui/badge";
 	import * as Item from "$lib/components/ui/item";
 	import type { Conversation } from "$lib/model/conversation";
-	import DisplayName from "$lib/components/DisplayName.svelte";
 	import ConversationRelativeTimeDynamic from "./ConversationRelativeTimeDynamic.svelte";
 
 	let {

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { CameraIcon } from "phosphor-svelte";
+
+	import {
+		type AcceptNSFWPicsId,
+		acceptNSFWPics as acceptNSFWPicsOptions,
+	} from "$lib/model/profile";
 	import ProfileField from "./ProfileField.svelte";
 	import ProfileValueLabel from "./ProfileValueLabel.svelte";
-	import {
-		acceptNSFWPics as acceptNSFWPicsOptions,
-		type AcceptNSFWPicsId,
-	} from "$lib/model/profile";
 
 	let {
 		nsfwPics,

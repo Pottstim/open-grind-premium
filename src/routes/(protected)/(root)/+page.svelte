@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getPreferences } from "$lib/app-data/preferences.svelte";
-	import LocationChooser from "./LocationEmpty.svelte";
 	import Grid from "./Grid.svelte";
+	import LocationChooser from "./LocationEmpty.svelte";
 	import TopBar from "./top-bar/TopBar.svelte";
 
 	let preferences = $state(getPreferences());

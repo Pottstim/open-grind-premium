@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { FilterTribeId } from "$lib/components/filters/filters";
 	import { tribes } from "$lib/model/profile";
+	import type { FilterTribeId } from "$lib/components/filters/filters";
 	import FilterSimpleArray from "./FilterSimpleArray.svelte";
 
 	let {

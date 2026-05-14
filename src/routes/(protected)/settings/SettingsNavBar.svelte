@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { ArrowLeftIcon } from "phosphor-svelte";
-	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 	import { page } from "$app/state";
+	import { ArrowLeftIcon } from "phosphor-svelte";
+
+	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 </script>
 
 <ProgressiveBlur

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import ProfileField from "./ProfileField.svelte";
 	import {
 		FacebookLogoIcon,
 		InstagramLogoIcon,
 		XLogoIcon,
 	} from "phosphor-svelte";
+
 	import { type SocialNetworks } from "$lib/model/profile";
+	import ProfileField from "./ProfileField.svelte";
 
 	let {
 		socials,

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { ArrowSquareOutIcon } from "phosphor-svelte";
-	import * as Item from "$lib/components/ui/item";
-	import * as Dialog from "$lib/components/ui/dialog";
-	import ButtonItemContent from "./ButtonItemContent.svelte";
+
 	import { Button } from "$lib/components/ui/button";
+	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Item from "$lib/components/ui/item";
+	import ButtonItemContent from "./ButtonItemContent.svelte";
 
 	let {
 		label,

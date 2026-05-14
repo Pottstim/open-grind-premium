@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type z from "zod";
-	import FilterBoolean from "../FilterBoolean.svelte";
+
 	import { filterPositionSchema } from "$lib/components/filters/filters";
 	import PositionFilterToggle from "$lib/components/filters/position/PositionFilterToggle.svelte";
+	import FilterBoolean from "../FilterBoolean.svelte";
 
 	let {
 		value = $bindable(),

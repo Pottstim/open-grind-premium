@@ -3,6 +3,7 @@
 	import DropIcon from "phosphor-svelte/lib/DropIcon";
 	import FireIcon from "phosphor-svelte/lib/FireIcon";
 	import ChatCircleIcon from "phosphor-svelte/lib/ChatCircleIcon";
+
 	import { page } from "$app/state";
 	import { tabsListVariants } from "$lib/components/ui/tabs";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";

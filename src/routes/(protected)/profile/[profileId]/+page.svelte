@@ -1,27 +1,28 @@
 <script lang="ts">
-	import { ChatCircleIcon } from "phosphor-svelte";
 	import { page } from "$app/state";
+	import { ChatCircleIcon } from "phosphor-svelte";
+
 	import { getProfile } from "$lib/api/profile";
+	import Button from "$lib/components/ui/button/button.svelte";
 	import { Skeleton } from "$lib/components/ui/skeleton";
-	import ImageCarousel from "./ImageCarousel.svelte";
-	import Distance from "./Distance.svelte";
-	import OnlineStatus from "./OnlineStatus.svelte";
-	import SexualPosition from "./SexualPosition.svelte";
-	import Height from "./HeightWeightBodyType.svelte";
-	import ProfileTags from "./ProfileTags.svelte";
 	import AboutMe from "./AboutMe.svelte";
-	import Genders from "./GendersPronouns.svelte";
+	import Distance from "./Distance.svelte";
 	import Ethnicity from "./Ethnicity.svelte";
-	import RelationshipStatus from "./RelationshipStatus.svelte";
-	import Tribes from "./Tribes.svelte";
+	import Genders from "./GendersPronouns.svelte";
+	import HealthPractices from "./HealthPractices.svelte";
+	import Height from "./HeightWeightBodyType.svelte";
+	import HivStatus from "./HivStatus.svelte";
+	import ImageCarousel from "./ImageCarousel.svelte";
+	import LastTested from "./LastTested.svelte";
 	import LookingFor from "./LookingFor.svelte";
 	import MeetAt from "./MeetAt.svelte";
 	import NSFWPics from "./NSFWPics.svelte";
+	import OnlineStatus from "./OnlineStatus.svelte";
+	import ProfileTags from "./ProfileTags.svelte";
+	import RelationshipStatus from "./RelationshipStatus.svelte";
+	import SexualPosition from "./SexualPosition.svelte";
 	import Socials from "./Socials.svelte";
-	import HivStatus from "./HivStatus.svelte";
-	import LastTested from "./LastTested.svelte";
-	import HealthPractices from "./HealthPractices.svelte";
-	import Button from "$lib/components/ui/button/button.svelte";
+	import Tribes from "./Tribes.svelte";
 
 	let { data }: import("./$types").PageProps = $props();
 

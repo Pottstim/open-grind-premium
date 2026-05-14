@@ -1,6 +1,10 @@
 import z from "zod";
+
 import { fetchRest } from "$lib/api";
-import { fullConversationSchema, type Conversation } from "$lib/model/conversation";
+import {
+	type Conversation,
+	fullConversationSchema,
+} from "$lib/model/conversation";
 
 const conversationsSchema = z.object({
 	entries: z.array(fullConversationSchema),
