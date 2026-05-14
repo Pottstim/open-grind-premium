@@ -8,6 +8,8 @@ import type {
 	ApiResponseMessage,
 	Message as MessageType,
 } from "$lib/model/message";
+import { apiResponseMessageSchema } from "$lib/model/message";
+import { ws, wsMessageSentPayloadSchema } from "$lib/ws.svelte";
 import { conversations } from "../conversations.svelte";
 import { getConversation } from "./messages";
 
@@ -42,6 +44,42 @@ export class ConversationState {
 				.safeParse(localStorage.getItem(`chat:read:${conversationId}`)).data ??
 			null;
 		void this.#initialLoad();
+
+		this.#unlistenWs = ws.on(
+			"chat.v1.message_sent",
+			wsMessageSentPayloadSchema,
+			(event) => {
+				if (event.payload.conversationId !== this.conversationId) return;
+				if (event.payload.senderId === this.ourProfileId) {
+					const pending = this.messages.find((m) => m.status === "pending");
+					if (pending) {
+						pending.status = "sent";
+						pending.messageId = event.payload.messageId;
+					}
+					return;
+				}
+				if (this.messages.some((m) => m.messageId === event.payload.messageId))
+					return;
+				const parsed = apiResponseMessageSchema.safeParse(event.payload);
+				if (!parsed.success) {
+					console.error("[ws] failed to parse incoming message", parsed.error);
+					return;
+				}
+				const msg: OptimisticMessage = { ...parsed.data, status: "sent" };
+				this.messages = [msg, ...this.messages];
+				void this.reportRead({
+					messageId: msg.messageId,
+					timestamp: msg.timestamp,
+				});
+			},
+		);
+	}
+
+	#unlistenWs: Promise<() => void>;
+
+	destroy(): void {
+		this.#unlistenWs.then((unlisten) => unlisten()).catch(console.error);
+		if (this.#readTimer !== null) clearTimeout(this.#readTimer);
 	}
 
 	async #initialLoad(): Promise<void> {

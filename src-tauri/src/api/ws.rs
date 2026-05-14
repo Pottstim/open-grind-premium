@@ -1,0 +1,155 @@
+use std::time::Duration;
+
+use futures_util::{SinkExt, StreamExt};
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use tauri::{AppHandle, Emitter, Manager};
+use tokio::time::sleep;
+use tokio_tungstenite::{connect_async, tungstenite::Message};
+
+use crate::error::AppError;
+use crate::state::AppState;
+
+const WS_URL: &str = "wss://grindr.mobi/v1/ws";
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct WsCommand {
+    pub r#type: String,
+    pub ref_id: String,
+    pub payload: Value,
+}
+
+pub fn spawn_ws_task(app: AppHandle) {
+    tauri::async_runtime::spawn(async move {
+        run_ws_loop(app).await;
+    });
+}
+
+async fn run_ws_loop(app: AppHandle) {
+    let mut backoff = Duration::from_secs(1);
+
+    loop {
+        match connect_and_run(&app).await {
+            Ok(()) => {
+                break;
+            }
+            Err(e) => {
+                eprintln!("[ws] error: {e}");
+                app.emit("ws:disconnected", ()).ok();
+                sleep(backoff).await;
+                backoff = (backoff * 2).min(Duration::from_secs(30));
+            }
+        }
+    }
+}
+
+async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
+    let state = app.state::<AppState>();
+
+    let authorization = state
+        .client()?
+        .authorization_header()
+        .await
+        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+
+    let request = tokio_tungstenite::tungstenite::http::Request::builder()
+        .uri(WS_URL)
+        .header("Authorization", &authorization)
+        .header(
+            "User-Agent",
+            state.client()?.user_agent.as_str(),
+        )
+        .body(())
+        .map_err(|e| AppError::Http(format!("Failed to build WS request: {e}")))?;
+
+    let (ws_stream, _) = connect_async(request)
+        .await
+        .map_err(|e| AppError::Http(format!("WS connect failed: {e}")))?;
+
+    app.emit("ws:connected", ()).ok();
+
+    let (mut write, mut read) = ws_stream.split();
+
+    let mut cmd_rx = state
+        .ws_rx
+        .lock()
+        .await
+        .take()
+        .ok_or_else(|| AppError::Http("WS already running".to_owned()))?;
+
+    let session_id = state
+        .client()?
+        .session
+        .read()
+        .await
+        .as_ref()
+        .map(|s| s.session_id.clone())
+        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+
+    let result = run_message_loop(&mut write, &mut read, &mut cmd_rx, &session_id, app).await;
+
+    *state.ws_rx.lock().await = Some(cmd_rx);
+
+    result
+}
+
+async fn run_message_loop(
+    write: &mut (impl SinkExt<Message, Error = tokio_tungstenite::tungstenite::Error> + Unpin),
+    read: &mut (impl StreamExt<Item = Result<Message, tokio_tungstenite::tungstenite::Error>> + Unpin),
+    cmd_rx: &mut tokio::sync::mpsc::Receiver<WsCommand>,
+    session_id: &str,
+    app: &AppHandle,
+) -> Result<(), AppError> {
+    loop {
+        tokio::select! {
+            msg = read.next() => match msg {
+                Some(Ok(Message::Text(text))) => {
+                    if let Ok(val) = serde_json::from_str::<Value>(&text) {
+                        if let Some(event_type) = val["type"].as_str() {
+                            app.emit(&format!("ws:{event_type}"), &val).ok();
+                        }
+                    }
+                }
+                Some(Ok(Message::Ping(data))) => {
+                    write.send(Message::Pong(data)).await
+                        .map_err(|e| AppError::Http(e.to_string()))?;
+                }
+                Some(Ok(Message::Close(_))) | None => {
+                    return Err(AppError::Http("WS connection closed by server".to_owned()));
+                }
+                Some(Err(e)) => {
+                    return Err(AppError::Http(e.to_string()));
+                }
+                Some(Ok(_)) => {}
+            },
+
+            cmd = cmd_rx.recv() => match cmd {
+                Some(cmd) => {
+                    let json = serde_json::json!({
+                        "type": cmd.r#type,
+                        "ref": cmd.ref_id,
+                        "token": session_id,
+                        "payload": cmd.payload,
+                    });
+                    write
+                        .send(Message::Text(json.to_string().into()))
+                        .await
+                        .map_err(|e| AppError::Http(e.to_string()))?;
+                }
+                None => return Ok(()),
+            }
+        }
+    }
+}
+
+#[tauri::command]
+pub async fn ws_send(
+    state: tauri::State<'_, AppState>,
+    command: WsCommand,
+) -> Result<(), AppError> {
+    state
+        .ws_tx
+        .send(command)
+        .await
+        .map_err(|_| AppError::Http("WS not connected".to_owned()))
+}

@@ -26,8 +26,12 @@
 			conversationId !== conversationState.conversationId ||
 			ourProfileId !== conversationState.ourProfileId
 		) {
+			conversationState.destroy();
 			conversationState = new ConversationState(conversationId, ourProfileId);
 		}
+		return () => {
+			conversationState.destroy();
+		};
 	});
 </script>
 

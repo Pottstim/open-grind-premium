@@ -33,7 +33,14 @@ impl Default for DeviceInfo {
     }
 }
 
-pub fn build_default_headers(device: &DeviceInfo, subscription_tier: &str) -> HeaderMap {
+pub fn build_user_agent(device: &DeviceInfo, subscription_tier: &str) -> String {
+    format!(
+        "grindr3/{APP_VERSION};{BUILD_NUMBER};{subscription_tier};Android {};{};{}",
+        device.android_version, device.device_model, device.manufacturer
+    )
+}
+
+pub fn build_default_headers(device: &DeviceInfo, user_agent: &str) -> HeaderMap {
     let mut headers = HeaderMap::new();
 
     let device_info = format!(
@@ -49,11 +56,8 @@ pub fn build_default_headers(device: &DeviceInfo, subscription_tier: &str) -> He
         HeaderValue::from_str(&device_info).unwrap(),
     );
 
-    let user_agent = format!(
-        "grindr3/{APP_VERSION};{BUILD_NUMBER};{subscription_tier};Android {};{};{}",
-        device.android_version, device.device_model, device.manufacturer
-    );
-    headers.insert("User-Agent", HeaderValue::from_str(&user_agent).unwrap());
+    let user_agent_str = user_agent;
+    headers.insert("User-Agent", HeaderValue::from_str(user_agent_str).unwrap());
 
     headers.insert("requireRealDeviceInfo", HeaderValue::from_static("true"));
 
@@ -86,7 +90,9 @@ mod tests {
 
     #[test]
     fn default_headers_include_grindr_device_identity() {
-        let headers = build_default_headers(&test_device(), "Free");
+        let device = test_device();
+        let user_agent = build_user_agent(&device, "Free");
+        let headers = build_default_headers(&device, &user_agent);
         let expected_user_agent =
             format!("grindr3/{APP_VERSION};{BUILD_NUMBER};Free;Android 14;Pixel 8;Google");
 
@@ -100,7 +106,9 @@ mod tests {
 
     #[test]
     fn default_headers_include_locale_timezone_and_json_accepts() {
-        let headers = build_default_headers(&test_device(), "Unlimited");
+        let device = test_device();
+        let user_agent = build_user_agent(&device, "Unlimited");
+        let headers = build_default_headers(&device, &user_agent);
 
         assert_eq!(headers.get("L-Time-Zone").unwrap(), TIMEZONE);
         assert_eq!(headers.get("L-Locale").unwrap(), "en_US");

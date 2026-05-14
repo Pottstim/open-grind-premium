@@ -5,6 +5,13 @@ import {
 	markConversationAsRead,
 } from "$lib/api/conversation";
 import type { Conversation } from "$lib/model/conversation";
+import {
+	ws,
+	wsConversationDeletePayloadSchema,
+	wsMessageSentPayloadSchema,
+} from "$lib/ws.svelte";
+
+const wsPromises: Promise<() => void>[] = [];
 
 class ConversationsState {
 	entries = $state<Conversation[]>([]);
@@ -14,6 +21,33 @@ class ConversationsState {
 
 	constructor() {
 		this.initial = this.#load(1);
+
+		wsPromises.push(
+			ws.on("chat.v1.message_sent", wsMessageSentPayloadSchema, (event) => {
+				const { conversationId, type, timestamp } = event.payload;
+				const entry = this.entries.find((e) => e.data.conversationId === conversationId);
+				if (entry) {
+					entry.data.unreadCount += 1;
+					this.updatePreview({
+						conversationId,
+						preview: {
+							type,
+							text: (event.payload as { text?: string | null }).text ?? null,
+							albumId: null,
+							imageHash: null,
+						},
+						timestamp,
+					});
+				} else {
+					void this.ensureLoaded(conversationId);
+				}
+			}),
+			ws.on("chat.v1.conversation.delete", wsConversationDeletePayloadSchema, (event) => {
+				for (const id of event.payload.conversationIds) {
+					this.remove(id);
+				}
+			}),
+		);
 	}
 
 	async #load(page: number): Promise<void> {
