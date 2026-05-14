@@ -4,6 +4,12 @@ import {
 	getConversations,
 	markConversationAsRead,
 } from "$lib/api/conversation";
+import { previewFromMessage } from "$lib/model/message";
+import {
+	chatV1ConversationDeleteEventSchema,
+	chatV1MessageSentEventSchema,
+	ws,
+} from "$lib/ws.svelte";
 import type { Conversation } from "$lib/model/conversation";
 
 class ConversationsState {
@@ -12,8 +18,51 @@ class ConversationsState {
 	loadingMore = $state(false);
 	initial: Promise<void>;
 
-	constructor() {
+	readonly ourProfileId: number;
+	#activeConversationId: string | null = null;
+	#wsPromises: Promise<() => void>[] = [];
+
+	constructor(ourProfileId: number) {
+		this.ourProfileId = ourProfileId;
 		this.initial = this.#load(1);
+
+		this.#wsPromises.push(
+			ws.on("chat.v1.message_sent", chatV1MessageSentEventSchema, (event) => {
+				const message = event.payload;
+				const entry = this.entries.find(
+					(entry) => entry.data.conversationId === message.conversationId,
+				);
+				if (entry) {
+					const isActive =
+						message.conversationId === this.#activeConversationId;
+					if (!isActive && message.senderId !== this.ourProfileId) {
+						entry.data.unreadCount += 1;
+					}
+					this.updatePreview({
+						conversationId: message.conversationId,
+						preview: previewFromMessage(message),
+						timestamp: message.timestamp,
+					});
+				} else {
+					void this.ensureLoaded(message.conversationId);
+				}
+			}),
+			ws.on(
+				"chat.v1.conversation.delete",
+				chatV1ConversationDeleteEventSchema,
+				(event) => {
+					for (const id of event.payload.conversationIds) {
+						this.remove(id);
+					}
+				},
+			),
+		);
+	}
+
+	async destroy(): Promise<void> {
+		const unlisteners = await Promise.all(this.#wsPromises);
+		for (const unlisten of unlisteners) unlisten();
+		this.#wsPromises = [];
 	}
 
 	async #load(page: number): Promise<void> {
@@ -71,6 +120,17 @@ class ConversationsState {
 		};
 	}
 
+	setActive(conversationId: string): void {
+		this.#activeConversationId = conversationId;
+		this.markRead(conversationId);
+	}
+
+	clearActive(conversationId: string): void {
+		if (this.#activeConversationId === conversationId) {
+			this.#activeConversationId = null;
+		}
+	}
+
 	markRead(conversationId: string): void {
 		const entry = this.entries.find(
 			(e) => e.data.conversationId === conversationId,
@@ -106,4 +166,4 @@ class ConversationsState {
 	}
 }
 
-export const conversations = new ConversationsState();
+export { ConversationsState };

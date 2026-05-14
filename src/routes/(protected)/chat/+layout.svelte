@@ -1,16 +1,21 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import { untrack } from "svelte";
 	import { MediaQuery } from "svelte/reactivity";
 
 	import * as Card from "$lib/components/ui/card";
 	import * as Resizable from "$lib/components/ui/resizable";
+	import { setConversations } from "./conversations-context.svelte";
+	import { ConversationsState } from "./conversations.svelte";
 	import ConversationsList from "./ConversationsList.svelte";
 
-	let {
-		children,
-	}: {
-		children: import("svelte").Snippet;
-	} = $props();
+	let { data, children }: import("./$types").LayoutProps = $props();
+
+	const conversations = untrack(() => new ConversationsState(data.ourProfileId));
+	setConversations(conversations);
+	$effect(() => {
+		return () => void conversations.destroy();
+	});
 
 	let paneGroup: HTMLElement | null = $state(null);
 	let conversationsListCollapsedSizePercentage = $state(0);
