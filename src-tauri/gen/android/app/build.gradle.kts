@@ -14,29 +14,38 @@ val tauriProperties = Properties().apply {
     }
 }
 
+fun prop(key: String): String =
+    project.findProperty(key)?.toString()
+        ?: error("Missing required property `$key`. " +
+            "Add it to src-tauri/gen/android/gradle.properties.")
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val hasKeystore = keystorePropertiesFile.exists()
+
 android {
-    compileSdk = 36
+    compileSdk = prop("opengrind.android.compileSdk").toInt()
+    buildToolsVersion = prop("opengrind.android.buildTools")
+    ndkVersion = prop("opengrind.android.ndk")
     namespace = "org.opengrind"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
         applicationId = "org.opengrind"
-        minSdk = 28
-        targetSdk = 36
+        minSdk = prop("opengrind.android.minSdk").toInt()
+        targetSdk = prop("opengrind.android.targetSdk").toInt()
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
     }
 	signingConfigs {
-		create("release") {
-			val keystorePropertiesFile = rootProject.file("keystore.properties")
-			val keystoreProperties = Properties()
-			if (keystorePropertiesFile.exists()) {
-				keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-			}
+		if (hasKeystore) {
+			create("release") {
+				val keystoreProperties = Properties()
+				keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
 
-			keyAlias = keystoreProperties["keyAlias"] as String
-			keyPassword = keystoreProperties["password"] as String
-			storeFile = file(keystoreProperties["storeFile"] as String)
-			storePassword = keystoreProperties["password"] as String
+				keyAlias = keystoreProperties["keyAlias"] as String
+				keyPassword = keystoreProperties["password"] as String
+				storeFile = file(keystoreProperties["storeFile"] as String)
+				storePassword = keystoreProperties["password"] as String
+			}
 		}
 	}
     buildTypes {
@@ -59,7 +68,9 @@ android {
                     .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
                     .toList().toTypedArray()
             )
-			signingConfig = signingConfigs.getByName("release")
+			if (hasKeystore) {
+				signingConfig = signingConfigs.getByName("release")
+			}
         }
     }
     kotlinOptions {
