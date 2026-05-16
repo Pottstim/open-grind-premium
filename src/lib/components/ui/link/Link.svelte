@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { openUrl } from "@tauri-apps/plugin-opener";
-
 	let {
 		onclick,
 		children,
@@ -15,7 +13,9 @@
 		onclick?.(event);
 		if (href) {
 			event.preventDefault();
-			void openUrl(href);
+			void import("@tauri-apps/plugin-opener").then(({ openUrl }) =>
+				openUrl(href),
+			);
 		}
 	}}
 	{...props}

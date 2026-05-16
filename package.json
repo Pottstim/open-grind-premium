@@ -17,7 +17,8 @@
 		"test": "bun run test:unit && bun run test:rust",
 		"test:unit": "svelte-kit sync && vitest run",
 		"test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --lib",
-		"tauri": "tauri"
+		"tauri": "tauri",
+		"gen:icons": "bun tauri icon ./contrib/logo/app-icon.svg --ios-color='rgb(10,10,10)' && bun tauri icon ./contrib/logo/app-icon-bg.svg --ios-color='rgb(10,10,10)' --output ./icons-tmp && for density in hdpi mdpi xhdpi xxhdpi xxxhdpi; do cp icons-tmp/android/mipmap-$density/ic_launcher.png src-tauri/gen/android/app/src/main/res/mipmap-$density/ic_launcher.png && cp icons-tmp/android/mipmap-$density/ic_launcher_round.png src-tauri/gen/android/app/src/main/res/mipmap-$density/ic_launcher_round.png; done && rm -rf ./icons-tmp"
 	},
 	"overrides": {
 		"cookie": "^0.7.0"
