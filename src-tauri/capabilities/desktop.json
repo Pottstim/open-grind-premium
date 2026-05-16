@@ -12,8 +12,6 @@
 	],
 	"permissions": [
 		"opener:default",
-		"fs:default",
-		"clipboard-manager:default",
-		"clipboard-manager:allow-write-text"
+		"fs:default"
 	]
 }
