@@ -137,7 +137,7 @@ export type NonExpiringVideoMessage = z.infer<
 export const gaymojiMessageSchema = messageBaseSchema.safeExtend({
 	type: z.literal("Gaymoji"),
 	body: z.object({
-		imageHash: mediaHashPublicSchema,
+		imageHash: z.string(),
 	}),
 });
 
@@ -226,7 +226,7 @@ export type ProfileLinkMessage = z.infer<typeof profileLinkMessageSchema>;
 export const profilePhotoReplyMessageSchema = messageBaseSchema.safeExtend({
 	type: z.literal("ProfilePhotoReply"),
 	body: z.object({
-		imageHash: mediaHashPublicSchema,
+		imageHash: z.string(),
 		photoContentReply: z.string(),
 	}),
 });
