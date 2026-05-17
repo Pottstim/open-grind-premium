@@ -1,3 +1,4 @@
+use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::sync::{Mutex, RwLock};
 
@@ -10,6 +11,7 @@ pub const BASE_URL: &str = "https://grindr.mobi";
 
 pub struct GrindrClient {
     pub(super) http: Client,
+    pub(super) default_headers: HeaderMap,
     pub(super) session: RwLock<Option<Session>>,
     pub(super) refresh_lock: Mutex<()>,
     pub user_agent: String,
@@ -21,7 +23,7 @@ impl GrindrClient {
         let user_agent = build_user_agent(&device, "Free");
         let headers = build_default_headers(&device, &user_agent);
 
-        let http = Client::builder().default_headers(headers).build()?;
+        let http = Client::builder().default_headers(headers.clone()).build()?;
 
         #[cfg(all(target_os = "macos", not(feature = "keychain")))]
         let session = None;
@@ -36,6 +38,7 @@ impl GrindrClient {
 
         Ok(Self {
             http,
+            default_headers: headers,
             session: RwLock::new(session),
             refresh_lock: Mutex::new(()),
             user_agent,

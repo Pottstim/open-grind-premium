@@ -104,7 +104,24 @@ export async function fetchRest(
 				return new TextDecoder().decode(this.bytes());
 			},
 			json() {
-				return JSON.parse(this.text());
+				const text = this.text();
+				if (
+					this.status === 403 &&
+					text.includes("<title>Attention Required! | Cloudflare</title>") &&
+					text.includes("Sorry, you have been blocked")
+				) {
+					throw new Error("Request blocked");
+				} else {
+					try {
+						return JSON.parse(text);
+					} catch (error) {
+						console.error("Failed to parse JSON response", {
+							path,
+							text,
+						});
+						throw error;
+					}
+				}
 			},
 			jsonParsed<TSchema extends z.ZodType>(schema: TSchema) {
 				const data = this.json();

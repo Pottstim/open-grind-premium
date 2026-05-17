@@ -75,7 +75,27 @@ impl GrindrClient {
                 .json(&json_body);
         }
 
-        let response = request.send().await?;
+        let request = request.build().map_err(|e| AppError::Http(e.to_string()))?;
+
+        println!("=== OUTGOING REQUEST ===");
+        println!("Method: {}", request.method());
+        println!("URL:    {}", request.url());
+        println!("Headers:");
+        // Default headers live on the Client, not on the Request — merge both.
+        for (name, value) in self.default_headers.iter().chain(request.headers()) {
+            println!("  {}: {}", name, value.to_str().unwrap_or("<binary>"));
+        }
+        if let Some(b) = request.body() {
+            match b.as_bytes() {
+                Some(bytes) => println!("Body: {}", String::from_utf8_lossy(bytes)),
+                None => println!("Body: <streaming>"),
+            }
+        } else {
+            println!("Body: <none>");
+        }
+        println!("========================");
+
+        let response = self.http.execute(request).await?;
         let status = response.status().as_u16();
         let body = response.bytes().await?.to_vec();
 
@@ -108,13 +128,6 @@ pub async fn request(
         code: 400,
         message: format!("Invalid method: {}", payload.method),
     })?;
-
-    println!(
-        "Received request: {} {} with body of length {}",
-        method,
-        payload.path,
-        payload.body.as_ref().map(|b| b.len()).unwrap_or(0)
-    );
 
     let raw = state
         .client()?
