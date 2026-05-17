@@ -77,7 +77,7 @@
 	<Drawer.Root bind:open>
 		<Drawer.Content
 			preventOverflowTextSelection={false}
-			class="h-full mt-0! mb-(--safe-area-bottom)"
+			class="h-full! mt-0! mb-(--safe-area-bottom)"
 		>
 			<div
 				class="h-full touch-manipulation rounded-lg overflow-clip mt-4 mb-2"
