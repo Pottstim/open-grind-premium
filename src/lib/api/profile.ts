@@ -3,10 +3,10 @@ import z from "zod";
 import { fetchRest } from "$lib/api";
 import { mediaHashPublicSchema } from "$lib/model/media";
 import {
+	type Profile,
 	profileRightNowSchema,
 	profileSchema,
 	profileShortSchema,
-	type Profile,
 } from "$lib/model/profile";
 
 const profileResponseSchema = z.object({
@@ -52,10 +52,20 @@ export async function getProfiles(
 	}).then((res) => res.jsonParsed(getProfilesResponseSchema).profiles);
 }
 
+let myProfileCache: {
+	profile: z.infer<typeof getProfilesResponseSchema>["profiles"][0];
+	updatedAt: number;
+} | null = null;
+
 export async function getMyProfile() {
-	return await fetchRest("/v4/me/profile").then(
+	if (myProfileCache && Date.now() - myProfileCache.updatedAt < 1000 * 60) {
+		return myProfileCache.profile;
+	}
+	const profile = await fetchRest("/v4/me/profile").then(
 		(res) => res.jsonParsed(getProfilesResponseSchema).profiles[0],
 	);
+	myProfileCache = { profile, updatedAt: Date.now() };
+	return profile;
 }
 
 export async function getProfileUploadedPhotos() {
