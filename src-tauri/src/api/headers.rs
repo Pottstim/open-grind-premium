@@ -337,37 +337,37 @@ const DEVICE_PROFILES: &[DeviceProfile] = &[
 ];
 
 /// (timezone, L-Locale, Accept-Language)
-pub const SAFE_TIMEZONES: &[(&str, &str, &str)] = &[
+pub const SAFE_TIMEZONES: &[&str] = &[
     // Europe
-    ("Europe/Dublin", "en_IE", "en-IE"),
-    ("Europe/Zurich", "de_CH", "de-CH"),
-    ("Europe/Zurich", "fr_CH", "fr-CH"),
-    ("Europe/Prague", "cs_CZ", "cs-CZ"),
-    ("Europe/Bratislava", "sk_SK", "sk-SK"),
-    ("Europe/Budapest", "hu_HU", "hu-HU"),
-    ("Europe/Bucharest", "ro_RO", "ro-RO"),
-    ("Europe/Sofia", "bg_BG", "bg-BG"),
-    ("Europe/Zagreb", "hr_HR", "hr-HR"),
-    ("Europe/Vilnius", "lt_LT", "lt-LT"),
-    ("Europe/Riga", "lv_LV", "lv-LV"),
-    ("Europe/Tallinn", "et_EE", "et-EE"),
-    ("Europe/Luxembourg", "fr_LU", "fr-LU"),
-    ("Europe/Malta", "en_MT", "en-MT"),
+    "Europe/Dublin",
+    "Europe/Zurich",
+    "Europe/Zurich",
+    "Europe/Prague",
+    "Europe/Bratislava",
+    "Europe/Budapest",
+    "Europe/Bucharest",
+    "Europe/Sofia",
+    "Europe/Zagreb",
+    "Europe/Vilnius",
+    "Europe/Riga",
+    "Europe/Tallinn",
+    "Europe/Luxembourg",
+    "Europe/Malta",
     // Americas
-    ("America/Mexico_City", "es_MX", "es-MX"),
-    ("America/Argentina/Buenos_Aires", "es_AR", "es-AR"),
-    ("America/Santiago", "es_CL", "es-CL"),
-    ("America/Bogota", "es_CO", "es-CO"),
-    ("America/Lima", "es_PE", "es-PE"),
-    ("America/Montevideo", "es_UY", "es-UY"),
+    "America/Mexico_City",
+    "America/Argentina/Buenos_Aires",
+    "America/Santiago",
+    "America/Bogota",
+    "America/Lima",
+    "America/Montevideo",
     // Asia-Pacific
-    ("Asia/Tokyo", "ja_JP", "ja-JP"),
-    ("Asia/Tokyo", "en_US", "en-US"),
-    ("Asia/Taipei", "zh_TW", "zh-TW"),
-    ("Asia/Seoul", "ko_KR", "ko-KR"),
-    ("Asia/Bangkok", "th_TH", "th-TH"),
-    ("Asia/Manila", "en_PH", "en-PH"),
-    ("Asia/Singapore", "en_SG", "en-SG"),
+    "Asia/Tokyo",
+    "Asia/Tokyo",
+    "Asia/Taipei",
+    "Asia/Seoul",
+    "Asia/Bangkok",
+    "Asia/Manila",
+    "Asia/Singapore",
 ];
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -388,8 +388,7 @@ pub struct DeviceInfo {
 impl Default for DeviceInfo {
     fn default() -> Self {
         let profile = &DEVICE_PROFILES[rand::random::<u64>() as usize % DEVICE_PROFILES.len()];
-        let (timezone, locale, accept_language) =
-            SAFE_TIMEZONES[rand::random::<u64>() as usize % SAFE_TIMEZONES.len()];
+        let timezone = SAFE_TIMEZONES[rand::random::<u64>() as usize % SAFE_TIMEZONES.len()];
 
         let device_id = format!("{:016x}", rand::random::<u64>());
 
@@ -406,8 +405,8 @@ impl Default for DeviceInfo {
             device_model: profile.device_model.to_owned(),
             manufacturer: profile.manufacturer.to_owned(),
             timezone: timezone.to_owned(),
-            locale: locale.to_owned(),
-            accept_language: accept_language.to_owned(),
+            locale: "en_US".to_owned(),
+            accept_language: "en-US".to_owned(),
         }
     }
 }
