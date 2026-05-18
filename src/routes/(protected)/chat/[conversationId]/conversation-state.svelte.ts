@@ -69,6 +69,7 @@ export class ConversationState {
 					if (pending) {
 						pending.status = "sent";
 						pending.messageId = event.payload.messageId;
+						this.#syncCache();
 						return;
 					}
 				}
@@ -81,6 +82,7 @@ export class ConversationState {
 				}
 				const msg: OptimisticMessage = { ...parsed.data, status: "sent" };
 				this.messages = [msg, ...this.messages];
+				this.#syncCache();
 				void this.reportRead({
 					messageId: msg.messageId,
 					timestamp: msg.timestamp,
@@ -131,12 +133,7 @@ export class ConversationState {
 			this.pageKey = result.pageKey;
 			this.#updatePreview(this.messages.at(0));
 			this.#conversations.markRead(this.conversationId);
-			this.#conversations.setCachedConversation(this.conversationId, {
-				messages: result.messages,
-				profile: result.profile,
-				pageKey: result.pageKey,
-				cachedAt: Date.now(),
-			});
+			this.#syncCache();
 		} catch (err) {
 			this.error = err instanceof Error ? err : new Error(String(err));
 		} finally {
@@ -157,17 +154,7 @@ export class ConversationState {
 				...result.messages.map((m) => ({ ...m, status: "sent" as const })),
 			]);
 			this.pageKey = result.pageKey;
-			if (this.profile) {
-				const cachedMessages: ApiResponseMessage[] = this.messages
-					.filter((m) => m.status === "sent")
-					.map(({ status: _status, ...rest }) => rest);
-				this.#conversations.setCachedConversation(this.conversationId, {
-					messages: cachedMessages,
-					profile: this.profile,
-					pageKey: this.pageKey,
-					cachedAt: Date.now(),
-				});
-			}
+			this.#syncCache();
 		} catch (err) {
 			toast.error("Failed to load more messages");
 			console.error(err);
@@ -211,6 +198,7 @@ export class ConversationState {
 				msg.status = "sent";
 				msg.messageId = messageId;
 			}
+			this.#syncCache();
 			void this.#conversations.ensureLoaded(this.conversationId);
 		} catch {
 			const msg = this.messages.find((m) => m.messageId === tempId);
@@ -218,6 +206,19 @@ export class ConversationState {
 			const latestSent = this.messages.find((m) => m.status === "sent");
 			this.#updatePreview(latestSent);
 		}
+	}
+
+	#syncCache(): void {
+		if (!this.profile) return;
+		const cachedMessages: ApiResponseMessage[] = this.messages
+			.filter((m) => m.status === "sent")
+			.map(({ status: _status, ...rest }) => rest);
+		this.#conversations.setCachedConversation(this.conversationId, {
+			messages: cachedMessages,
+			profile: this.profile,
+			pageKey: this.pageKey,
+			cachedAt: Date.now(),
+		});
 	}
 
 	#updatePreview(message: OptimisticMessage | undefined) {
@@ -236,9 +237,11 @@ export class ConversationState {
 		if (index > -1) {
 			const [removed] = this.messages.splice(index, 1);
 			if (isLatest) this.#updatePreview(this.messages.at(0));
+			this.#syncCache();
 			const revertDeleteMessage = () => {
 				this.messages.splice(index, 0, removed);
 				if (isLatest) this.#updatePreview(removed);
+				this.#syncCache();
 			};
 
 			const isOnly = this.messages.length === 0;
@@ -306,6 +309,7 @@ export class ConversationState {
 		const msg = this.messages.find((m) => m.messageId === messageId);
 		if (!msg) return;
 		msg.reactions.push({ reactionType, profileId: this.ourProfileId });
+		this.#syncCache();
 		try {
 			await reactToMessage({
 				conversationId: this.conversationId,
@@ -314,6 +318,7 @@ export class ConversationState {
 			});
 		} catch (err) {
 			msg.reactions.pop();
+			this.#syncCache();
 			throw err;
 		}
 	}

@@ -55,6 +55,9 @@ class ConversationsState {
 					if (!isActive && message.senderId !== this.ourProfileId) {
 						entry.data.unreadCount += 1;
 					}
+					if (!isActive) {
+						this.invalidateConversation(message.conversationId);
+					}
 					this.updatePreview({
 						conversationId: message.conversationId,
 						preview: previewFromMessage(message),
