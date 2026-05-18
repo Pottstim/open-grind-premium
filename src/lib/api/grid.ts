@@ -1,11 +1,8 @@
 import z from "zod";
 
 import { fetchRest } from "$lib/api";
-import {
-	cascadeV3QuerySchema,
-	cascadeV3ResponseItemSchema,
-	cascadeV4ResponseItemSchema,
-} from "$lib/model/grid/cascade";
+import { cascadeV3QuerySchema } from "$lib/model/grid/cascade/query/v3";
+import { cascadeV3ResponseSchema } from "$lib/model/grid/cascade/response/v3";
 import { searchProfileSchema, searchQuerySchema } from "$lib/model/grid/search";
 import { urlSearchParamsCodec } from "$lib/utils";
 
@@ -25,22 +22,6 @@ export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
 				.parse(data),
 		);
 }
-
-export const cascadeV3ResponseSchema = z.object({
-	items: z.array(cascadeV3ResponseItemSchema),
-	nextPage: z.number().int().nonnegative(),
-	shuffled: z.boolean(),
-	hiddenProfiles: z.unknown(),
-	hiddenProfileInfo: z.unknown(),
-});
-
-export const cascadeV4ResponseSchema = z.object({
-	items: z.array(cascadeV4ResponseItemSchema),
-	nextPage: z.number().int().nonnegative(),
-	shuffled: z.boolean(),
-	hiddenProfiles: z.unknown(),
-	hiddenProfileInfo: z.unknown(),
-});
 
 /**
  * Main endpoint used in the source apk. /v4/cascade is currently feature-flagged, /v7/search is only for profile tags

@@ -2,7 +2,7 @@ import { toast } from "svelte-sonner";
 import z from "zod";
 
 import { getPreferences } from "$lib/app-data/preferences.svelte";
-import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade";
+import type { cascadeV3QuerySchema } from "$lib/model/grid/cascade/query/v3";
 import {
 	getGrid,
 	type GridProfile,

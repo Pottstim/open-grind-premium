@@ -88,6 +88,7 @@ Only for [v4/cascade](#get-cascade):
     - *[`boost_upsell_v1`](#boost_upsell_v1)*
     - *[`unlimited_mpu_v1`](#unlimited_mpu_v1)*
     - *[`xtra_mpu_v1`](#xtra_mpu_v1)*
+    - *[`fav_header_v1`](#fav_header_v1)*
 - `nextPage` — integer
 - `shuffled` — boolean
 - `hiddenProfiles` — unknown
@@ -180,6 +181,26 @@ Empty for [v4/cascade](#get-cascade).
 Only for [v3/cascade](#get-cascade-legacy):
 
 - `@type` — string, always `"CascadeItemData$XtraMpuV1"`
+
+Empty for [v4/cascade](#get-cascade).
+
+### `top_picks_v1`
+
+Only for [v3/cascade](#get-cascade-legacy):
+
+- `@type` — string, always `"CascadeItemData$TopPicksV1"`
+
+Empty for [v4/cascade](#get-cascade).
+
+### `fav_header_v1`
+
+- `available` — integer
+- `displayed` — integer
+- `total` — integer
+
+Only for [v3/cascade](#get-cascade-legacy):
+
+- `@type` — string, always `"CascadeItemData$FavHeaderV1"`
 
 Empty for [v4/cascade](#get-cascade).
 

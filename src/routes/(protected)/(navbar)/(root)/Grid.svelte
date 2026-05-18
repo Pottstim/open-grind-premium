@@ -85,7 +85,7 @@
 	{:else if gridState.errorMessage}
 		<div class="p-4 flex col-span-full">
 			<div class="m-auto flex flex-col gap-4">
-				<p class="text-center text-red-400 font-medium">
+				<p class="text-center text-red-400 font-medium select-text">
 					{gridState.errorMessage}
 				</p>
 				<Button onclick={() => gridState.refresh()}>Retry</Button>
@@ -114,7 +114,7 @@
 				<div class="aspect-square bg-stone-700 animate-pulse"></div>
 			{/each}
 		{/if}
-		{#if gridState.nextPage !== 0}
+		{#if gridState.nextPage !== 0 && gridState.nextPage !== null}
 			<div class="col-span-full h-0" use:observeSentinel></div>
 		{/if}
 	{/if}
