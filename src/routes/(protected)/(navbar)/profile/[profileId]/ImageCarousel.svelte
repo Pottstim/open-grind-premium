@@ -138,7 +138,7 @@
 			style:gap="{GAP}px"
 			style:padding="{PADDING_VERTICAL}px {PADDING_HORIZONTAL}px"
 		>
-			{#each medias as _, i (i)}
+			{#each medias, i (i)}
 				<span class="bg-neutral-200/40 size-2 block rounded-full"></span>
 			{/each}
 			<span

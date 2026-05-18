@@ -58,6 +58,10 @@ class WsState {
 		});
 	}
 
+	onConnected(handler: () => void): Promise<() => void> {
+		return listen<void>("ws:connected", () => handler());
+	}
+
 	send(type: string, payload: unknown): void {
 		const ref_id = crypto.randomUUID();
 		invoke("ws_send", { command: { type, ref_id, payload } }).catch(

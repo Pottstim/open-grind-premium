@@ -37,6 +37,7 @@ export class ConversationState {
 	#conversations: ConversationsState;
 	#readQueue: { messageId: string; timestamp: number }[] = [];
 	#readTimer: ReturnType<typeof setTimeout> | null = null;
+	#removeReconcileListener: () => void;
 
 	constructor({
 		conversationId,
@@ -58,6 +59,10 @@ export class ConversationState {
 				.safeParse(localStorage.getItem(`chat:read:${conversationId}`)).data ??
 			null;
 		void this.#initialLoad();
+
+		this.#removeReconcileListener = conversations.onReconcile(() =>
+			this.#reconcileAfterGap(),
+		);
 
 		this.#unlistenWs = ws.on(
 			"chat.v1.message_sent",
@@ -99,7 +104,43 @@ export class ConversationState {
 		this.#destroyed = true;
 		this.#conversations.clearActive(this.conversationId);
 		this.#unlistenWs.then((unlisten) => unlisten()).catch(console.error);
+		this.#removeReconcileListener();
 		if (this.#readTimer !== null) clearTimeout(this.#readTimer);
+	}
+
+	async #reconcileAfterGap(): Promise<void> {
+		if (this.loading) return;
+		try {
+			const result = await getConversation({
+				conversationId: this.conversationId,
+			});
+			const existingIds = new Set(
+				this.messages
+					.filter((m) => m.status === "sent")
+					.map((m) => m.messageId),
+			);
+			const fresh: OptimisticMessage[] = [];
+			for (const m of result.messages) {
+				if (existingIds.has(m.messageId)) continue;
+				fresh.push({ ...m, status: "sent" as const });
+			}
+			if (fresh.length === 0) {
+				this.#syncCache();
+				return;
+			}
+			this.messages = removeDuplicateMessages([...fresh, ...this.messages]);
+			this.#updatePreview(this.messages.at(0));
+			this.#syncCache();
+			for (const m of fresh) {
+				if (m.senderId === this.ourProfileId) continue;
+				void this.reportRead({
+					messageId: m.messageId,
+					timestamp: m.timestamp,
+				});
+			}
+		} catch (error) {
+			console.error("Failed to reconcile messages after gap", error);
+		}
 	}
 
 	async #initialLoad(): Promise<void> {
@@ -212,7 +253,10 @@ export class ConversationState {
 		if (!this.profile) return;
 		const cachedMessages: ApiResponseMessage[] = this.messages
 			.filter((m) => m.status === "sent")
-			.map(({ status: _status, ...rest }) => rest);
+			.map(({ status: _status, ...rest }) => {
+				void _status;
+				return rest;
+			});
 		this.#conversations.setCachedConversation(this.conversationId, {
 			messages: cachedMessages,
 			profile: this.profile,

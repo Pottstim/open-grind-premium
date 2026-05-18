@@ -19,11 +19,11 @@
 		event.preventDefault();
 		try {
 			submitting = true;
-			const result = await callMethod("login", {
+			await callMethod("login", {
 				email,
 				password,
 			});
-			goto("/");
+			void goto("/");
 		} catch (error) {
 			console.error(error);
 			const appError = asAppError(error);

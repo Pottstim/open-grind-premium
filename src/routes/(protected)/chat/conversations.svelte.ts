@@ -38,12 +38,24 @@ class ConversationsState {
 	#activeConversationId: string | null = null;
 	#wsPromises: Promise<() => void>[] = [];
 	#messageCache = new Map<string, CachedConversation>();
+	#firstConnect = true;
+	#wasHidden = false;
+	#lastReconcileAt = 0;
+	#reconcileListeners = new Set<() => void | Promise<void>>();
+	#removeVisibility: (() => void) | null = null;
 
 	constructor(ourProfileId: number) {
 		this.ourProfileId = ourProfileId;
 		this.initial = this.#load(1);
 
 		this.#wsPromises.push(
+			ws.onConnected(() => {
+				if (this.#firstConnect) {
+					this.#firstConnect = false;
+					return;
+				}
+				void this.#reconcile();
+			}),
 			ws.on("chat.v1.message_sent", chatV1MessageSentEventSchema, (event) => {
 				const message = event.payload;
 				const entry = this.entries.find(
@@ -77,12 +89,76 @@ class ConversationsState {
 				},
 			),
 		);
+
+		if (typeof document !== "undefined") {
+			const onVisibility = () => {
+				if (document.visibilityState === "hidden") {
+					this.#wasHidden = true;
+					return;
+				}
+				if (!this.#wasHidden) return;
+				this.#wasHidden = false;
+				void this.#reconcile();
+			};
+			document.addEventListener("visibilitychange", onVisibility);
+			this.#removeVisibility = () =>
+				document.removeEventListener("visibilitychange", onVisibility);
+		}
 	}
 
 	async destroy(): Promise<void> {
 		const unlisteners = await Promise.all(this.#wsPromises);
 		for (const unlisten of unlisteners) unlisten();
 		this.#wsPromises = [];
+		this.#removeVisibility?.();
+		this.#removeVisibility = null;
+		this.#reconcileListeners.clear();
+	}
+
+	onReconcile(handler: () => void | Promise<void>): () => void {
+		this.#reconcileListeners.add(handler);
+		return () => this.#reconcileListeners.delete(handler);
+	}
+
+	async #reconcile(): Promise<void> {
+		const now = Date.now();
+		if (now - this.#lastReconcileAt < 2000) return;
+		this.#lastReconcileAt = now;
+		await this.initial.catch(() => {});
+
+		const activeId = this.#activeConversationId;
+		for (const id of [...this.#messageCache.keys()]) {
+			if (id !== activeId) this.#messageCache.delete(id);
+		}
+
+		try {
+			const result = await getConversations(1);
+			for (const incoming of result.entries) {
+				const existing = this.entries.find(
+					(e) => e.data.conversationId === incoming.data.conversationId,
+				);
+				if (existing) {
+					existing.data.preview = incoming.data.preview;
+					existing.data.lastActivityTimestamp =
+						incoming.data.lastActivityTimestamp;
+					if (incoming.data.conversationId !== activeId) {
+						existing.data.unreadCount = incoming.data.unreadCount;
+					}
+				} else {
+					this.entries.unshift(incoming);
+				}
+			}
+		} catch (error) {
+			console.error("Failed to reconcile conversation list", error);
+		}
+
+		for (const handler of [...this.#reconcileListeners]) {
+			try {
+				await handler();
+			} catch (error) {
+				console.error("Reconcile listener failed", error);
+			}
+		}
 	}
 
 	async #load(page: number): Promise<void> {
