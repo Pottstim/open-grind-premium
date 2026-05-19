@@ -19,25 +19,27 @@
 	let {
 		message,
 		isOut,
+		isRead,
 		indexInStack,
 		stackLength,
 		dayStart,
 		status,
 		onReact,
 		onDelete,
-		isRead,
 		onVisible,
+		onUnsend,
 	}: {
 		message: ApiResponseMessage;
 		isOut: boolean;
+		isRead: boolean | null;
 		indexInStack: number;
 		stackLength: number;
 		dayStart?: number;
 		status?: "sent" | "pending" | "error";
 		onReact?: (reactionId: number) => void;
 		onDelete?: () => void;
-		isRead: boolean | null;
 		onVisible?: () => void;
+		onUnsend?: () => void;
 	} = $props();
 
 	const firstInStack = $derived(indexInStack === 0);
@@ -253,5 +255,6 @@
 		textContent={message.type === "Text" ? message.body.text : undefined}
 		reactionAvailable={message.reactions.length === 0 && !isOut}
 		{onDelete}
+		{onUnsend}
 	/>
 {/if}

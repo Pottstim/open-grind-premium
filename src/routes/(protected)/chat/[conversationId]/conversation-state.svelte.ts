@@ -405,6 +405,27 @@ export class ConversationState {
 			throw err;
 		}
 	}
+
+	markMessageAsUnsent(messageId: string) {
+		const msg = this.messages.find((m) => m.messageId === messageId);
+		let revert: () => void = () => {};
+		if (msg) {
+			const originalUnsent = msg.unsent;
+			msg.unsent = true;
+			msg.type = "Unsent";
+			msg.body = null;
+			this.#syncCache();
+			this.#updatePreview(msg);
+			revert = () => {
+				msg.unsent = originalUnsent;
+				this.#syncCache();
+				this.#updatePreview(msg);
+			};
+		}
+		return {
+			revert,
+		};
+	}
 }
 
 function removeDuplicateMessages(

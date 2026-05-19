@@ -320,7 +320,7 @@ export function previewFromMessage(message: ApiResponseMessage | undefined): {
 		case "Unsent":
 			return {
 				type: "Unsent",
-				text: "",
+				text: null,
 				albumId: null,
 				imageHash: null,
 			};
