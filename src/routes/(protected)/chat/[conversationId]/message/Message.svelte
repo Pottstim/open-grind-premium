@@ -13,6 +13,7 @@
 	import MessageWrapper from "./MessageWrapper.svelte";
 	import Reaction from "./Reaction.svelte";
 	import TextMessage from "./TextMessage.svelte";
+	import UnsentMessage from "./UnsentMessage.svelte";
 	import UnsupportedMessage from "./UnsupportedMessage.svelte";
 
 	let {
@@ -169,6 +170,8 @@
 			<ImageMessage message={message.body} />
 		{:else if message.type === "Album" || message.type === "ExpiringAlbum" || message.type === "ExpiringAlbumV2"}
 			<AlbumMessage message={message.body} />
+		{:else if message.type === "Unsent"}
+			<UnsentMessage />
 		{:else}
 			<UnsupportedMessage type={message.type} />
 		{/if}
