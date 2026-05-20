@@ -18,7 +18,7 @@
 		message,
 	}: {
 		conversationId: string;
-		messageId: number;
+		messageId: string;
 		message: ExpiringImageMessage["body"];
 	} = $props();
 
@@ -58,8 +58,8 @@
 		if (imageState.status !== "loading") return;
 		(async () => {
 			const { body: image } = await getSingleMessage({
-				conversationId: conversationId,
-				messageId: messageId,
+				conversationId,
+				messageId,
 			}).then((res) => expiringImageMessageSchema.parse(res.message));
 			if (image.url === null) throw new Error("Image URL is null");
 			cachedImage = { url: image.url };
@@ -127,7 +127,10 @@
 		class={["h-12 w-50 relative", className, contentClass]}
 		bind:this={media.el}
 	>
-		<LockedMedia class={[media.cornerClass, "font-medium text-neutral-600 gap-2"]} size="sm">
+		<LockedMedia
+			class={[media.cornerClass, "font-medium text-neutral-600 gap-2"]}
+			size="sm"
+		>
 			Expired image
 		</LockedMedia>
 		{@render media.adornments?.()}

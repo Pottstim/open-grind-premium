@@ -43,7 +43,7 @@ export async function getSingleMessage({
 	messageId,
 }: {
 	conversationId: string;
-	messageId: number;
+	messageId: string;
 }) {
 	const messages = await fetchRest(
 		`/v4/chat/conversation/${conversationId}/message/${messageId}`,
