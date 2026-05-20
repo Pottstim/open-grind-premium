@@ -7,6 +7,7 @@ import { getPreferences } from "$lib/app-data/preferences.svelte";
 import {
 	apiResponseMessageSchema,
 	previewFromMessage,
+	unsentMessageSchema,
 } from "$lib/model/message";
 import { chatV1MessageSentEventSchema, ws } from "$lib/ws.svelte";
 import type {
@@ -410,14 +411,20 @@ export class ConversationState {
 		const msg = this.messages.find((m) => m.messageId === messageId);
 		let revert: () => void = () => {};
 		if (msg) {
-			const originalUnsent = msg.unsent;
+			const original = {
+				unsent: msg.unsent,
+				type: msg.type,
+				body: msg.body,
+			};
 			msg.unsent = true;
 			msg.type = "Unsent";
 			msg.body = null;
 			this.#syncCache();
 			this.#updatePreview(msg);
 			revert = () => {
-				msg.unsent = originalUnsent;
+				msg.unsent = original.unsent;
+				msg.type = original.type;
+				msg.body = original.body;
 				this.#syncCache();
 				this.#updatePreview(msg);
 			};
