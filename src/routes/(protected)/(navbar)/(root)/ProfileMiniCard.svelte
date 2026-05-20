@@ -23,7 +23,11 @@
 
 <a href="/profile/{id}" class="aspect-square relative flex items-end">
 	<div class="absolute w-full h-full bg-stone-700">
-		<UserAvatar mediaHash={profilePicture?.mediaHash ?? null} />
+		<UserAvatar
+			mediaHash={profilePicture?.mediaHash ?? null}
+			class="size-full"
+			size="xl"
+		/>
 	</div>
 	{#if distance}
 		<span

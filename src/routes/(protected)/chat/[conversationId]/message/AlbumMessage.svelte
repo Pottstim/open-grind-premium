@@ -171,7 +171,11 @@
 				lightbox.init();
 				lightbox.loadAndOpen(0);
 			})
-			.catch((error) => console.error(error));
+			.catch((error) => {
+				console.error(error);
+				toast.error("Failed to open album");
+				albumState = { status: "idle" };
+			});
 		return () => lightbox?.destroy();
 	});
 </script>

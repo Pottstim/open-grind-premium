@@ -45,13 +45,13 @@ export async function getSingleMessage({
 	conversationId: string;
 	messageId: string;
 }) {
-	const messages = await fetchRest(
+	const message = await fetchRest(
 		`/v4/chat/conversation/${conversationId}/message/${messageId}`,
 		{ method: "GET" },
 	).then((res) =>
 		res.jsonParsed(z.object({ message: apiResponseMessageSchema })),
 	);
-	return messages;
+	return message;
 }
 
 export async function sendMessage({
