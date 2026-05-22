@@ -30,7 +30,15 @@
 			"links shrink-0 [&>a>svg]:size-5!",
 		]}
 	>
-		<a href="/" data-active={page.route.id === "/(protected)/(navbar)/(root)"}>
+		<a
+			href="/"
+			data-active={page.route.id === "/(protected)/(navbar)/(root)"}
+			onclick={(e) => {
+				if (page.route.id === "/(protected)/(navbar)/(root)") {
+					e.preventDefault();
+				}
+			}}
+		>
 			<DotsNineIcon weight="fill" />
 			Browse
 		</a>
