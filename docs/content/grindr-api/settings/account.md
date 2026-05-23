@@ -1,20 +1,88 @@
 # Account
 
-## Account settings, WIP
+## Validate password complexity, WIP
 
-- POST /v3/users/password-validation ValidatePasswordComplexityRequest
-- POST /v3/gcm-push-tokens FcmPushRequest
-- POST /v3/users/update-password ChangePasswordRequest ChangePasswordResponse
-- POST /v3/users/email UpdateEmailRequest AuthResponse
-- POST (dynamic, WIP) LoginEmailRequest AuthResponse
-- POST /v4/sms/users/update-password ChangePasswordPhoneRequest ChangePasswordResponse
-- POST (dynamic, WIP) CreateAccountEmailRequest FirstPartyCreateAccountResponse
-- POST /v7/users/thirdparty CreateThirdPartyAccountRequest ThirdPartyCreateAccountResponse
-- POST /v3/users/forgot-password ForgotPwdEmailRequest ForgotPwdEmailResponse
-- POST /v3/users/thirdparty/exchange GoogleAccessTokenRequest GoogleAccessTokenResponse
-- POST /v4/sms/sessions LoginPhoneRequest AuthResponse
-- POST (dynamic, WIP) ThirdPartyRequest ThirdPartyAuthResponse
-- POST (dynamic, WIP) ThirdPartySessionRequest ThirdPartyAuthResponse
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/users/password-validation
+```
+
+## Register FCM push token, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/gcm-push-tokens
+```
+
+## Update password, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/users/update-password
+```
+
+## Update account email, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/users/email
+```
+
+Response:
+
+- `profileId` — string with numbers, account's ID
+- `sessionId` — [Session ID](/grindr-api/authentication#session-id)
+- `authToken` — string, Auth token for session refresh
+
+## Update password via phone, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v4/sms/users/update-password
+```
+
+## Create third party account, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v7/users/thirdparty
+```
+
+## Forgot password, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/users/forgot-password
+```
+
+## Exchange Google access token, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v3/users/thirdparty/exchange
+```
+
+## Create phone session, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+POST /v4/sms/sessions
+```
+
+Response:
+
+- `profileId` — string with numbers, account's ID
+- `sessionId` — [Session ID](/grindr-api/authentication#session-id)
+- `authToken` — string, Auth token for session refresh
 
 ## Get preferences
 
@@ -63,7 +131,7 @@ GET /v1/visiting/settings
 
 Response:
 
-- `setting` — string, e.g. `"AUTO"`
+- `setting` — string, `"AUTO"`, WIP
 
 ## Set visiting settings
 
@@ -75,9 +143,9 @@ PUT /v1/visiting/settings
 
 Body:
 
-- `setting` — string, e.g. `"AUTO"`, WIP
+- `setting` — string, `"AUTO"`, WIP
 
-Resonse:
+Response:
 
 Empty.
 
@@ -91,7 +159,7 @@ GET /v1/visiting/home
 
 Response:
 
-- `name` — string, [human-readable name](/grindr-api/browse/location#search-places-by-name) of location
+- `name` — [human-readable name](/grindr-api/browse/location#search-places-by-name) of location
 - `lat` — float
 - `lon` — float
 
@@ -110,7 +178,38 @@ Body:
 
 Response:
 
-- `name` — string, [human-readable name](/grindr-api/browse/location#search-places-by-name) of location
+- `name` — [human-readable name](/grindr-api/browse/location#search-places-by-name) of location
 - `lat` — float
 - `lon` — float
 
+## AccountPreferences
+
+- `profileId` — integer
+- `locationSearchOptOut` — boolean
+- `incognito` — boolean
+- `hideViewedMe` — boolean
+- `approximateDistance` — boolean
+- `viewRightNowNsfw` — boolean
+
+## AccountPreferencesUpdate
+
+- `locationSearchOptOut` — boolean
+- `incognito` — boolean
+- `hideViewedMe` — boolean
+- `approximateDistance` — boolean
+- `viewRightNowNsfw` — boolean
+
+## VisitingSettings
+
+- `setting` — string, `"AUTO"`, WIP
+
+## HomeLocation
+
+- `name` — [human-readable name](/grindr-api/browse/location#search-places-by-name) of location
+- `lat` — float
+- `lon` — float
+
+## HomeLocationMutation
+
+- `lat` — float
+- `lon` — float

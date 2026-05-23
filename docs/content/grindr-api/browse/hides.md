@@ -13,37 +13,9 @@ GET /v1/hides
 Response:
 
 - `hides` — array of objects
-  - `profileId` — integer
+  - `profileId` — long integer
   - `displayName` — string
-  - `mediaHash` — string, appears to be just `"hash"`
-
-## Hide a user
-
-Requires [Authorization](/grindr-api/api-authorization).
-
-Repeated requests are completed without errors.
-
-```
-POST /v1/me/hides/{profileId}
-```
-
-Response:
-
-- `updateTime` — integer, appears to be `0`
-
-## Unhide a user
-
-Requires [Authorization](/grindr-api/api-authorization).
-
-Repeated requests are completed without errors.
-
-```
-DELETE /v1/hides/{profileId}
-```
-
-Response:
-
-Emtpy.
+  - `mediaHash` — string, See [Media](/grindr-api/media/)
 
 ## Unhide all hidden users
 
@@ -57,4 +29,32 @@ DELETE /v1/hides
 
 Response:
 
-Emtpy.
+Empty.
+
+## Hide a user
+
+Requires [Authorization](/grindr-api/api-authorization).
+
+Repeated requests are completed without errors.
+
+```
+POST /v1/me/hides/{profileId}
+```
+
+Response:
+
+- `updateTime` — long integer, appears to be `0`
+
+## Unhide a user
+
+Requires [Authorization](/grindr-api/api-authorization).
+
+Repeated requests are completed without errors.
+
+```
+DELETE /v1/hides/{profileId}
+```
+
+Response:
+
+Empty.

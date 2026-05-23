@@ -6,18 +6,88 @@ import {
 	pageTitle,
 	schemaDisplay,
 	tagTitle,
+	urlForParamGroup,
 	urlForSchema,
 	withWipSuffix,
 } from "./slugs";
-import type { Schema } from "./types";
+import type { Parameter, ParameterOrRef, PropertyGroup, Schema } from "./types";
 
 function refName(ref: string): string {
 	return ref.replace("#/components/schemas/", "");
 }
 
+function resolveGroupParam(
+	ctx: Context,
+	p: ParameterOrRef,
+): Parameter | undefined {
+	if ("$ref" in p) {
+		const name = p.$ref.replace("#/components/parameters/", "");
+		return ctx.doc.components.parameters?.[name];
+	}
+	return p;
+}
+
+function appendOptional(propertyLine: string, optional: boolean): string {
+	if (!optional) return propertyLine;
+	const nl = propertyLine.indexOf("\n");
+	const head = nl >= 0 ? propertyLine.slice(0, nl) : propertyLine;
+	const tail = nl >= 0 ? propertyLine.slice(nl) : "";
+	if (/,\s*optional$/i.test(head)) return propertyLine;
+	return `${head}, optional${tail}`;
+}
+
+function renderParamGroupSection(ctx: Context, groupName: string): string {
+	const group = ctx.paramGroups.get(groupName);
+	if (!group) return "";
+	const lines: string[] = [`## ${groupName}`, ""];
+	if (group["x-inherits"]) {
+		const parentUrl = urlForParamGroup(ctx, group["x-inherits"]);
+		lines.push(`- *everything from [${group["x-inherits"]}](${parentUrl})*`);
+	}
+	for (const p of group.parameters) {
+		const resolved = resolveGroupParam(ctx, p);
+		if (!resolved) continue;
+		const base = resolved.schema ?? {};
+		const schema: Schema =
+			resolved.description && !base.description
+				? { ...base, description: resolved.description }
+				: base;
+		lines.push(
+			appendOptional(
+				renderProperty(ctx, resolved.name, schema, 0, !!resolved.required),
+				!resolved.required,
+			),
+		);
+	}
+	lines.push("");
+	return lines.join("\n").trimEnd() + "\n";
+}
+
+function renderPropertyGroups(
+	ctx: Context,
+	groups: PropertyGroup[],
+	lines: string[],
+): void {
+	for (const group of groups) {
+		lines.push("", group.heading, "");
+		for (const piece of group.allOf ?? []) {
+			if (piece.$ref) {
+				const ref = refName(piece.$ref);
+				lines.push(
+					`- *everything from [${schemaDisplay(ctx, ref)}](${urlForSchema(ctx, ref)})*`,
+				);
+			}
+		}
+		for (const [k, v] of Object.entries(group.properties ?? {})) {
+			lines.push(renderProperty(ctx, k, v, 0, false));
+		}
+	}
+}
+
 function renderSchemaSection(ctx: Context, name: string): string {
 	const schema = ctx.doc.components.schemas[name];
 	if (!schema) return "";
+	if (schema["x-exclude-from-markdown"]) return "";
 	const wip = schema["x-wip"] === true;
 	const display = schemaDisplay(ctx, name);
 	const lines: string[] = [`## ${display}`, ""];
@@ -26,8 +96,27 @@ function renderSchemaSection(ctx: Context, name: string): string {
 	if (schema.description) lines.push(schema.description, "");
 
 	if (schema["x-enum-labels"]) {
+		const variants = schema.oneOf ?? schema.anyOf;
+		const intEnumVals: number[] = [];
+		const strEnumVals: string[] = [];
+		if (variants) {
+			for (const v of variants) {
+				if (v.type === "integer" && Array.isArray(v.enum))
+					intEnumVals.push(...(v.enum as number[]));
+				if (v.type === "string" && Array.isArray(v.enum))
+					strEnumVals.push(...(v.enum as string[]));
+			}
+		}
+		const strToInt = new Map(strEnumVals.map((s, i) => [s, intEnumVals[i]]));
 		for (const [val, label] of Object.entries(schema["x-enum-labels"])) {
-			lines.push(`- \`${val}\` — ${label}`);
+			const intVal = strToInt.get(val);
+			const keyPart =
+				intVal !== undefined ? `\`"${val}"\` or \`${intVal}\`` : `\`${val}\``;
+			if (intVal === undefined && label === val) {
+				lines.push(`- ${keyPart}`);
+			} else {
+				lines.push(`- ${keyPart} — ${label}`);
+			}
 		}
 		lines.push("");
 		return lines.join("\n").trimEnd() + "\n";
@@ -61,6 +150,7 @@ function renderSchemaSection(ctx: Context, name: string): string {
 		for (const [k, v] of Object.entries(merged)) {
 			lines.push(renderProperty(ctx, k, v, 0, reqSet.has(k)));
 		}
+		renderPropertyGroups(ctx, schema["x-property-groups"] ?? [], lines);
 		lines.push("");
 		return lines.join("\n").trimEnd() + "\n";
 	}
@@ -70,6 +160,13 @@ function renderSchemaSection(ctx: Context, name: string): string {
 		for (const [k, v] of Object.entries(schema.properties)) {
 			lines.push(renderProperty(ctx, k, v, 0, reqList.includes(k)));
 		}
+		renderPropertyGroups(ctx, schema["x-property-groups"] ?? [], lines);
+		lines.push("");
+		return lines.join("\n").trimEnd() + "\n";
+	}
+
+	if (schema["x-property-groups"]?.length) {
+		renderPropertyGroups(ctx, schema["x-property-groups"], lines);
 		lines.push("");
 		return lines.join("\n").trimEnd() + "\n";
 	}
@@ -93,16 +190,30 @@ export function renderTagPage(ctx: Context, tagName: string): string {
 	const wip = tagObj?.["x-wip"] === true;
 	const lines: string[] = [`# ${withWipSuffix(tagTitle(tagName), wip)}`, ""];
 
-	if (wip) {
+	// Tag description (if any)
+	if (tagObj?.description) {
+		lines.push(tagObj.description, "");
+	}
+
+	if (wip && tagObj?.["x-wip-note"]) {
+		lines.push(
+			`> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched. ${tagObj["x-wip-note"]}`,
+			"",
+		);
+	} else if (wip) {
 		lines.push(
 			"> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.",
 			"",
 		);
+	} else if (tagObj?.["x-wip-note"]) {
+		lines.push(`> [!NOTE] ${tagObj["x-wip-note"]}`, "");
 	}
-	if (tagObj?.description) lines.push(tagObj.description, "");
 
 	for (const entry of ctx.operationsByTag.get(tagName) ?? []) {
 		lines.push(renderOperation(ctx, entry, wip));
+	}
+	for (const name of ctx.paramGroupsByPage.get(tagName) ?? []) {
+		lines.push(renderParamGroupSection(ctx, name));
 	}
 	for (const name of ctx.schemasByPage.get(tagName) ?? []) {
 		lines.push(renderSchemaSection(ctx, name));

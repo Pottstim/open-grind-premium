@@ -1,23 +1,88 @@
-# Right Now
+# Right Now, WIP
 
-WIP
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
+
+## Get active right now post, WIP
+
+```
+GET /v3/rightnow/active-post
+```
+
+## Get other user right now post, WIP
+
+```
+GET /v3/rightnow/profiles/{profileId}
+```
+
+## Update right now post, WIP
+
+```
+PATCH /{version}/rightnow/posts/{postId}
+```
+
+## Create right now post v4, WIP
+
+```
+POST /v4/rightnow/posts
+```
+
+## Create right now post v3, WIP
+
+```
+POST /v3/rightnow/posts
+```
+
+## Update right now post settings, WIP
+
+```
+PATCH /v1/rightnow/posts/{postId}/settings
+```
+
+## Get right now feed, WIP
+
+```
+GET /v5/rightnow/feed
+```
+
+Query (optional):
+
+- `sort` — string, optional
+- `hosting` — boolean, optional
+- `ageMin` — integer, optional
+- `ageMax` — integer, optional
+- `sexualPositions` — string, optional
+
+## Upload right now media, WIP
+
+```
+POST /v1/media/upload
+```
+
+Query (optional):
+
+- `img_1_bottom` — integer, optional
+- `img_1_left` — integer, optional
+- `img_1_right` — integer, optional
+- `img_1_top` — integer, optional
+
+Body:
+
+Binary file.
+
+## Get right now google play sku, WIP
+
+```
+GET /v1/rightnow/googleplay/sku
+```
+
+## Create right now request, WIP
+
+```
+POST /v1/rightnow/requests
+```
 
 ## RightNowStatus
 
-- `NOT_ACTIVE`
-- `HOSTING`
-- `NOT_HOSTING`
-
-## Right Now methods, WIP
-
-- GET /v3/rightnow/active-post . RightNowGetActivePostResponse
-- GET /v3/rightnow/profiles/{profileId} . RightNowGetOtherUserPostResponse
-- PATCH /{version}/rightnow/posts/{postId} UpdatePostRequest
-- POST /v4/rightnow/posts CreatePostRequest RightNowCreatePostResponse
-- POST /v3/rightnow/posts CreatePostRequest RightNowCreatePostResponse
-- PATCH /v1/rightnow/posts/{postId}/settings UpdatePostSettingsRequest
-- GET /v5/rightnow/feed?sort=RightNowSortOption&hosting=boolean&ageMin=integer&ageMax=integer&sexualPositions=string . RightNowGetFeedResponse
-- POST /v1/media/upload?img_1_bottom=integer&img_1_left=integer&img_1_right=integer&img_1_top=integer binary RightNowMediaUploadResponse
-- GET /v1/rightnow/googleplay/sku . RightNowSkuResponse
-- POST /v1/rightnow/requests RightNowCreateRequestData
-
+- `"NOT_ACTIVE"`
+- `"HOSTING"`
+- `"NOT_HOSTING"`

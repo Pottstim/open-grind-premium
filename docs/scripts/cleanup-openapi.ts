@@ -16,5 +16,5 @@ function stripEmptyDescriptions(node: unknown): void {
 }
 
 stripEmptyDescriptions(doc);
-writeFileSync(path, JSON.stringify(doc, null, "\t") + "\n");
+writeFileSync(path, JSON.stringify(doc, null, 2) + "\n");
 console.log("Done.");

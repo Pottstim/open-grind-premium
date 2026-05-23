@@ -1,21 +1,17 @@
-# SMS verification
+# SMS verification, WIP
 
-TODO: wip
-
-## SmsSendCodeRequest
-
-- `country_code` — string
-- `phone_number` — string
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
 
 ## Send SMS code
 
 ```
-- POST /v4/sms/verification/{profileId}/sendcode
+POST /v4/sms/verification/{profileId}/sendcode
 ```
 
 Body:
 
-[SmsSendCodeRequest](#smssendcoderequest)
+- `country_code` — string
+- `phone_number` — string
 
 Response:
 
@@ -25,7 +21,7 @@ Response:
 ## Verify SMS code
 
 ```
-POST /v4/sms/verification/{profileId}/verifycode SmsVerifyCodeRequest
+POST /v4/sms/verification/{profileId}/verifycode
 ```
 
 Response:
@@ -41,9 +37,10 @@ POST /v4/sms/users/update-password/sendcode
 
 Body:
 
-[SmsSendCodeRequest](#smssendcoderequest)
+- `country_code` — string
+- `phone_number` — string
 
-<!-- ### SMS verification
+## Send SMS code (legacy), WIP
 
 ```
 POST /v4/sms/sendcode
@@ -51,11 +48,8 @@ POST /v4/sms/sendcode
 
 Body:
 
-[SmsSendCodeRequest](#smssendcoderequest)
-
-Response:
-
-Empty. -->
+- `country_code` — string
+- `phone_number` — string
 
 ## Verify SMS code (legacy)
 
@@ -75,15 +69,23 @@ Empty.
 
 ## Face recognition, WIP
 
-- POST /v4/recognition/face FaceDetectionResult
+```
+POST /v4/recognition/face
+```
 
 ## Spotify token, WIP
 
-- POST /api/token (URL-encoded) see below SpotifyAuthResponse
+```
+POST /api/token
+```
 
-## Delete account
+Body:
 
-WIP
+Content-Type: `application/x-www-form-urlencoded`
+
+Map of string to string.
+
+## Delete account, WIP
 
 Requires [Authorization](/grindr-api/api-authorization).
 
@@ -91,3 +93,18 @@ Requires [Authorization](/grindr-api/api-authorization).
 DELETE /v3/me/profile
 ```
 
+## SmsSendCodeRequest
+
+- `country_code` — string
+- `phone_number` — string
+
+## SmsCodeResponse
+
+- `code` — number or `null`
+- `message` — string, e.g. `"Profile is not verification required"` or `"Profile is already verified"`
+
+## SmsVerifyCodeLegacyRequest
+
+- `country_code` — string
+- `phone_number` — string
+- `code` — string

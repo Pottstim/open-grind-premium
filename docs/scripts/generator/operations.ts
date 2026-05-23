@@ -7,7 +7,7 @@ import {
 	isPlaceholderSchema,
 	renderProperty,
 } from "./properties";
-import { urlForSchema, withWipSuffix } from "./slugs";
+import { urlForParamGroup, urlForSchema, withWipSuffix } from "./slugs";
 import type { Parameter, ParameterOrRef, Schema } from "./types";
 
 const HTTP_DEFAULT_DESCRIPTIONS = new Set([
@@ -49,12 +49,30 @@ function refName(ref: string): string {
 	return ref.replace("#/components/schemas/", "");
 }
 
+function appendOptional(propertyLine: string, optional: boolean): string {
+	if (!optional) return propertyLine;
+	const nl = propertyLine.indexOf("\n");
+	const head = nl >= 0 ? propertyLine.slice(0, nl) : propertyLine;
+	const tail = nl >= 0 ? propertyLine.slice(nl) : "";
+	if (/,\s*optional$/i.test(head)) return propertyLine;
+	return `${head}, optional${tail}`;
+}
+
 export function renderBodySchema(
 	ctx: Context,
 	schema: Schema | undefined,
 ): string[] {
 	if (!schema) return [];
-	if (isPlaceholderSchema(schema)) return [];
+
+	if (
+		isPlaceholderSchema(
+			schema,
+			(name: string): Schema | undefined => ctx.doc.components.schemas[name],
+		)
+	) {
+		const original = schema["x-original-type"];
+		return original ? [`Response type: \`${original}\` (undocumented).`] : [];
+	}
 	let s = schema;
 	if (s.$ref) {
 		const name = refName(s.$ref);
@@ -109,6 +127,16 @@ export function renderBodySchema(
 			renderProperty(ctx, k, v, 0, reqList.includes(k)),
 		);
 	}
+	if (
+		s.type === "object" &&
+		!s.properties &&
+		typeof s.additionalProperties === "object"
+	) {
+		return [`Map of string to ${describeType(ctx, s.additionalProperties)}.`];
+	}
+	if (s.type === "object" && !s.properties) {
+		return [];
+	}
 	const variants = s.oneOf ?? s.anyOf;
 	if (variants) {
 		const out = ["One of:"];
@@ -155,6 +183,11 @@ export function renderOperation(
 		lines.push("> [!NOTE] This endpoint hasn't been researched yet", "");
 	}
 
+	// Custom WIP note (if provided)
+	if (op["x-wip-note"]) {
+		lines.push(`> [!NOTE] ${op["x-wip-note"]}`, "");
+	}
+
 	if (op.security && op.security.length) {
 		lines.push("Requires [Authorization](/grindr-api/api-authorization).", "");
 	}
@@ -164,7 +197,6 @@ export function renderOperation(
 	if (op["x-idempotent"])
 		lines.push("Repeated requests are completed without errors.", "");
 	if (op["x-paid"]) lines.push("Paid feature.", "");
-	if (op["x-legacy"]) lines.push("Legacy endpoint.", "");
 
 	if (op["x-see-also"]?.length) {
 		for (const link of op["x-see-also"])
@@ -174,30 +206,59 @@ export function renderOperation(
 
 	lines.push("```", `${method.toUpperCase()} ${path}`, "```", "");
 
+	const queryGroups = op["x-query-groups"] ?? [];
 	const allParams: Parameter[] = [];
 	for (const p of op.parameters ?? []) {
+		if ("$ref" in p && queryGroups.length) continue;
 		const resolved = resolveParam(ctx, p);
 		if (resolved) allParams.push(resolved);
 	}
 	const queryParams = allParams.filter((p) => p.in === "query");
 	const headerParams = allParams.filter((p) => p.in === "header");
 
-	if (queryParams.length) {
-		const allOptional = queryParams.every((p) => !p.required);
+	function schemaForParam(p: Parameter): Schema {
+		const base = p.schema ?? {};
+		if (p.description && !base.description) {
+			return { ...base, description: p.description };
+		}
+		return base;
+	}
+
+	if (queryParams.length || queryGroups.length) {
+		const allOptional =
+			!queryGroups.length && queryParams.every((p) => !p.required);
 		lines.push(allOptional ? "Query (optional):" : "Query:", "");
+		for (const groupName of queryGroups) {
+			lines.push(
+				`- *everything from [${groupName}](${urlForParamGroup(ctx, groupName)})*`,
+			);
+		}
 		for (const p of queryParams)
-			lines.push(renderProperty(ctx, p.name, p.schema ?? {}, 0, !!p.required));
+			lines.push(
+				appendOptional(
+					renderProperty(ctx, p.name, schemaForParam(p), 0, !!p.required),
+					!p.required,
+				),
+			);
 		lines.push("");
 	}
 
 	if (headerParams.length) {
 		lines.push("Headers:", "");
 		for (const p of headerParams)
-			lines.push(renderProperty(ctx, p.name, p.schema ?? {}, 0, !!p.required));
+			lines.push(
+				renderProperty(ctx, p.name, schemaForParam(p), 0, !!p.required),
+			);
 		lines.push("");
 	}
 
-	if (op.requestBody?.content && !isPlaceholderBody(op.requestBody)) {
+	if (
+		op.requestBody?.content &&
+		!isPlaceholderBody(
+			op.requestBody,
+			(name) => ctx.doc.components.schemas[name],
+		)
+	) {
 		const c = op.requestBody.content;
 		const json = c["application/json"];
 		const binary = c["application/octet-stream"];
@@ -217,6 +278,9 @@ export function renderOperation(
 		lines.push("");
 	}
 
+	const resolveSchemaByName = (name: string): Schema | undefined =>
+		ctx.doc.components.schemas[name];
+
 	const successCode = ["200", "201", "202", "204"].find(
 		(c) => op.responses?.[c],
 	);
@@ -227,15 +291,15 @@ export function renderOperation(
 			const binary = resp.content?.["application/octet-stream"];
 			const images =
 				resp.content?.["image/jpeg"] ?? resp.content?.["image/png"];
+			const hasMeaningfulDesc =
+				!!resp.description && !HTTP_DEFAULT_DESCRIPTIONS.has(resp.description);
 			if (json) {
-				if (isPlaceholderSchema(json.schema)) {
-					void 0;
-				} else if (
-					isEmptyObjectSchema(json.schema) &&
-					resp.description &&
-					!HTTP_DEFAULT_DESCRIPTIONS.has(resp.description)
-				) {
-					lines.push("Response:", "", resp.description, "");
+				if (isPlaceholderSchema(json.schema, resolveSchemaByName)) {
+					if (hasMeaningfulDesc) {
+						lines.push("Response:", "", resp.description!, "");
+					}
+				} else if (isEmptyObjectSchema(json.schema) && hasMeaningfulDesc) {
+					lines.push("Response:", "", resp.description!, "");
 				} else {
 					lines.push("Response:", "");
 					lines.push(...renderBodySchema(ctx, json.schema));
@@ -243,11 +307,8 @@ export function renderOperation(
 				}
 			} else if (binary) lines.push("Response:", "", "Binary content.", "");
 			else if (images) lines.push("Response:", "", "Image binary.", "");
-			else if (
-				resp.description &&
-				!HTTP_DEFAULT_DESCRIPTIONS.has(resp.description)
-			) {
-				lines.push("Response:", "", resp.description, "");
+			else if (hasMeaningfulDesc) {
+				lines.push("Response:", "", resp.description!, "");
 			}
 		}
 	}

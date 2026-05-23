@@ -1,5 +1,7 @@
 # Entitlements
 
+## Get entitlements
+
 ```
 GET /v1/entitlements
 ```

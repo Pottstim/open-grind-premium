@@ -1,8 +1,33 @@
 # Videocalls, WIP
 
-- GET /v3/video-call . VideoCallInfoResponse
-- POST /v1/video-call CreateVideoCallRequest CreateVideoCallResponse
-- PATCH /v1/video-call . RenewVideoCallResponse
-- PATCH /v1/video-call/join JoinVideoCallRequest JoinVideoCallResponse
-- PATCH /v1/video-call/leave LeaveVideoCallRequestChatV3
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
 
+## Get video call info, WIP
+
+```
+GET /v3/video-call
+```
+
+## Create video call, WIP
+
+```
+POST /v1/video-call
+```
+
+## Renew video call, WIP
+
+```
+PATCH /v1/video-call
+```
+
+## Join video call, WIP
+
+```
+PATCH /v1/video-call/join
+```
+
+## Leave video call, WIP
+
+```
+PATCH /v1/video-call/leave
+```

@@ -120,7 +120,8 @@
 		},
 		{
 			"name": "browse/age-verification",
-			"x-wip": true
+			"x-wip": true,
+			"x-wip-note": "Help needed."
 		},
 		{
 			"name": "browse/blocks",
@@ -128,7 +129,8 @@
 		},
 		{
 			"name": "browse/discover",
-			"x-wip": true
+			"x-wip": true,
+			"x-wip-note": "Help needed."
 		},
 		{
 			"name": "browse/entitlements"
@@ -143,7 +145,8 @@
 		},
 		{
 			"name": "browse/links",
-			"x-wip": true
+			"x-wip": true,
+			"x-wip-note": "Unknown, WIP"
 		},
 		{
 			"name": "browse/location"
@@ -272,7 +275,8 @@
 								"schema": {
 									"allOf": [
 										{
-											"$ref": "#/components/schemas/UndocumentedObject"
+											"$ref": "#/components/schemas/UndocumentedObject",
+											"x-original-type": "BootstrapResponse"
 										}
 									]
 								}
@@ -516,7 +520,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "DataPortabilityVerificationCode"
 							}
 						}
 					}
@@ -551,7 +556,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "AccessPortabilityResponse"
 								}
 							}
 						},
@@ -574,7 +580,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "DataPortabilityRequest"
 							}
 						}
 					}
@@ -609,7 +616,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "DataPortabilityResponse"
 								}
 							}
 						},
@@ -632,7 +640,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "DataPortabilityRequest"
 							}
 						}
 					}
@@ -709,7 +718,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "DataPortabilityVerificationCode"
 							}
 						}
 					}
@@ -744,7 +754,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "BoostSessionResponse"
 								}
 							}
 						},
@@ -769,7 +780,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "BoostRedeemedResponse"
 								}
 							}
 						},
@@ -794,7 +806,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SuperBoostPreferencesRequest"
 							}
 						}
 					}
@@ -822,7 +835,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SuperBoostPreferencesRequest"
 							}
 						}
 					}
@@ -850,7 +864,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "BoostPreferencesRequest"
 							}
 						}
 					}
@@ -878,7 +893,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "ConsumableInventoryResponse"
 								}
 							}
 						},
@@ -991,7 +1007,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "CouponRequest"
 							}
 						}
 					}
@@ -1019,7 +1036,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "ExploreHeatmapsResponse"
 								}
 							}
 						},
@@ -1044,7 +1062,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ExploreHeatmapsRequest"
 							}
 						}
 					}
@@ -1058,7 +1077,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "ExploreHeatmapsResponse"
 								}
 							}
 						},
@@ -1083,7 +1103,8 @@
 										{
 											"$ref": "#/components/schemas/UndocumentedObject"
 										}
-									]
+									],
+									"x-original-type": "SponsoredContentConsentAgreementResponse"
 								}
 							}
 						},
@@ -1106,7 +1127,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SponsoredContentAcceptConsentRequest"
 							}
 						}
 					}
@@ -1132,7 +1154,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SponsoredContentAcceptConsentRequest"
 							}
 						}
 					}
@@ -1160,7 +1183,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "BanAgreementRequest"
 							}
 						}
 					}
@@ -1184,7 +1208,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AcceptedLegalAgreementsResponse"
 								}
 							}
 						},
@@ -1207,7 +1232,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "AcceptLegalAgreementsRequest"
 							}
 						}
 					}
@@ -1231,7 +1257,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "VipMatchmakerConsentAgreementResponse"
 								}
 							}
 						},
@@ -1254,7 +1281,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "VipMatchmakerAcceptConsentRequest"
 							}
 						}
 					}
@@ -1280,7 +1308,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "VipMatchmakerAcceptConsentRequest"
 							}
 						}
 					}
@@ -1304,7 +1333,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "TopPicksConsentAgreementResponse"
 								}
 							}
 						},
@@ -1327,7 +1357,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "TopPicksAcceptConsentRequest"
 							}
 						}
 					}
@@ -1363,7 +1394,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "TopPicksConsentAgreementResponse"
 								}
 							}
 						},
@@ -1386,7 +1418,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "TopPicksAcceptConsentRequest"
 							}
 						}
 					}
@@ -1410,7 +1443,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowConsentAgreementResponse"
 								}
 							}
 						},
@@ -1433,7 +1467,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "RightNowAcceptConsentRequest"
 							}
 						}
 					}
@@ -1457,7 +1492,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "LegalAgreementsInfo"
 								}
 							}
 						},
@@ -1482,7 +1518,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ConsentRequest"
 							}
 						}
 					}
@@ -1508,7 +1545,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ConsentRequest"
 							}
 						}
 					}
@@ -1534,7 +1572,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ConsentRequest"
 							}
 						}
 					}
@@ -1544,7 +1583,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ConsentOptStatusResponse"
 								}
 							}
 						},
@@ -1594,7 +1634,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "UxEventRequest"
 							}
 						}
 					}
@@ -1663,7 +1704,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "Offer"
 								}
 							}
 						},
@@ -1691,7 +1733,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "Offer"
 								}
 							}
 						},
@@ -1712,7 +1755,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "EligibleOffers"
 								}
 							}
 						},
@@ -1738,7 +1782,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ReportProfileResponse"
 								}
 							}
 						},
@@ -1766,7 +1811,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ReportProfileRequest"
 							}
 						}
 					}
@@ -1795,7 +1841,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ReportProfileResponse"
 								}
 							}
 						},
@@ -1823,7 +1870,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ReportProfileRequest"
 							}
 						}
 					}
@@ -1851,7 +1899,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "RewardedAdStatusRequest"
 							}
 						}
 					}
@@ -1879,7 +1928,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "RewardedAdRestrictionRequest"
 							}
 						}
 					}
@@ -1903,7 +1953,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RewardedAdApiResponse"
 								}
 							}
 						},
@@ -1929,7 +1980,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ExploreFreeChatsResponse"
 								}
 							}
 						},
@@ -1967,7 +2019,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowGetActivePostResponse"
 								}
 							}
 						},
@@ -1993,7 +2046,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowGetOtherUserPostResponse"
 								}
 							}
 						},
@@ -2031,7 +2085,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "UpdatePostRequest"
 							}
 						}
 					}
@@ -2059,7 +2114,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "CreatePostRequest"
 							}
 						}
 					}
@@ -2069,7 +2125,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowCreatePostResponse"
 								}
 							}
 						},
@@ -2094,7 +2151,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "CreatePostRequest"
 							}
 						}
 					}
@@ -2104,7 +2162,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowCreatePostResponse"
 								}
 							}
 						},
@@ -2139,7 +2198,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "UpdatePostSettingsRequest"
 							}
 						}
 					}
@@ -2200,7 +2260,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowGetFeedResponse"
 								}
 							}
 						},
@@ -2262,7 +2323,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowMediaUploadResponse"
 								}
 							}
 						},
@@ -2283,7 +2345,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RightNowSkuResponse"
 								}
 							}
 						},
@@ -2308,7 +2371,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "RightNowCreateRequestData"
 							}
 						}
 					}
@@ -2332,7 +2396,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StoreResponse"
 								}
 							}
 						},
@@ -2357,7 +2422,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "PaymentTokenRequest"
 							}
 						}
 					}
@@ -2367,7 +2433,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "PaymentTokenResponse"
 								}
 							}
 						},
@@ -2389,7 +2456,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ConsumableProductsResponse"
 								}
 							}
 						},
@@ -2410,7 +2478,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StoreInProfileResponse"
 								}
 							}
 						},
@@ -2441,7 +2510,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StoreResponse"
 								}
 							}
 						},
@@ -2466,7 +2536,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "PaymentTokenRequest"
 							}
 						}
 					}
@@ -2476,7 +2547,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "PaymentTokenResponse"
 								}
 							}
 						},
@@ -2507,7 +2579,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "Product"
 								}
 							}
 						},
@@ -2528,7 +2601,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StoreInProfileResponse"
 								}
 							}
 						},
@@ -2553,7 +2627,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "PurchaseData"
 							}
 						}
 					}
@@ -2626,7 +2701,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ConsumableTokenRequest"
 							}
 						}
 					}
@@ -2654,7 +2730,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SubscriptionTokenRequest"
 							}
 						}
 					}
@@ -2682,7 +2759,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SubscriptionRestorationRequest"
 							}
 						}
 					}
@@ -2692,7 +2770,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SubscriptionRestorationResponse"
 								}
 							}
 						},
@@ -2729,7 +2808,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SubscriptionResponse"
 								}
 							}
 						},
@@ -2755,7 +2835,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "TopPicksEntitlementResponse"
 								}
 							}
 						},
@@ -2818,7 +2899,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "VideoCallInfoResponse"
 								}
 							}
 						},
@@ -2843,7 +2925,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "CreateVideoCallRequest"
 							}
 						}
 					}
@@ -2853,7 +2936,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "CreateVideoCallResponse"
 								}
 							}
 						},
@@ -2872,7 +2956,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RenewVideoCallResponse"
 								}
 							}
 						},
@@ -2897,7 +2982,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "JoinVideoCallRequest"
 							}
 						}
 					}
@@ -2907,7 +2993,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "JoinVideoCallResponse"
 								}
 							}
 						},
@@ -2932,7 +3019,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "LeaveVideoCallRequestChatV3"
 							}
 						}
 					}
@@ -2981,7 +3069,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StarProfilesResponse"
 								}
 							}
 						},
@@ -3016,7 +3105,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "BannedWarningList"
 								}
 							}
 						},
@@ -3161,7 +3251,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "AgeVerificationPhotoIdMatchRequest"
 							}
 						}
 					}
@@ -3171,7 +3262,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AgeVerificationFaceTecResponse"
 								}
 							}
 						},
@@ -3192,7 +3284,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AgeVerificationSessionResponse"
 								}
 							}
 						},
@@ -3213,7 +3306,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AgeVerificationFaceTecResponse"
 								}
 							}
 						},
@@ -3238,7 +3332,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "AgeVerificationFaceTecRequest"
 							}
 						}
 					}
@@ -3248,7 +3343,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AgeVerificationFaceTecResponse"
 								}
 							}
 						},
@@ -3269,7 +3365,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AgeVerificationOptionsResponse"
 								}
 							}
 						},
@@ -3453,7 +3550,7 @@
 								}
 							}
 						},
-						"description": "OK"
+						"description": "If subscription is purchased,\n\nUnknown, WIP.\n\nIf subscription is not purchased,\n\n- `status` — string, `\"SubscriptionRequired\"`\n- `body` — object\n  - `upsell` — string, `\"Unknown\"`\n  - `profiles` — array, unknown"
 					}
 				},
 				"summary": "Get discover profiles",
@@ -3485,7 +3582,7 @@
 								}
 							}
 						},
-						"description": "OK"
+						"description": "If subscription is purchased,\n\nUnknown, WIP.\n\nIf subscription is not purchased,\n\n- `status` — string, `\"SubscriptionRequired\"`\n- `body` — object\n  - `upsell` — string, `\"Unknown\"`"
 					}
 				},
 				"summary": "Get discover profiles (legacy)",
@@ -3651,7 +3748,10 @@
 						"description": "OK"
 					}
 				},
-				"summary": "Get Cascade"
+				"summary": "Get Cascade",
+				"x-query-groups": [
+					"CascadeQuery"
+				]
 			}
 		},
 		"/v3/cascade": {
@@ -3781,7 +3881,10 @@
 					}
 				},
 				"summary": "Get Cascade (legacy)",
-				"x-legacy": true
+				"x-legacy": true,
+				"x-query-groups": [
+					"CascadeQuery"
+				]
 			}
 		},
 		"/v7/search": {
@@ -3848,84 +3951,96 @@
 						"name": "heightMinimum",
 						"in": "query",
 						"schema": {
-							"type": "number"
+							"type": "number",
+							"format": "float"
 						}
 					},
 					{
 						"name": "heightMaximum",
 						"in": "query",
 						"schema": {
-							"type": "number"
+							"type": "number",
+							"format": "float"
 						}
 					},
 					{
 						"name": "weightMinimum",
 						"in": "query",
 						"schema": {
-							"type": "number"
+							"type": "number",
+							"format": "float"
 						}
 					},
 					{
 						"name": "weightMaximum",
 						"in": "query",
 						"schema": {
-							"type": "number"
+							"type": "number",
+							"format": "float"
 						}
 					},
 					{
 						"name": "grindrTribesIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Tribes](/grindr-api/users/profiles#tribes)"
 						}
 					},
 					{
 						"name": "lookingForIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Looking for](/grindr-api/users/profiles#looking-for)"
 						}
 					},
 					{
 						"name": "relationshipStatusIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Relationship status](/grindr-api/users/profiles#relationship-status)"
 						}
 					},
 					{
 						"name": "bodyTypeIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "string, see [Body type](/grindr-api/users/profiles#body-type)"
 						}
 					},
 					{
 						"name": "sexualPositionIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Sexual position](/grindr-api/users/profiles#sexual-position-id)"
 						}
 					},
 					{
 						"name": "meetAtIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Meet at](/grindr-api/users/profiles#meet-at)"
 						}
 					},
 					{
 						"name": "nsfwIds",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "array of integers concatenated with a `,`, `-1` means \"Not Specified\", see [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics)"
 						}
 					},
 					{
 						"name": "profileTags",
 						"in": "query",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"description": "string, see [Profile tags](/grindr-api/users/profiles#profile-tags)"
 						}
 					},
 					{
@@ -3963,7 +4078,10 @@
 					}
 				},
 				"summary": "Search",
-				"description": "Results array appears to be capped to 600 per page. Use `searchAfterProfileId` or `searchAfterDistance` for pagination."
+				"description": "Results array appears to be capped to 600 per page. Use `searchAfterProfileId` or `searchAfterDistance` for pagination.",
+				"x-query-groups": [
+					"GridQuery"
+				]
 			}
 		},
 		"/v1/hides": {
@@ -3997,8 +4115,7 @@
 														"type": "string"
 													},
 													"mediaHash": {
-														"type": "string",
-														"description": "appears to be just `\"hash\"`"
+														"$ref": "#/components/schemas/MediaHash"
 													}
 												}
 											}
@@ -4253,7 +4370,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "RoamPutLocationRequest"
 							}
 						}
 					}
@@ -4277,7 +4395,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "RoamSession"
 								}
 							}
 						},
@@ -4536,7 +4655,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AListFullProfileApiResponse"
 								}
 							}
 						},
@@ -4574,7 +4694,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AListUpdatesApiResponse"
 								}
 							}
 						},
@@ -4604,7 +4725,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "AListFeedback"
 							}
 						}
 					}
@@ -4642,7 +4764,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "AListProfilesResponse"
 								}
 							}
 						},
@@ -5047,6 +5170,7 @@
 					"media/public-cdn-files"
 				],
 				"operationId": "getPublicProfileImage",
+				"description": "One side will always be the requested size and another will be less or equal to the requested size.\n\nAvailable sizes for `{size}` parameter:\n\n- `2048x2048` (might be unavailable)\n- `1024x1024`\n- `480x480`\n- `320x320`",
 				"servers": [
 					{
 						"url": "https://cdns.grindr.com"
@@ -5064,7 +5188,8 @@
 								"1024x1024",
 								"480x480",
 								"320x320"
-							]
+							],
+							"description": "`2048x2048` might be unavailable."
 						}
 					},
 					{
@@ -5072,7 +5197,7 @@
 						"in": "path",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/MediaHash"
 						}
 					}
 				],
@@ -5110,6 +5235,7 @@
 					"media/public-cdn-files"
 				],
 				"operationId": "getPublicThumbnailImage",
+				"description": "Image will be cropped at center and both sides will be exactly the requested size.\n\nAvailable sizes for `{size}` parameter:\n- `480x480` (might be unavailable)\n- `320x320`\n- `75x75`",
 				"servers": [
 					{
 						"url": "https://cdns.grindr.com"
@@ -5126,7 +5252,8 @@
 								"480x480",
 								"320x320",
 								"75x75"
-							]
+							],
+							"description": "`480x480` might be unavailable."
 						}
 					},
 					{
@@ -5134,7 +5261,7 @@
 						"in": "path",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/MediaHash"
 						}
 					}
 				],
@@ -5191,7 +5318,7 @@
 						"in": "path",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/MediaHash"
 						}
 					},
 					{
@@ -6268,7 +6395,8 @@
 						"in": "query",
 						"schema": {
 							"type": "integer"
-						}
+						},
+						"description": "1-based number, pagination"
 					}
 				],
 				"requestBody": {
@@ -6293,7 +6421,8 @@
 						"description": "OK"
 					}
 				},
-				"summary": "Get conversations"
+				"summary": "Get conversations",
+				"description": "*Also `POST /v3/inbox`, seems to be aliased to v4 now*"
 			}
 		},
 		"/v3/inbox": {
@@ -6313,7 +6442,8 @@
 						"in": "query",
 						"schema": {
 							"type": "integer"
-						}
+						},
+						"description": "1-based number, pagination"
 					}
 				],
 				"requestBody": {
@@ -7297,7 +7427,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ValidatePasswordComplexityRequest"
 							}
 						}
 					}
@@ -7333,7 +7464,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "FcmPushRequest"
 							}
 						}
 					}
@@ -7362,7 +7494,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ChangePasswordRequest"
 							}
 						}
 					}
@@ -7372,7 +7505,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ChangePasswordResponse"
 								}
 							}
 						},
@@ -7398,7 +7532,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "UpdateEmailRequest"
 							}
 						}
 					}
@@ -7434,7 +7569,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ChangePasswordPhoneRequest"
 							}
 						}
 					}
@@ -7444,7 +7580,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ChangePasswordResponse"
 								}
 							}
 						},
@@ -7470,7 +7607,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "CreateThirdPartyAccountRequest"
 							}
 						}
 					}
@@ -7480,7 +7618,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ThirdPartyCreateAccountResponse"
 								}
 							}
 						},
@@ -7506,7 +7645,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "ForgotPwdEmailRequest"
 							}
 						}
 					}
@@ -7516,7 +7656,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "ForgotPwdEmailResponse"
 								}
 							}
 						},
@@ -7542,7 +7683,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "GoogleAccessTokenRequest"
 							}
 						}
 					}
@@ -7552,7 +7694,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "GoogleAccessTokenResponse"
 								}
 							}
 						},
@@ -7578,7 +7721,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "LoginPhoneRequest"
 							}
 						}
 					}
@@ -7963,7 +8107,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SpotifyAuthResponse"
 								}
 							}
 						},
@@ -8010,7 +8155,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SpotifyBackendResponse"
 								}
 							}
 						},
@@ -8035,7 +8181,8 @@
 									{
 										"$ref": "#/components/schemas/UndocumentedObject"
 									}
-								]
+								],
+								"x-original-type": "SpotifyPostRequest"
 							}
 						}
 					}
@@ -8082,7 +8229,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SpotifySearchTrackResponse"
 								}
 							}
 						},
@@ -8112,7 +8260,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SpotifyGetTrackResponse"
 								}
 							}
 						},
@@ -8133,7 +8282,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "SpotifyRecentlyPlayedResponse"
 								}
 							}
 						},
@@ -8823,7 +8973,8 @@
 										"items": {
 											"type": "string",
 											"pattern": "^[0-9]+$"
-										}
+										},
+										"description": "array of strings with numeric ids"
 									}
 								}
 							}
@@ -8842,7 +8993,8 @@
 											"items": {
 												"type": "string",
 												"pattern": "^[0-9]+$"
-											}
+											},
+											"description": "array of strings with numeric ids"
 										}
 									}
 								}
@@ -9088,7 +9240,8 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/UndocumentedObject"
+									"$ref": "#/components/schemas/UndocumentedObject",
+									"x-original-type": "StoreResponse"
 								}
 							}
 						},
@@ -9253,7 +9406,8 @@
 				"in": "query",
 				"schema": {
 					"$ref": "#/components/schemas/Geohash"
-				}
+				},
+				"required": true
 			},
 			"ExploreGeoHashQuery": {
 				"name": "exploreGeoHash",
@@ -9301,7 +9455,8 @@
 				"name": "genders",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Get genders](/grindr-api/users/profiles#get-genders)"
 				}
 			},
 			"GridPageNumberQuery": {
@@ -9336,84 +9491,96 @@
 				"name": "heightCmMin",
 				"in": "query",
 				"schema": {
-					"type": "number"
+					"type": "number",
+					"format": "float"
 				}
 			},
 			"CascadeHeightCmMaxQuery": {
 				"name": "heightCmMax",
 				"in": "query",
 				"schema": {
-					"type": "number"
+					"type": "number",
+					"format": "float"
 				}
 			},
 			"CascadeWeightGramsMinQuery": {
 				"name": "weightGramsMin",
 				"in": "query",
 				"schema": {
-					"type": "number"
+					"type": "number",
+					"format": "float"
 				}
 			},
 			"CascadeWeightGramsMaxQuery": {
 				"name": "weightGramsMax",
 				"in": "query",
 				"schema": {
-					"type": "number"
+					"type": "number",
+					"format": "float"
 				}
 			},
 			"CascadeTribesQuery": {
 				"name": "tribes",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Tribes](/grindr-api/users/profiles#tribes)"
 				}
 			},
 			"CascadeLookingForQuery": {
 				"name": "lookingFor",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Looking for](/grindr-api/users/profiles#looking-for)"
 				}
 			},
 			"CascadeRelationshipStatusesQuery": {
 				"name": "relationshipStatuses",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Relationship status](/grindr-api/users/profiles#relationship-status)"
 				}
 			},
 			"CascadeBodyTypesQuery": {
 				"name": "bodyTypes",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Body type](/grindr-api/users/profiles#body-type)"
 				}
 			},
 			"CascadeSexualPositionsQuery": {
 				"name": "sexualPositions",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "array of integers concatenated with a `,`, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id)"
 				}
 			},
 			"CascadeMeetAtQuery": {
 				"name": "meetAt",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Meet at](/grindr-api/users/profiles#meet-at)"
 				}
 			},
 			"CascadeNsfwPicsQuery": {
 				"name": "nsfwPics",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics)"
 				}
 			},
 			"CascadeTagsQuery": {
 				"name": "tags",
 				"in": "query",
 				"schema": {
-					"type": "string"
+					"type": "string",
+					"description": "string, see [Profile tags](/grindr-api/users/profiles#profile-tags)"
 				}
 			},
 			"CascadeRightNowQuery": {
@@ -9458,7 +9625,8 @@
 				"additionalProperties": true,
 				"description": "Placeholder for a response or request body whose shape has not yet been documented.",
 				"x-wip": true,
-				"x-render-on-tag": "shared-types"
+				"x-render-on-tag": "shared-types",
+				"x-exclude-from-markdown": true
 			},
 			"TimestampMs": {
 				"type": "integer",
@@ -9814,7 +9982,11 @@
 						"nullable": true
 					},
 					"profileImageMediaHash": {
-						"type": "string",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/MediaHash"
+							}
+						],
 						"nullable": true
 					},
 					"isFavorite": {
@@ -9870,7 +10042,8 @@
 				"properties": {
 					"profileId": {
 						"type": "string",
-						"pattern": "^[0-9]+$"
+						"pattern": "^[0-9]+$",
+						"description": "string with numeric id"
 					},
 					"displayName": {
 						"type": "string",
@@ -9892,7 +10065,7 @@
 				"type": "object",
 				"properties": {
 					"mediaHash": {
-						"type": "string"
+						"$ref": "#/components/schemas/MediaHash"
 					},
 					"type": {
 						"type": "integer"
@@ -9932,7 +10105,8 @@
 						"properties": {
 							"age": {
 								"type": "integer",
-								"nullable": true
+								"nullable": true,
+								"description": "may be `0`"
 							},
 							"showAge": {
 								"type": "boolean"
@@ -9945,7 +10119,8 @@
 							},
 							"lastChatTimestamp": {
 								"type": "number",
-								"nullable": true
+								"nullable": true,
+								"description": "may be `0`"
 							},
 							"isNew": {
 								"type": "boolean"
@@ -10193,11 +10368,13 @@
 							},
 							"height": {
 								"type": "number",
-								"nullable": true
+								"nullable": true,
+								"description": "number in centimeters"
 							},
 							"weight": {
 								"type": "number",
-								"nullable": true
+								"nullable": true,
+								"description": "number in grams"
 							},
 							"socialNetworks": {
 								"type": "object",
@@ -10224,7 +10401,8 @@
 								"type": "array",
 								"items": {
 									"type": "string"
-								}
+								},
+								"description": "array of [Profile tags](/grindr-api/users/profiles#profile-tags)"
 							},
 							"tapped": {
 								"type": "boolean"
@@ -10252,7 +10430,8 @@
 								"nullable": true
 							},
 							"unreadCount": {
-								"type": "number"
+								"type": "number",
+								"description": "number, may be absent"
 							},
 							"lastThrobTimestamp": {},
 							"sexualHealth": {
@@ -10284,7 +10463,8 @@
 							},
 							"rightNowShareLocation": {
 								"type": "string",
-								"nullable": true
+								"nullable": true,
+								"description": "`\"NONE\"` or `null`"
 							},
 							"rightNowMedias": {
 								"type": "array",
@@ -10382,7 +10562,7 @@
 						"format": "int64"
 					},
 					"mediaHash": {
-						"type": "string"
+						"$ref": "#/components/schemas/MediaHash"
 					},
 					"url": {
 						"type": "string",
@@ -10417,7 +10597,7 @@
 									"type": "string"
 								},
 								"mediaHash": {
-									"type": "string"
+									"$ref": "#/components/schemas/MediaHash"
 								},
 								"rejectionReason": {
 									"type": "string",
@@ -10469,7 +10649,7 @@
 				"type": "object",
 				"properties": {
 					"mediaHash": {
-						"type": "string"
+						"$ref": "#/components/schemas/MediaHash"
 					},
 					"type": {
 						"type": "integer"
@@ -10625,10 +10805,12 @@
 						"description": "[human-readable name](/grindr-api/browse/location#search-places-by-name) of location"
 					},
 					"lat": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					},
 					"lon": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					}
 				},
 				"x-render-on-tag": "settings/account"
@@ -10641,10 +10823,12 @@
 				],
 				"properties": {
 					"lat": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					},
 					"lon": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					}
 				},
 				"x-render-on-tag": "settings/account"
@@ -10753,13 +10937,13 @@
 						]
 					}
 				],
-				"description": "Album expiration type.",
+				"description": "Album expiration type.\n\nPreviously shared [albums in chat](/grindr-api/messaging/messages#albummessagebody) inherit new `expirationType` settings from newer sharings of the album.",
 				"x-enum-labels": {
-					"INDEFINITE": "Indefinitely",
-					"ONCE": "View Once, limited by 30 minutes from request",
-					"TEN_MINUTES": "For 10 Minutes",
-					"ONE_HOUR": "For 60 Minutes",
-					"ONE_DAY": "For 24 Hours"
+					"INDEFINITE": "\"Indefinitely\"",
+					"ONCE": "\"View Once\", limited by 30 minutes from request",
+					"TEN_MINUTES": "\"For 10 Minutes\"",
+					"ONE_HOUR": "\"For 60 Minutes\"",
+					"ONE_DAY": "\"For 24 Hours\""
 				},
 				"x-render-on-tag": "messaging/albums"
 			},
@@ -10862,8 +11046,7 @@
 						"type": "string"
 					},
 					"coverUrl": {
-						"type": "string",
-						"nullable": true
+						"$ref": "#/components/schemas/AlbumCoverUrl"
 					},
 					"statusId": {
 						"description": "unknown integer, WIP"
@@ -10938,7 +11121,12 @@
 						}
 					}
 				],
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"properties": {
+					"albumName": {
+						"description": "see [Album name](/grindr-api/messaging/albums#album-name)"
+					}
+				}
 			},
 			"AlbumContentWithRemainingViews": {
 				"allOf": [
@@ -11042,7 +11230,8 @@
 					}
 				},
 				"x-render-on-tag": "messaging/albums",
-				"x-display-name": "Album name"
+				"x-display-name": "Album name",
+				"description": "String, may be empty (`\"\"`) or `null`, non-string values are coerced into string.\n\nMaximum length: 255 UTF-8 bytes, which is 255 characters for ASCII strings (1 ASCII character is encoded as 1 byte) but less if you include emojis or non-ascii characters (2+ bytes/one codepoint)."
 			},
 			"AlbumRenameResponse": {
 				"type": "object",
@@ -11324,7 +11513,11 @@
 						"description": "integer, [Profile ID](/grindr-api/users/profiles#profilemin)"
 					},
 					"primaryMediaHash": {
-						"type": "string",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/MediaHash"
+							}
+						],
 						"nullable": true,
 						"description": "string or `null`, see [Media -> Public CDN files](/grindr-api/media/public-cdn-files)"
 					},
@@ -11383,10 +11576,12 @@
 						"type": "string"
 					},
 					"chat1MessageId": {
-						"type": "string"
+						"type": "string",
+						"description": "string with UUIDv4, second part of `messageId`"
 					},
 					"senderId": {
-						"type": "integer"
+						"type": "integer",
+						"description": "[Profile ID](/grindr-api/users/profiles#profilemin)"
 					},
 					"type": {
 						"$ref": "#/components/schemas/MessageType"
@@ -11752,9 +11947,12 @@
 						"description": "number"
 					},
 					"mediaHash": {
-						"type": "string",
-						"nullable": true,
-						"description": "string or `null`"
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/MediaHash"
+							}
+						],
+						"nullable": true
 					},
 					"url": {
 						"type": "string",
@@ -12079,6 +12277,21 @@
 					},
 					{
 						"$ref": "#/components/schemas/UnknownMessageBody"
+					},
+					{
+						"$ref": "#/components/schemas/ExpiringAlbumBody"
+					},
+					{
+						"$ref": "#/components/schemas/ExpiringAlbumV2Body"
+					},
+					{
+						"$ref": "#/components/schemas/NonExpiringVideoBody"
+					},
+					{
+						"$ref": "#/components/schemas/GenerativeBody"
+					},
+					{
+						"$ref": "#/components/schemas/ProfileLinkBody"
 					}
 				],
 				"x-render-on-tag": "messaging/messages",
@@ -12172,7 +12385,11 @@
 						"type": "string"
 					},
 					"mediaHash": {
-						"type": "string",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/MediaHash"
+							}
+						],
 						"nullable": true
 					},
 					"onlineUntil": {
@@ -12373,7 +12590,8 @@
 				"type": "object",
 				"properties": {
 					"id": {
-						"type": "string"
+						"type": "string",
+						"description": "string"
 					},
 					"text": {
 						"type": "string"
@@ -12406,7 +12624,8 @@
 							"type": "object",
 							"properties": {
 								"phraseId": {
-									"type": "string"
+									"type": "string",
+									"description": "string, uuid"
 								},
 								"phraseText": {
 									"type": "string"
@@ -12415,10 +12634,12 @@
 									"$ref": "#/components/schemas/TimestampMs"
 								},
 								"frequency": {
-									"type": "integer"
+									"type": "integer",
+									"description": "integer, see [Track phrase usage frequency](/grindr-api/messaging/saved-phrases#track-phrase-usage-frequency)"
 								}
 							}
-						}
+						},
+						"x-key-description": "phrase ID (uuid)"
 					}
 				},
 				"x-render-on-tag": "messaging/saved-phrases"
@@ -12477,8 +12698,7 @@
 								"description": "string with number"
 							},
 							"photoHash": {
-								"type": "string",
-								"description": "40 characters hex string"
+								"$ref": "#/components/schemas/MediaHash"
 							},
 							"timestamp": {
 								"description": "unix timestamp in milliseconds",
@@ -12589,7 +12809,8 @@
 					},
 					"data": {
 						"type": "object",
-						"additionalProperties": true
+						"additionalProperties": true,
+						"description": "object, shape depends on `type` — [full_profile_v1](/grindr-api/browse/grid#full_profile_v1), [partial_profile_v1](/grindr-api/browse/grid#partial_profile_v1), [advert_v1](/grindr-api/browse/grid#advert_v1), [top_picks_v1](/grindr-api/browse/grid#top_picks_v1), [explore_aggregation_v1](/grindr-api/browse/grid#explore_aggregation_v1), [boost_upsell_v1](/grindr-api/browse/grid#boost_upsell_v1), [unlimited_mpu_v1](/grindr-api/browse/grid#unlimited_mpu_v1), [xtra_mpu_v1](/grindr-api/browse/grid#xtra_mpu_v1), [fav_header_v1](/grindr-api/browse/grid#fav_header_v1)"
 					}
 				},
 				"x-render-on-tag": "browse/grid"
@@ -12614,6 +12835,262 @@
 				},
 				"x-render-on-tag": "browse/grid"
 			},
+			"FullProfileV1": {
+				"type": "object",
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CascadeResponseProfile"
+					}
+				],
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "full_profile_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/ProfileFields"
+							}
+						],
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$FullProfileV1\"`"
+							},
+							"tribes": {
+								"type": "array",
+								"items": {
+									"type": "integer"
+								},
+								"description": "array of integers, see [Tribes](/grindr-api/users/profiles#tribes)"
+							},
+							"socialNetworks": {
+								"type": "array",
+								"description": "array of [SocialNetwork](/grindr-api/users/profiles#socialnetwork)"
+							},
+							"takenOnGrindrMetadata": {
+								"type": "object",
+								"x-key-description": "[Media hash](/grindr-api/media/index#media)",
+								"additionalProperties": {
+									"type": "object",
+									"properties": {
+										"takenOnGrindr": {
+											"type": "boolean"
+										},
+										"createdAt": {
+											"description": "unix timestamp in milliseconds",
+											"allOf": [
+												{
+													"$ref": "#/components/schemas/TimestampMs"
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					{
+						"heading": "Only for [v4/cascade](/grindr-api/browse/grid#get-cascade):",
+						"properties": {
+							"age": {
+								"type": "integer",
+								"description": "integer, optional"
+							},
+							"heightCm": {
+								"type": "integer",
+								"description": "integer, optional"
+							},
+							"weightGrams": {
+								"type": "integer",
+								"description": "integer, optional"
+							},
+							"bodyType": {
+								"type": "integer",
+								"description": "integer, see [Body type](/grindr-api/users/profiles#body-type), optional"
+							}
+						}
+					}
+				]
+			},
+			"PartialProfileV1": {
+				"type": "object",
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CascadeResponseProfile"
+					}
+				],
+				"properties": {
+					"upsellItemType": {
+						"type": "string",
+						"description": "string, e.g. `\"xtra_mpu_v1\"`"
+					}
+				},
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "partial_profile_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$PartialProfileV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"AdvertV1": {
+				"type": "object",
+				"properties": {
+					"cascadePlacementName": {
+						"type": "string",
+						"description": "string, e.g. `\"mrec-cascade-first\"`"
+					}
+				},
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "advert_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$Advert\"`"
+							}
+						}
+					}
+				]
+			},
+			"TopPicksV1": {
+				"type": "object",
+				"description": "Empty for [v4/cascade](/grindr-api/browse/grid#get-cascade).",
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "top_picks_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$TopPicksV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"ExploreAggregationV1": {
+				"type": "object",
+				"properties": {
+					"uuid": {
+						"type": "string",
+						"description": "string, UUIDv4"
+					},
+					"headerName": {
+						"type": "string",
+						"description": "string, e.g. `\"🌎 Explore\"`"
+					},
+					"source": {
+						"type": "string",
+						"description": "string, e.g. `\"cascade\"`"
+					},
+					"items": {
+						"type": "array",
+						"description": "array of objects. `@type` determines contents: *`\"ExploreAggregationItem$Location\"`*: `data.onlineCount` (integer), `data.uuid` (UUIDv3 string), `data.location` (`id` integer, `name` string, `suffix` string, `lat` float, `lon` float), `data.profiles` (array of objects with `profileImageUrl` URL string). *`\"ExploreAggregationItem$Cta\"`*: empty."
+					}
+				},
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "explore_aggregation_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$ExploreAggregationV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"BoostUpsellV1": {
+				"type": "object",
+				"description": "Empty for [v4/cascade](/grindr-api/browse/grid#get-cascade).",
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "boost_upsell_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$BoostUpsellV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"UnlimitedMpuV1": {
+				"type": "object",
+				"description": "Empty for [v4/cascade](/grindr-api/browse/grid#get-cascade).",
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "unlimited_mpu_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$UnlimitedMpuV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"XtraMpuV1": {
+				"type": "object",
+				"description": "Empty for [v4/cascade](/grindr-api/browse/grid#get-cascade).",
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "xtra_mpu_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$XtraMpuV1\"`"
+							}
+						}
+					}
+				]
+			},
+			"FavHeaderV1": {
+				"type": "object",
+				"properties": {
+					"available": {
+						"type": "integer"
+					},
+					"displayed": {
+						"type": "integer"
+					},
+					"total": {
+						"type": "integer"
+					}
+				},
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "fav_header_v1",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"@type": {
+								"type": "string",
+								"description": "string, `\"CascadeItemData$FavHeaderV1\"`"
+							}
+						}
+					}
+				]
+			},
 			"SearchProfileResult": {
 				"type": "object",
 				"properties": {
@@ -12625,7 +13102,8 @@
 						"type": "string"
 					},
 					"distance": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					},
 					"hasFaceRecognition": {
 						"type": "boolean"
@@ -12637,7 +13115,8 @@
 						"type": "boolean"
 					},
 					"lastChatTimestamp": {
-						"type": "number"
+						"type": "number",
+						"description": "may be `0`"
 					},
 					"lastViewed": {
 						"allOf": [
@@ -12661,14 +13140,19 @@
 						"type": "integer"
 					},
 					"profileImageMediaHash": {
-						"type": "string",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/MediaHash"
+							}
+						],
 						"nullable": true
 					},
 					"profileTags": {
 						"type": "array",
 						"items": {
 							"type": "string"
-						}
+						},
+						"description": "array of [Profile tags](/grindr-api/users/profiles#profile-tags)"
 					},
 					"seen": {
 						"$ref": "#/components/schemas/TimestampMs"
@@ -12692,7 +13176,8 @@
 						"type": "array",
 						"items": {
 							"type": "integer"
-						}
+						},
+						"description": "array of integers or `[-1]`, see [Get genders](/grindr-api/users/profiles#get-genders)"
 					}
 				},
 				"x-render-on-tag": "browse/grid"
@@ -12707,7 +13192,8 @@
 						}
 					},
 					"lastDistanceInKm": {
-						"type": "number"
+						"type": "number",
+						"format": "float"
 					},
 					"lastProfileId": {
 						"type": "integer"
@@ -12832,17 +13318,6 @@
 					"profile",
 					"wen_ching_taiwan_stickers"
 				],
-				"description": "One of the following values.",
-				"x-enum-labels": {
-					"body": "body",
-					"dating+sex": "dating+sex",
-					"featured": "featured",
-					"holiday": "holiday",
-					"mood": "mood",
-					"objects": "objects",
-					"profile": "profile",
-					"wen_ching_taiwan_stickers": "wen_ching_taiwan_stickers"
-				},
 				"x-render-on-tag": "media/public-cdn-files"
 			},
 			"GiphyResponse": {
@@ -13037,9 +13512,197 @@
 			},
 			"SessionId": {
 				"type": "object",
-				"description": "JWT obtained from authentication flow. Decoded JWT content:\n\nHeaders claims structure:\n\n- `kid` — key ID\n- `alg` — `\"RS256\"`\n- `typ` — `\"JWT\"`\n\nPayload claims:\n\n- `exp` — number, unix timestamp in seconds defining token expiration date\n- `profileId` — string with numbers, account's ID\n- `roles` — unknown array, appears to be empty\n- `features` — array of strings, e.g. `\"HidePremiumStore\"`, `\"CreateVideoCall\"`, `\"VideoCallDailyFree\"`\n- `featureFlags` — array of strings, e.g. `\"profile-insights\"`, `\"online-until-updates\"`, `\"enable-account-filters-bulk-exposure\"`, `\"a-list-v3\"`, `\"discover-v2\"`, `\"boost_purchase_fixes\"`, `\"discover-studfinder-upsell\"`\n- `experiments` — object with experiment name → variant string\n- `systemTime` — unix timestamp in milliseconds\n- `upsells` — unknown object, appears to be empty\n- `restrictionReason` — unknown value, appears to be `null`\n- `grit` — unknown UUIDv4 string",
+				"description": "JWT obtained from authentication flow. Decoded JWT content:\n\nHeaders claims structure:\n\n- `kid` — key ID\n- `alg` — `\"RS256\"`\n- `typ` — `\"JWT\"`\n\nPayload claims:\n\n- `exp` — number, unix timestamp in seconds defining token expiration date\n- `profileId` — string with numbers, account's ID\n- `roles` — unknown array, appears to be empty\n- `features` — array of strings, e.g. `\"HidePremiumStore\"`, `\"CreateVideoCall\"`, `\"VideoCallDailyFree\"`\n- `featureFlags` — array of strings, e.g. `\"profile-insights\"`, `\"online-until-updates\"`, `\"enable-account-filters-bulk-exposure\"`, `\"a-list-v3\"`, `\"discover-v2\"`, `\"boost_purchase_fixes\"`, `\"discover-studfinder-upsell\"`\n- `experiments` — object with experiment name → variant string, known keys:\n  - `explore-paywall-profiles` — string, e.g. `\"test\"`\n  - `limiting_chat_credits_from_unlimited_to_5_for_xtra_users_in_explore` — string, e.g. `\"treatment\"`\n  - `validation-aa-backend-profileid` — string, e.g. `\"test\"`\n  - `grindr-core-day-pass` — string, e.g. `\"control\"`\n  - `llm-age-verification-methods` — string, e.g. `\"variant_b\"`\n  - `trans_tribe_filtering_changes` — string, e.g. `\"Test\"`\n  - `green_dot_v2` — string, e.g. `\"treatment-1\"`\n  - `sponsored-profiles-cascade-selection-mode` — string, e.g. `\"treatment\"`\n  - `read-receipt-ad-reward` — string, e.g. `\"variant_2\"`\n  - `taps-paywall` — string, e.g. `\"treatment-1\"`\n  - `explore-insertables-v1` — string, e.g. `\"treatment-insertables-below-mpu\"`\n  - `reduce_number_of_free_profiles_from_99_to_90` — string, e.g. `\"test\"`\n  - `cascade-mpu-explore-studfinder-2026-03-12` — string, e.g. `\"control\"`\n  - `reduce_number_of_results_with_age_filter_for_free_users` — string, e.g. `\"test\"`\n  - `mpu-heuristic-algorithm-optimizations-q125` — string, e.g. `\"control\"`\n  - `ships_in_the_night_v3` — string, e.g. `\"treatment\"`\n  - `cascade-mpu-disable-poc-heuristic-2026-03-02` — string, e.g. `\"treatment\"`\n  - `for-you-recsys-v1_1` — string, e.g. `\"control\"`\n  - `cascade-mpu-studfinder-profile-limit-2026-03-12` — string, e.g. `\"treatment\"`\n  - `reduce_free_user_results_with_any_filter` — string, e.g. `\"control\"`\n  - `cascade-mpu-studfinder-unlimited-2026-02-02` — string, e.g. `\"treatment\"`\n  - `mpu-rest-of-world` — string, e.g. `\"treatment\"`\n  - `top_18_mpu_profiles_are_online_in_extended_cascade_and_explore` — string, e.g. `\"control\"`\n  - `for-you-v2` — string, e.g. `\"Test\"`\n  - `rewarded-ads-viewed-me-v2` — string, e.g. `\"variant_1\"`\n  - `mega-boost-v1` — string, e.g. `\"mega-boost-low\"`\n- `systemTime` — unix timestamp in milliseconds\n- `upsells` — unknown object, appears to be empty\n- `restrictionReason` — unknown value, appears to be `null`\n- `grit` — unknown UUIDv4 string",
 				"x-render-on-tag": "authentication",
 				"x-display-name": "Session ID"
+			},
+			"MediaState": {
+				"type": "string",
+				"description": "Public media in Grindr undergo through an automated moderation check before they appear in profile. State can be either `null` for medias uploaded privately ([chats](/grindr-api/messaging/albums#upload-media-to-an-album)) or one of the below for public-facing media.\n\n- `Pending` — awaiting moderation check\n\nWIP",
+				"enum": [
+					"Pending"
+				],
+				"x-render-on-tag": "media/signed-cdn-files",
+				"x-display-name": "MediaState",
+				"x-wip": true
+			},
+			"AlbumCoverUrl": {
+				"type": "string",
+				"nullable": true,
+				"description": "String with URL or `null`, blurred downscaled preview.\n\nJPEG photo with the first frame of video in case of video files.\n\nBecomes unavailable (`AccessDenied`) after album has expired.\n\nSee [Media -> Signed CDN files](/grindr-api/media/signed-cdn-files).",
+				"x-render-on-tag": "messaging/albums",
+				"x-display-name": "AlbumCoverUrl"
+			},
+			"CascadeResponseProfile": {
+				"type": "object",
+				"description": "Profile data returned in cascade items.",
+				"properties": {
+					"profileId": {
+						"type": "integer"
+					},
+					"onlineUntil": {
+						"description": "unix timestamp in milliseconds",
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TimestampMs"
+							}
+						]
+					},
+					"displayName": {
+						"type": "string"
+					},
+					"distanceMeters": {
+						"type": "integer",
+						"description": "integer, may be absent"
+					},
+					"rightNow": {
+						"$ref": "#/components/schemas/RightNowStatus"
+					},
+					"unreadCount": {
+						"type": "integer"
+					},
+					"isVisiting": {
+						"type": "boolean"
+					},
+					"isPopular": {
+						"type": "boolean"
+					}
+				},
+				"x-render-on-tag": "browse/grid",
+				"x-display-name": "CascadeResponseProfile",
+				"x-property-groups": [
+					{
+						"heading": "Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):",
+						"properties": {
+							"lastOnline": {
+								"description": "unix timestamp in milliseconds",
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/TimestampMs"
+									}
+								]
+							},
+							"photoMediaHashes": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								},
+								"description": "array of strings, see [Media](/grindr-api/media/index#media)"
+							},
+							"lookingFor": {
+								"type": "array",
+								"items": {
+									"type": "integer"
+								},
+								"description": "array of integers, see [Looking for](/grindr-api/users/profiles#looking-for)"
+							},
+							"sexualPosition": {
+								"type": "integer",
+								"description": "integer, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id), may be absent"
+							},
+							"approximateDistance": {
+								"type": "boolean"
+							},
+							"isFavorite": {
+								"type": "boolean"
+							},
+							"isBoosting": {
+								"type": "boolean"
+							},
+							"hasChattedInLast24Hrs": {
+								"type": "boolean"
+							},
+							"hasUnviewedSpark": {
+								"type": "boolean"
+							},
+							"isTeleporting": {
+								"type": "boolean"
+							},
+							"isRoaming": {
+								"type": "boolean"
+							},
+							"isRightNow": {
+								"type": "boolean"
+							},
+							"hasUnreadThrob": {
+								"type": "boolean"
+							},
+							"isBlockable": {
+								"type": "boolean",
+								"description": "boolean, optional"
+							},
+							"isBoostingSomewhereElse": {
+								"type": "boolean"
+							}
+						}
+					},
+					{
+						"heading": "Only for [v4/cascade](/grindr-api/browse/grid#get-cascade):",
+						"properties": {
+							"primaryImageUrl": {
+								"type": "string",
+								"description": "string, URL"
+							},
+							"favorite": {
+								"type": "boolean"
+							},
+							"viewed": {
+								"type": "boolean"
+							},
+							"chatted": {
+								"type": "boolean"
+							},
+							"roaming": {
+								"type": "boolean"
+							}
+						}
+					}
+				]
+			},
+			"ExpiringAlbumBody": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/AlbumMessageBody"
+					}
+				],
+				"description": "Body for `\"ExpiringAlbum\"` message type. Extends [Album](#album-message-body).",
+				"x-render-on-tag": "messaging/messages",
+				"x-display-name": "ExpiringAlbumBody"
+			},
+			"ExpiringAlbumV2Body": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/ExpiringAlbumBody"
+					}
+				],
+				"description": "Body for `\"ExpiringAlbumV2\"` message type. For [AlbumExpirationType](/grindr-api/messaging/albums#albumexpirationtype) = `ONCE` but might have other values if expiration settings were changed later. Extends [ExpiringAlbum](#expiring-album-body).",
+				"x-render-on-tag": "messaging/messages",
+				"x-display-name": "ExpiringAlbumV2Body"
+			},
+			"NonExpiringVideoBody": {
+				"type": "object",
+				"description": "Body for `\"NonExpiringVideo\"` message type. Unknown, WIP.",
+				"x-render-on-tag": "messaging/messages",
+				"x-display-name": "NonExpiringVideoBody",
+				"x-wip": true
+			},
+			"GenerativeBody": {
+				"type": "object",
+				"description": "Body for `\"Generative\"` message type. Unknown, WIP.",
+				"x-render-on-tag": "messaging/messages",
+				"x-display-name": "GenerativeBody",
+				"x-wip": true
+			},
+			"ProfileLinkBody": {
+				"type": "object",
+				"description": "Body for `\"ProfileLink\"` message type. Unknown, WIP.",
+				"x-render-on-tag": "messaging/messages",
+				"x-display-name": "ProfileLinkBody",
+				"x-wip": true
+			},
+			"MediaHash": {
+				"type": "string",
+				"description": "See [Media](/grindr-api/media/)"
 			}
 		}
 	},
@@ -13144,5 +13807,105 @@
 		"offers",
 		"vip",
 		"websocket"
-	]
+	],
+	"x-parameter-groups": {
+		"GridQuery": {
+			"x-render-on-tag": "browse/grid",
+			"parameters": [
+				{
+					"$ref": "#/components/parameters/NearbyGeoHashQuery"
+				},
+				{
+					"$ref": "#/components/parameters/ExploreGeoHashQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridPhotoOnlyQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridFaceOnlyQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridNotRecentlyChattedQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridHasAlbumQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridFreshQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridGendersQuery"
+				},
+				{
+					"$ref": "#/components/parameters/GridPageNumberQuery"
+				}
+			]
+		},
+		"CascadeQuery": {
+			"x-render-on-tag": "browse/grid",
+			"x-inherits": "GridQuery",
+			"parameters": [
+				{
+					"$ref": "#/components/parameters/CascadeOnlineOnlyQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeAgeMinQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeAgeMaxQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeHeightCmMinQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeHeightCmMaxQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeWeightGramsMinQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeWeightGramsMaxQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeTribesQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeLookingForQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeRelationshipStatusesQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeBodyTypesQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeSexualPositionsQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeMeetAtQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeNsfwPicsQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeTagsQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeRightNowQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeFavoritesQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeShowSponsoredProfilesQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeShuffleQuery"
+				},
+				{
+					"$ref": "#/components/parameters/CascadeHotQuery"
+				}
+			]
+		}
+	}
 }

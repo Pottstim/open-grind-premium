@@ -79,3 +79,8 @@ export function schemaDisplay(ctx: Context, name: string): string {
 export function urlForSchema(ctx: Context, name: string): string {
 	return `${tagUrl(ctx.pageForSchema(name))}#${slugify(schemaDisplay(ctx, name))}`;
 }
+
+export function urlForParamGroup(ctx: Context, groupName: string): string {
+	const tag = ctx.paramGroups.get(groupName)?.["x-render-on-tag"] ?? "";
+	return `${tagUrl(tag)}#${slugify(groupName)}`;
+}

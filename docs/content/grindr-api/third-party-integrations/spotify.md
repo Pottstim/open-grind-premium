@@ -1,30 +1,54 @@
-# Spotify
+# Spotify, WIP
 
-## Get Spotify favorites profile ID, WIP
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
+
+## Spotify token, WIP
+
+```
+POST /api/token
+```
+
+Body:
+
+Content-Type: `application/x-www-form-urlencoded`
+
+Map of string to string.
+
+## Get spotify favorites, WIP
 
 ```
 GET /v4/spotify/favorites/{profileId}
 ```
 
-Response: SpotifyBackendResponse
-
-## Post Spotify favorites, WIP
+## Post spotify favorites, WIP
 
 ```
 POST /v4/spotify/favorites
 ```
 
-Body: SpotifyPostRequest, WIP
+## Search spotify tracks, WIP
 
-## Auth, WIP
+```
+GET /v1/search
+```
 
-`grant_type` string, `refresh_token` string
-| `grant_type` string, `code` string, `redirect_uri` string
-| `grant_type` string
+Query (optional):
 
-## Tracks, WIP
+- `q` — string, optional
+- `type` — string, optional
 
-- GET /v1/search?q=string&type=string . SpotifySearchTrackResponse
-- GET /v1/tracks?ids=string . SpotifyGetTrackResponse
-- GET /v1/me/player/recently-played . SpotifyRecentlyPlayedResponse
+## Get spotify tracks, WIP
 
+```
+GET /v1/tracks
+```
+
+Query (optional):
+
+- `ids` — string, optional
+
+## Get spotify recently played, WIP
+
+```
+GET /v1/me/player/recently-played
+```

@@ -13,8 +13,8 @@ GET /v3.1/me/blocks
 Response:
 
 - `blocking` — array of objects
-  - `profileId` — integer
-  - `blockedTime` — integer, appears to be `0`
+  - `profileId` — long integer
+  - `blockedTime` — long integer, appears to be `0`
 
 ## Block a user
 
@@ -28,7 +28,7 @@ POST /v3/me/blocks/{profileId}
 
 Response:
 
-- `updateTime` — integer, appears to be `0`
+- `updateTime` — long integer, appears to be `0`
 
 ## Unblock a user
 
@@ -56,4 +56,4 @@ DELETE /v3/me/blocks
 
 Response:
 
-Emtpy.
+Empty.

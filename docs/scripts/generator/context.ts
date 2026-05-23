@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 
-import type { OpenApiDoc, Operation } from "./types";
+import type { OpenApiDoc, Operation, ParameterGroup } from "./types";
 import { HTTP_METHODS } from "./types";
 
 export const SKIP_TAGS = new Set<string>(["websocket"]);
@@ -17,6 +17,8 @@ export interface Context {
 	operationsByTag: Map<string, Op[]>;
 	schemasByPage: Map<string, string[]>;
 	renderedSchemas: Set<string>;
+	paramGroups: Map<string, ParameterGroup>;
+	paramGroupsByPage: Map<string, string[]>;
 	pageForSchema(name: string): string;
 }
 
@@ -172,11 +174,22 @@ export function loadContext(openapiPath: string): Context {
 	const renderedSchemas = new Set<string>();
 	for (const names of schemasByPage.values())
 		for (const n of names) renderedSchemas.add(n);
+	const paramGroups = new Map<string, ParameterGroup>();
+	const paramGroupsByPage = new Map<string, string[]>();
+	for (const [name, group] of Object.entries(doc["x-parameter-groups"] ?? {})) {
+		paramGroups.set(name, group);
+		const page = group["x-render-on-tag"];
+		const list = paramGroupsByPage.get(page) ?? [];
+		list.push(name);
+		paramGroupsByPage.set(page, list);
+	}
 	return {
 		doc,
 		operationsByTag,
 		schemasByPage,
 		renderedSchemas,
+		paramGroups,
+		paramGroupsByPage,
 		pageForSchema,
 	};
 }

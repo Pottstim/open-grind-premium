@@ -43,7 +43,14 @@ export interface Schema {
 	"x-display-name"?: string;
 	"x-enum-labels"?: Record<string, string>;
 	"x-wip"?: boolean;
+	"x-property-groups"?: PropertyGroup[];
 	__allOfRefs?: string[];
+}
+
+export interface PropertyGroup {
+	heading: string;
+	allOf?: Array<{ $ref: string }>;
+	properties?: Record<string, Schema>;
 }
 
 export interface Parameter {
@@ -55,6 +62,12 @@ export interface Parameter {
 }
 
 export type ParameterOrRef = Parameter | { $ref: string };
+
+export interface ParameterGroup {
+	"x-render-on-tag": string;
+	"x-inherits"?: string;
+	parameters: ParameterOrRef[];
+}
 
 export interface MediaType {
 	schema?: Schema;
@@ -88,6 +101,7 @@ export interface Operation {
 	"x-notes"?: string[];
 	"x-see-also"?: string[];
 	"x-errors"?: Record<string, string>;
+	"x-query-groups"?: string[];
 }
 
 export type PathItem = { parameters?: ParameterOrRef[] } & {
@@ -121,4 +135,5 @@ export interface OpenApiDoc {
 	paths: Record<string, PathItem>;
 	components: Components;
 	"x-sidebar-order"?: SidebarEntry[];
+	"x-parameter-groups"?: Record<string, ParameterGroup>;
 }

@@ -93,8 +93,9 @@ for (const [p, item] of Object.entries(doc.paths)) {
 	}
 	w(doc);
 	for (const name of defined) {
-		if (!used.has(name))
-			warn(`schema "${name}" is defined but never referenced`);
+		if (used.has(name)) continue;
+		if (doc.components.schemas[name]?.["x-render-on-tag"]) continue;
+		warn(`schema "${name}" is defined but never referenced`);
 	}
 }
 

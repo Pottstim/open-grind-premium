@@ -1,6 +1,19 @@
 # Logging, WIP
 
-- POST /v3/logging/mobile/logs binary
-- POST /v3/logging/mobile/logs binary
-- POST /v1/uxevent UxEventRequest
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
 
+## Upload mobile logs, WIP
+
+```
+POST /v3/logging/mobile/logs
+```
+
+Body:
+
+Binary file.
+
+## Submit ux event, WIP
+
+```
+POST /v1/uxevent
+```

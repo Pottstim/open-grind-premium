@@ -1,13 +1,4 @@
-# Drawer, WIP
-
-## DrawerMedia
-
-- `id` — long integer
-- `url` — string, URL
-- `contentType` — string
-- `createdTs` — unix timestamp in milliseconds
-- `used` — boolean
-- `takenOnGrindr` — boolean
+# Drawer
 
 ## Get media in drawer
 
@@ -29,6 +20,8 @@ Requires [Authorization](/grindr-api/api-authorization).
 GET /v4/chat/media/drawer/{conversationId}
 ```
 
+Response:
+
 Array of [DrawerMedia](/grindr-api/drawer#drawermedia).
 
 ## Add media to drawer
@@ -37,8 +30,6 @@ Requires [Authorization](/grindr-api/api-authorization).
 
 MediaId must be obtained through [uploading](/grindr-api/users/profiles#upload-media).
 
-Repeated requests cause 500 HTTP status "Internal Error".
-
 ```
 PUT /v4/chat/media/drawer/{mediaId}
 ```
@@ -46,6 +37,10 @@ PUT /v4/chat/media/drawer/{mediaId}
 Response:
 
 Empty.
+
+Errors:
+
+- `500` — Repeated requests cause 500 HTTP status "Internal Error".
 
 ## Delete media from drawer
 
@@ -60,3 +55,12 @@ DELETE /v4/chat/media/drawer/{mediaId}
 Response:
 
 Empty with HTTP status 202.
+
+## DrawerMedia
+
+- `id` — long integer
+- `url` — URL
+- `contentType` — string
+- `createdTs` — unix timestamp in milliseconds
+- `used` — boolean
+- `takenOnGrindr` — boolean

@@ -1,5 +1,9 @@
 # Bootstrap, WIP
 
-GET /v3/bootstrap
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched.
 
-Response: BootstrapResponse
+## Get bootstrap, WIP
+
+```
+GET /v3/bootstrap
+```

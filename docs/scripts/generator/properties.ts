@@ -50,20 +50,40 @@ export function descriptionConveysType(desc: string): boolean {
 	return TYPE_HINT_TOKENS.some((t) => lower.includes(t));
 }
 
-export function isPlaceholderSchema(schema: Schema | undefined): boolean {
+function isOpaqueObjectSchema(schema: Schema | undefined): boolean {
+	if (!schema || schema.type !== "object") return false;
+	if (schema.properties && Object.keys(schema.properties).length) return false;
+	if (schema.allOf?.length) return false;
+	if (schema.oneOf?.length) return false;
+	return schema.additionalProperties === true;
+}
+
+export function isPlaceholderSchema(
+	schema: Schema | undefined,
+	resolve?: (name: string) => Schema | undefined,
+): boolean {
 	if (!schema) return false;
 	if (schema.$ref === "#/components/schemas/UndocumentedObject") return true;
 	const first = schema.allOf?.[0];
-	return (
+	if (
 		schema.allOf?.length === 1 &&
 		first?.$ref === "#/components/schemas/UndocumentedObject"
-	);
+	)
+		return true;
+	if (resolve && schema.$ref?.startsWith("#/components/schemas/")) {
+		const resolved = resolve(schema.$ref.replace("#/components/schemas/", ""));
+		if (resolved && isOpaqueObjectSchema(resolved)) return true;
+	}
+	return isOpaqueObjectSchema(schema);
 }
 
-export function isPlaceholderBody(body: RequestBody | undefined): boolean {
+export function isPlaceholderBody(
+	body: RequestBody | undefined,
+	resolve?: (name: string) => Schema | undefined,
+): boolean {
 	if (!body?.content) return false;
 	for (const media of Object.values(body.content)) {
-		if (isPlaceholderSchema(media.schema)) return true;
+		if (isPlaceholderSchema(media.schema, resolve)) return true;
 	}
 	return false;
 }
@@ -243,6 +263,24 @@ export function renderProperty(
 	const pad = "  ".repeat(indent);
 	const rhs = renderPropertyRhs(ctx, working);
 	const lines = [`${pad}- \`${name}\` — ${rhs}`];
+	const addlProps = working.additionalProperties;
+	if (
+		working.type === "object" &&
+		!working.properties &&
+		typeof addlProps === "object" &&
+		addlProps.properties
+	) {
+		const childPad = "  ".repeat(indent + 1);
+		lines.push(
+			`${childPad}- *key is ${(working as Record<string, unknown>)["x-key-description"] ?? "string"}*`,
+		);
+		const reqList = addlProps.required ?? [];
+		for (const [k, v] of Object.entries(addlProps.properties)) {
+			lines.push(renderProperty(ctx, k, v, indent + 1, reqList.includes(k)));
+		}
+		void required;
+		return lines.join("\n");
+	}
 	const inline = inlineObject(ctx, working);
 	if (inline) {
 		const childPad = "  ".repeat(indent + 1);

@@ -1,133 +1,5 @@
 # Profiles
 
-## RectF
-
-Array of 4 floats or `nulls`:
-
-- Bottom edge ("y2"), in pixels
-- Left edge ("x1"), in pixels
-- Right edge ("x2"), in pixels
-- Top edge ("y1"), in pixels
-
-When used in query, stringified as follows: `y2,x1,x2,y1`.
-
-## ProfileMaskedMin
-
-- `distance` — number or `null`
-- `profileImageMediaHash` — string or `null`, see [Media](/grindr-api/media/index#media)
-- `isFavorite` — boolean
-
-## ProfileMasked
-
-- *everything from [ProfileMaskedMin](#profilemaskedmin)*
-- `lastViewed` — number or `null`
-- `seen` — unix timestamp in milliseconds or `null`
-- `rightNow` — [RightNowStatus](/grindr-api/right-now#RightNowStatus)
-- `sexualPosition` — integer or `null`, see [Sexual position ID](#sexual-position-id), may be absent
-- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`, may be absent
-
-## ProfileMin
-
-- `profileId` — string with numeric id
-- `displayName` — string or `null`
-- `onlineUntil` — long number or `null`, may be absent
-
-## ProfileShort
-
-- *everything from [ProfileMasked](#profilemasked)*
-- *everything from [ProfileMin](#profilemin)*
-- `age` — number, may be `0` or `null`
-- `showAge` — boolean
-- `showDistance` — boolean
-- `approximateDistance` — boolean
-- `lastChatTimestamp` — number, may be `0` or `null`
-- `isNew` — boolean
-- `lastUpdatedTime` — unix timestamp in milliseconds, may be `0`
-- `medias` — array of profile photos objects
-  - `mediaHash` — string, see [Media](/grindr-api/media/index#media)
-  - `type` — integer
-  - `state` — integer
-  - `reason` — string or `null`
-  - `takenOnGrindr` — boolean or `null`
-  - `createdAt` — long number or `null`
-
-## ProfileFields
-
-- `meetAt` — array of integers, optional, see [Meet at](#meet-at)
-- `vaccines` — array of integers, optional, see [Vaccines](#vaccines)
-- `genders` — array of integers, optional, see [Genders](#genders)
-- `pronouns` — array of integers, optional, see [Pronouns](#pronouns)
-
-## ProfileRightNow
-
-- `rightNowText` — string or `null`
-- `rightNowPosted` — long number or `null`
-- `rightNowDistance` — long number or `null`
-- `rightNowThumbnailUrl` — string or `null`
-- `rightNowFullImageUrl` — string or `null`
-
-## ProfileExtraFields
-
-- `nsfw` — integer or `null`, see [Accept NSFW pics](#accept-nsfw-pics)
-- `verifiedInstagramId` — string or `null`
-- `isBlockable` — boolean or `null`
-- `showTribes` — boolean
-- `showPosition` — boolean
-
-## Profile
-
-- *everything from [ProfileShort](#profileshort)*
-- *everything from [ProfileFields](#profilefields)*
-- *everything from [ProfileRightNow](#profilerightnow)*
-- *everything from [ProfileExtraFields](#profileextrafields)*
-- `aboutMe` — string or `null`
-- `ethnicity` — integer or `null`, see [Ethnicity](#ethnicity)
-- `relationshipStatus` — integer or `null`, see [Relationship status](#relationship-status)
-- `grindrTribes` — array of integers, see [Tribes](#tribes)
-- `lookingFor` — array of integers, see [Looking for](#looking-for)
-- `bodyType` — number or `null`, see [Body type](#body-type)
-- `hivStatus` — number or `null`, see [HIV status](#hiv-status)
-- `lastTestedDate` — unix timestamp in milliseconds or `null`
-- `height` — number in centimeters or `null`
-- `weight` — number in grams or `null`
-- `socialNetworks` — object
-  - `twitter` — object, may be absent
-    - `userId` — string or `null`
-  - `facebook` — object, may be absent
-    - `userId` — string or `null`
-  - `instagram` — object, may be absent
-    - `userId` — string or `null`
-- `identity` — identity (unknown, wip) or `null`
-- `hashtags` — unknown array
-- `profileTags` — array of strings, see [Profile tags](#profile-tags)
-- `tapped` — boolean
-- `tapType` — boolean or `null`
-- `lastReceivedTapTimestamp` — number or `null`
-- `isTeleporting` — boolean
-- `isRoaming` — boolean
-- `arrivalDays` — number or `null`
-- `unreadCount` — number, may be absent
-- `lastThrobTimestamp` — unknown
-- `sexualHealth` — array of integers, see [Sexual health](#sexual-health)
-- `isVisiting` — boolean
-- `travelPlans` — array of objects
-  - `endDateUtc` — long or `null`
-  - `geohash` — [Geohash](/grindr-api/browse/location#geohash)
-  - `id` — long number or `null`
-  - `locationName` — string
-  - `showOnProfile` — boolean or `null`
-  - `startDateUtc` — long number or `null`
-- `isInAList` — boolean
-- `tribesImInto` — array of [Tribes](#tribes) IDs or null
-- `showVipBadge` — boolean
-- `rightNowShareLocation` — `"NONE"` or `null`
-- `rightNowMedias` — array of objects
-  - `mediaId` — long number or `null`
-  - `thumbnailUrl` — string
-  - `fullImageUrl` — string
-  - `contentType` — string
-  - `isNsfw` — boolean or `null`
-
 ## Profile tags
 
 Requires [Authorization](/grindr-api/api-authorization).
@@ -138,130 +10,7 @@ GET /v1/tags
 
 Response:
 
-Array of objects:
-
-- `language` — string
-- `categoryCollection` — array of objects
-  - `text` — string
-  - `possessiveText` string or `null`
-  - `tags` — array of objects
-    - `tagId` — integer
-    - `text` — string
-    - `key` — string
-
-## Sexual position ID
-
-- 1 — "Top"
-- 2 — "Bottom"
-- 3 — "Versatile"
-- 4 — "Vers Bottom"
-- 5 — "Vers Top"
-- 6 — "Side"
-
-## Ethnicity
-
-- 1 — Asian
-- 2 — Black
-- 3 — Latino
-- 4 — Middle Eastern
-- 5 — Mixed
-- 6 — Native American
-- 7 — White
-- 8 — Other
-- 9 — South Asian
-
-## Relationship status
-
-- 1 — Single
-- 2 — Dating
-- 3 — Exclusive
-- 4 — Committed
-- 5 — Partnered
-- 6 — Engaged
-- 7 — Married
-- 8 — Open Relationship
-
-## Body type
-
-- 1 — "Toned"
-- 2 — "Average"
-- 3 — "Large"
-- 4 — "Muscular"
-- 5 — "Slim"
-- 6 — "Stocky"
-
-## HIV status
-
-Not to be confused with [Sexual health](#sexual-health).
-
-- 1 — "Negative"
-- 2 — "Negative, on PrEP"
-- 3 — "Positive"
-- 4 — "Positive, undetectable"
-
-## Accept NSFW pics
-
-- 1 — "Never"
-- 2 — "Not At First"
-- 3 — "Yes Please"
-
-## Meet at
-
-- 1 — "My Place"
-- 2 — "Your Place"
-- 3 — "Bar"
-- 4 — "Coffee Shop"
-- 5 — "Restaurant"
-
-## Sexual health (also "Health Practices")
-
-Not to be confused with [HIV status](#hiv-status).
-
-- 1 — "Condoms"
-- 2 — "I'm on doxyPEP"
-- 3 — "I'm on PrEP"
-- 4 — "I'm HIV undetectable"
-- 5 — "Prefer to discuss"
-
-## Looking for
-
-- 2 — Chat
-- 3 — Dates
-- 4 — Friends
-- 5 — Networking
-- 6 — Relationship
-- 7 — Hookups
-
-## Tribes
-
-- 1 — "Bear"
-- 2 — "Clean-Cut"
-- 3 — "Daddy"
-- 4 — "Discreet"
-- 5 — "Geek"
-- 6 — "Jock"
-- 7 — "Leather"
-- 8 — "Otter"
-- 9 — "Poz"
-- 10 — "Rugged"
-- 11 — "Trans"
-- 12 — "Twink"
-- 13 — "Sober"
-
-## Vaccines
-
-- 1 — COVID-19
-- 2 — Monkeypox
-- 3 — Meningitis
-
-## SocialNetwork
-
-- `site` — string, e.g. `"twitter"` | `"facebook"` | `"instagram"`
-- `userId` — string, username
-
-## Managed fields
-
-Managed fields, such as [gender](#get-genders) and [pronouns](#get-pronouns) are profile fields that aren't hardcoded but pulled dynamically from server.
+Array of [ProfileTagLanguage](/grindr-api/users/profiles#profiletaglanguage).
 
 ## Get a profile by ID
 
@@ -271,13 +20,9 @@ Requires [Authorization](/grindr-api/api-authorization).
 GET /v7/profiles/{id}
 ```
 
-Query:
-
-- `id` — profile ID
-
 Response:
 
-- `profiles` — array of [Profile](#profile), always with exactly one element
+- `profiles` — array of [Profile](/grindr-api/users/profiles#profile)
 
 ## Get multiple profiles by ID
 
@@ -293,15 +38,15 @@ Body:
 
 Response:
 
-- `profiles` — array of objects:
-  - *everything from [ProfileShort](#profileshort)*
-  - *everything from [ProfileRightNow](#profilerightnow)*
+- `profiles` — array of [ProfileSummaryWithRightNow](/grindr-api/users/profiles#profilesummarywithrightnow)
 
-## Update own profile (full)
+## Update own profile (full), WIP
 
-WIP
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
+
+[Profile](/grindr-api/users/profiles#profile) object, fully replaces current version.
 
 ```
 PUT /v3.1/me/profile
@@ -309,13 +54,15 @@ PUT /v3.1/me/profile
 
 Body:
 
-[Profile](#profile) object, fully replaces current version.
+[Profile](/grindr-api/users/profiles#profile)
 
-## Update own profile (partial)
+## Update own profile (partial), WIP
 
-WIP
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
+
+[Profile](/grindr-api/users/profiles#profile) object, only updates specified keys.
 
 ```
 PATCH /v4/me/profile
@@ -323,16 +70,31 @@ PATCH /v4/me/profile
 
 Body:
 
-[Profile](#profile) object, only updates specified keys.
+[ProfilePatch](/grindr-api/users/profiles#profilepatch)
 
-## Profile tags suggestions
+## Profile tags suggestions, WIP
 
-See [Hardcoded fields -> Profile tags](#profile-tags).
+> [!NOTE] This endpoint hasn't been researched yet
 
-- PUT /v4/profile-tags/suggestions ProfileTagsSuggestionRequest
-- GET /v5/profile-tags/translations (header: L-Locale) . TranslationsResponse
+```
+PUT /v4/profile-tags/suggestions
+```
+
+## Profile tags translations, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
+
+```
+GET /v5/profile-tags/translations
+```
+
+Headers:
+
+- `L-Locale` — string
 
 ## Upload media
+
+Correct request's `Content-Type` header is required.
 
 ```
 POST /v5/chat/media/upload
@@ -340,43 +102,40 @@ POST /v5/chat/media/upload
 
 Query:
 
-- `length` — long
+- `length` — long integer
 - `looping` — boolean
 - `takenOnGrindr` — boolean
 
-
 Body:
 
-File
-
-Correct request's `Content-Type` header is required.
+Binary file.
 
 Response:
 
 - `mediaId` — long integer
-- `mediaHash` — string, see [Media -> Signed CDN files](/grindr-api/media/signed-cdn-files)
-- `url` — string, URL
+- `mediaHash` — string, See [Media](/grindr-api/media/)
+- `url` — URL
 
 ## Upload media (legacy)
 
 Requires [Authorization](/grindr-api/api-authorization).
 
+You must ensure thumbCoords's width and height dimensions are equal, i.e. y2-y1 must equal to x2-x1. Submitting non-suqare thumbnail won't trigger any errors and it will be uploaded to CDN, however attempting to use such illegal thumbnail dimensions image in [Edit profile photos](/grindr-api/users/profiles#edit-profile-photos) will result in it being silently dropped/skipped.
+
+Also there is a legacy `POST /v3/me/profile/images`.
+
 ```
 POST /v4/media/upload
 ```
 
-*Also there is a legacy `POST /v3/me/profile/images`.*
-
 Query:
 
-- `thumbCoords` — [RectF](#rectf), see note below
-- `takenOnGrindr` — boolean, only for v4 endpoint
-
-You must ensure thumbCoords's width and height dimensions are equal, i.e. y2-y1 must equal to x2-x1. Submitting non-suqare thumbnail won't trigger any errors and it will be uploaded to CDN, however attempting to use such illegal thumbnail dimensions image in [Edit profile photos](#edit-profile-photos) will result in it being silently dropped/skipped.
+- `thumbCoords` — [RectF](/grindr-api/users/profiles#rectf)
+- `takenOnGrindr` — boolean
 
 Body:
 
-Binary media file
+Binary file.
 
 Response:
 
@@ -385,29 +144,20 @@ Response:
   - `size` — integer or `null`
   - `fullUrl` — string
   - `thumbnail` — boolean or `null`
-  - `state` — string, [MediaState](/grindr-api/media/signed-cdn-files#mediastate)
-  - `mediaHash` — string, see [Media -> Public CDN files](/grindr-api/media/public-cdn-files)
+  - `state` — string
+  - `mediaHash` — string, See [Media](/grindr-api/media/)
   - `rejectionReason` — string or `null`
 - `mediaId` — integer
-
-## Get my profile photos
-
-Requires [Authorization](/grindr-api/api-authorization).
-
-```
-GET /v3.1/me/profile/images
-```
-
-Response:
-
-- `medias` — array of objects
-  - `mediaHash` — string, see [Media -> Public CDN files](/grindr-api/media/public-cdn-files)
-  - `type` — unknown integer
-  - `state` — integer, [MediaState](/grindr-api/media/signed-cdn-files#mediastate), WIP
 
 ## Edit profile photos
 
 Requires [Authorization](/grindr-api/api-authorization).
+
+Setting both `primaryImageHash` and `secondaryImageHashes` to `null` works. But setting `primaryImageHash` to a hash value while setting `secondaryImageHashes` to null causes HTTP status 400 Bad Request error. It's recommended to just use `[]` for `secondaryImageHashes` rather than `null`.
+
+Supplied images must have square thumbnails, otherwise they will be silently skipped. See [Upload media](/grindr-api/users/profiles#upload-media).
+
+Repeating `primaryImageHash` value in `secondaryImageHashes` array will result in secondaryImageHashes's entry being silently dropped from supplied request array. Repeating `secondaryImageHashes` values will result in successfully saving the array as-is to the server, however official mobile client seems to drop repeating media when processing `secondaryImageHashes` response.
 
 ```
 PUT /v3/me/profile/images
@@ -415,14 +165,8 @@ PUT /v3/me/profile/images
 
 Body:
 
-- `primaryImageHash` — string or `null`, see [Media -> Public CDN file](/grindr-api/media/public-cdn-files)
-- `secondaryImageHashes` — array (max. length: 5) of strings or `null` (note: see below), see [Media -> Public CDN file](/grindr-api/media/public-cdn-files)
-
-Setting both `primaryImageHash` and `secondaryImageHashes` to `null` works. But setting `primaryImageHash` to a hash value while setting `secondaryImageHashes` to null causes HTTP status 400 Bad Request error. It's recommended to just use `[]` for `secondaryImageHashes` rather than `null`.
-
-Supplied images must have square thumbnails, otherwise they will be silently skipped. See [Upload media](#upload-media).
-
-Repeating `primaryImageHash` value in `secondaryImageHashes` array will result in secondaryImageHashes's entry being silently dropped from supplied request array. Repeating `secondaryImageHashes` values will result in successfully saving the array as-is to the server, however official mobile client seems to drop repeating media when processing `secondaryImageHashes` response.
+- `primaryImageHash` — string or `null`
+- `secondaryImageHashes` — array of strings or `null`
 
 Response:
 
@@ -438,7 +182,7 @@ This endpoint removes photo from your profile as well as deletes the media from 
 DELETE /v3/me/profile/images
 ```
 
-Body (yes, body, not query):
+Body:
 
 - `media_hashes` — array of strings
 
@@ -446,9 +190,21 @@ Response:
 
 Empty.
 
-## Check if profiles are reachable
+## Get my profile photos
 
-WIP
+Requires [Authorization](/grindr-api/api-authorization).
+
+```
+GET /v3.1/me/profile/images
+```
+
+Response:
+
+- `medias` — array of [ProfileImageState](/grindr-api/users/profiles#profileimagestate)
+
+## Check if profiles are reachable, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
 
@@ -464,20 +220,21 @@ Response:
 
 - `profileIds` — array of strings with numeric ids
 
-## Get profile insights
+## Get profile insights v1, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
 
 ```
 GET /v1/profile-insights/{profileId}
 ```
 
-Response: ProfileInsightsResponse, WIP
+## Get profile insights v2, WIP
+
+> [!NOTE] This endpoint hasn't been researched yet
 
 ```
 GET /v2/profile-insights/{profileId}
 ```
-
-Response: ProfileInsightsV2Response, WIP
-
 
 ## Get pronouns
 
@@ -489,10 +246,7 @@ GET /v1/pronouns
 
 Response:
 
-Array of objects:
-
-- `pronounId` — integer
-- `pronoun` — string, e.g. `"-"` or `"They/Them/Theirs"`
+Array of [Pronoun](/grindr-api/users/profiles#pronoun).
 
 ## Get genders
 
@@ -500,21 +254,19 @@ Array of objects:
 GET /public/v2/genders
 ```
 
-*Also aliased to `GET /public/v1/genders`*
+Response:
+
+Array of [Gender](/grindr-api/users/profiles#gender).
+
+## Get genders (v1 alias)
+
+```
+GET /public/v1/genders
+```
 
 Response:
 
-Array of objects:
-
-- `genderId` — integer
-- `gender` — string
-- `displayGroup` — integer
-- `sortProfile` — integer or `null`
-- `sortFilter` — integer or `null`
-- `genderPlural` — string or `null`
-- `excludeOnProfileSelection` — array of integers or `null`
-- `excludeOnFilterSelection` — array of integers or `null`
-- `alsoClassifiedAs` — array of integers
+Array of [Gender](/grindr-api/users/profiles#gender).
 
 ## Suggest gender or pronoun
 
@@ -533,3 +285,354 @@ Response:
 
 Empty
 
+## RectF
+
+Array of 4 floats or `nulls`: Bottom edge ("y2") in pixels, Left edge ("x1") in pixels, Right edge ("x2") in pixels, Top edge ("y1") in pixels. When used in query, stringified as follows: `y2,x1,x2,y1`.
+
+## ProfileMaskedMin
+
+Minimal masked profile.
+
+- `distance` — number or `null`
+- `profileImageMediaHash` — string, See [Media](/grindr-api/media/) or `null`
+- `isFavorite` — boolean
+
+## ProfileMasked
+
+Masked profile (extra fields revealed).
+
+- *everything from [ProfileMaskedMin](/grindr-api/users/profiles#profilemaskedmin)*
+- `lastViewed` — number or `null`
+- `seen` — unix timestamp in milliseconds or `null`
+- `rightNow` — [RightNowStatus](/grindr-api/right-now#rightnowstatus)
+- `sexualPosition` — integer or `null`
+- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`
+
+## ProfileMin
+
+Minimal profile fields.
+
+- `profileId` — string with numeric id
+- `displayName` — string or `null`
+- `onlineUntil` — unix timestamp in milliseconds or `null`
+
+## ProfileMedia
+
+- `mediaHash` — string, See [Media](/grindr-api/media/)
+- `type` — integer
+- `state` — integer
+- `reason` — string or `null`
+- `takenOnGrindr` — boolean or `null`
+- `createdAt` — unix timestamp in milliseconds or `null`
+
+## ProfileShort
+
+Short profile, combines ProfileMasked and ProfileMin.
+
+- *everything from [ProfileMasked](/grindr-api/users/profiles#profilemasked)*
+- *everything from [ProfileMin](/grindr-api/users/profiles#profilemin)*
+- `age` — integer, may be `0` or `null`
+- `showAge` — boolean
+- `showDistance` — boolean
+- `approximateDistance` — boolean
+- `lastChatTimestamp` — number, may be `0` or `null`
+- `isNew` — boolean
+- `lastUpdatedTime` — unix timestamp in milliseconds
+- `medias` — array of [ProfileMedia](/grindr-api/users/profiles#profilemedia)
+
+## ProfileFields
+
+Optional profile fields.
+
+- `meetAt` — array of [Meet at](/grindr-api/users/profiles#meet-at)
+- `vaccines` — array of [Vaccines](/grindr-api/users/profiles#vaccines)
+- `genders` — array of integers
+- `pronouns` — array of integers
+
+## ProfileRightNow
+
+Right Now status info on a profile.
+
+- `rightNowText` — string or `null`
+- `rightNowPosted` — unix timestamp in milliseconds or `null`
+- `rightNowDistance` — long integer or `null`
+- `rightNowThumbnailUrl` — string or `null`
+- `rightNowFullImageUrl` — string or `null`
+
+## ProfileExtraFields
+
+Extra profile fields.
+
+- `nsfw` — [Accept NSFW pics](/grindr-api/users/profiles#accept-nsfw-pics) or `null`
+- `verifiedInstagramId` — string or `null`
+- `isBlockable` — boolean or `null`
+- `showTribes` — boolean
+- `showPosition` — boolean
+
+## TravelPlanEmbedded
+
+- `endDateUtc` — unix timestamp in milliseconds or `null`
+- `geohash` — [Geohash](/grindr-api/browse/location#geohash)
+- `id` — long integer or `null`
+- `locationName` — string
+- `showOnProfile` — boolean or `null`
+- `startDateUtc` — unix timestamp in milliseconds or `null`
+
+## RightNowMedia
+
+- `mediaId` — long integer or `null`
+- `thumbnailUrl` — string
+- `fullImageUrl` — string
+- `contentType` — string
+- `isNsfw` — boolean or `null`
+
+## Profile
+
+Full profile object.
+
+- *everything from [ProfileShort](/grindr-api/users/profiles#profileshort)*
+- *everything from [ProfileFields](/grindr-api/users/profiles#profilefields)*
+- *everything from [ProfileRightNow](/grindr-api/users/profiles#profilerightnow)*
+- *everything from [ProfileExtraFields](/grindr-api/users/profiles#profileextrafields)*
+- `aboutMe` — string or `null`
+- `ethnicity` — [Ethnicity](/grindr-api/users/profiles#ethnicity) or `null`
+- `relationshipStatus` — [Relationship status](/grindr-api/users/profiles#relationship-status) or `null`
+- `grindrTribes` — array of [Tribes](/grindr-api/users/profiles#tribes)
+- `lookingFor` — array of [Looking for](/grindr-api/users/profiles#looking-for)
+- `bodyType` — [Body type](/grindr-api/users/profiles#body-type) or `null`
+- `hivStatus` — [HIV status](/grindr-api/users/profiles#hiv-status) or `null`
+- `lastTestedDate` — unix timestamp in milliseconds or `null`
+- `height` — number in centimeters or `null`
+- `weight` — number in grams or `null`
+- `socialNetworks` — object
+  - `twitter` — [SocialNetwork](/grindr-api/users/profiles#socialnetwork)
+  - `facebook` — [SocialNetwork](/grindr-api/users/profiles#socialnetwork)
+  - `instagram` — [SocialNetwork](/grindr-api/users/profiles#socialnetwork)
+- `identity` — unknown or `null`
+- `hashtags` — array
+- `profileTags` — array of [Profile tags](/grindr-api/users/profiles#profile-tags)
+- `tapped` — boolean
+- `tapType` — boolean or `null`
+- `lastReceivedTapTimestamp` — unix timestamp in milliseconds or `null`
+- `isTeleporting` — boolean
+- `isRoaming` — boolean
+- `arrivalDays` — number or `null`
+- `unreadCount` — number, may be absent
+- `lastThrobTimestamp` — unknown
+- `sexualHealth` — array of [Sexual health](/grindr-api/users/profiles#sexual-health)
+- `isVisiting` — boolean
+- `travelPlans` — array of [TravelPlanEmbedded](/grindr-api/users/profiles#travelplanembedded)
+- `isInAList` — boolean
+- `tribesImInto` — array of [Tribes](/grindr-api/users/profiles#tribes)
+- `showVipBadge` — boolean
+- `rightNowShareLocation` — string, `"NONE"` or `null`
+- `rightNowMedias` — array of [RightNowMedia](/grindr-api/users/profiles#rightnowmedia)
+
+## ProfilePatch
+
+- *everything from [Profile](/grindr-api/users/profiles#profile)*
+
+## ProfileSummaryWithRightNow
+
+- *everything from [ProfileShort](/grindr-api/users/profiles#profileshort)*
+- *everything from [ProfileRightNow](/grindr-api/users/profiles#profilerightnow)*
+
+## SocialNetwork
+
+Social network user reference.
+
+- `userId` — string, username or `null`
+- `site` — unknown, e.g. `"twitter"` | `"facebook"` | `"instagram"`
+
+## ProfileTagLanguage
+
+- `language` — string
+- `categoryCollection` — array of objects
+  - `text` — string
+  - `possessiveText` — string or `null`
+  - `tags` — array of objects
+    - `tagId` — integer
+    - `text` — string
+    - `key` — string
+
+## ChatMediaUploadResponse
+
+- `mediaId` — long integer
+- `mediaHash` — string, See [Media](/grindr-api/media/)
+- `url` — URL
+
+## LegacyMediaUploadResponse
+
+- `hash` — string
+- `imageSizes` — array of objects
+  - `size` — integer or `null`
+  - `fullUrl` — string
+  - `thumbnail` — boolean or `null`
+  - `state` — string
+  - `mediaHash` — string, See [Media](/grindr-api/media/)
+  - `rejectionReason` — string or `null`
+- `mediaId` — integer
+
+## EditProfilePhotosRequest
+
+- `primaryImageHash` — string or `null`
+- `secondaryImageHashes` — array of strings or `null`
+
+## DeleteProfilePhotosRequest
+
+- `media_hashes` — array of strings
+
+## ProfileImageState
+
+> [!NOTE] This type hasn't been researched yet
+
+Profile media state.
+
+- `mediaHash` — string, See [Media](/grindr-api/media/)
+- `type` — integer
+- `state` — integer
+
+## Pronoun
+
+- `pronounId` — integer
+- `pronoun` — string
+
+## Gender
+
+- `genderId` — integer
+- `gender` — string
+- `displayGroup` — integer
+- `sortProfile` — integer or `null`
+- `sortFilter` — integer or `null`
+- `genderPlural` — string or `null`
+- `excludeOnProfileSelection` — array of integers or `null`
+- `excludeOnFilterSelection` — array of integers or `null`
+- `alsoClassifiedAs` — array of integers
+
+## GenderPronounSuggestionRequest
+
+- `category` — string, either `gender` or `pronoun`
+- `suggestedValue` — string
+
+## Sexual position ID
+
+Sexual position ID.
+
+- `1` — Top
+- `2` — Bottom
+- `3` — Versatile
+- `4` — Vers Bottom
+- `5` — Vers Top
+- `6` — Side
+
+## Ethnicity
+
+Ethnicity.
+
+- `1` — Asian
+- `2` — Black
+- `3` — Latino
+- `4` — Middle Eastern
+- `5` — Mixed
+- `6` — Native American
+- `7` — White
+- `8` — Other
+- `9` — South Asian
+
+## Relationship status
+
+Relationship status.
+
+- `1` — Single
+- `2` — Dating
+- `3` — Exclusive
+- `4` — Committed
+- `5` — Partnered
+- `6` — Engaged
+- `7` — Married
+- `8` — Open Relationship
+
+## Body type
+
+Body type.
+
+- `1` — Toned
+- `2` — Average
+- `3` — Large
+- `4` — Muscular
+- `5` — Slim
+- `6` — Stocky
+
+## HIV status
+
+HIV status. Not to be confused with [Sexual health](/grindr-api/users/profiles#sexual-health).
+
+- `1` — Negative
+- `2` — Negative, on PrEP
+- `3` — Positive
+- `4` — Positive, undetectable
+
+## Accept NSFW pics
+
+Accept NSFW pics.
+
+- `1` — Never
+- `2` — Not At First
+- `3` — Yes Please
+
+## Meet at
+
+Meet at preferences.
+
+- `1` — My Place
+- `2` — Your Place
+- `3` — Bar
+- `4` — Coffee Shop
+- `5` — Restaurant
+
+## Sexual health
+
+Sexual health (also "Health Practices"). Not to be confused with [HIV status](/grindr-api/users/profiles#hiv-status).
+
+- `1` — Condoms
+- `2` — I'm on doxyPEP
+- `3` — I'm on PrEP
+- `4` — I'm HIV undetectable
+- `5` — Prefer to discuss
+
+## Looking for
+
+Looking for.
+
+- `2` — Chat
+- `3` — Dates
+- `4` — Friends
+- `5` — Networking
+- `6` — Relationship
+- `7` — Hookups
+
+## Tribes
+
+Tribe.
+
+- `1` — Bear
+- `2` — Clean-Cut
+- `3` — Daddy
+- `4` — Discreet
+- `5` — Geek
+- `6` — Jock
+- `7` — Leather
+- `8` — Otter
+- `9` — Poz
+- `10` — Rugged
+- `11` — Trans
+- `12` — Twink
+- `13` — Sober
+
+## Vaccines
+
+Vaccine.
+
+- `1` — COVID-19
+- `2` — Monkeypox
+- `3` — Meningitis

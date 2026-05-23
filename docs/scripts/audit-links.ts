@@ -1,8 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join } from "path";
 
-const GEN = "content/grindr-api-generated";
-const ALL = "content/grindr-api";
+const ROOT = "content/grindr-api";
 
 function walk(dir: string): string[] {
 	const out: string[] = [];
@@ -36,41 +35,32 @@ function collectAnchors(filePath: string): Set<string> {
 	return anchors;
 }
 
-const handPages = new Map<string, Set<string>>();
-for (const f of walk(ALL).filter(
-	(f) => !f.includes("/grindr-api-generated/"),
-)) {
-	handPages.set(pageOf(f), collectAnchors(f));
-}
+const pages = new Map<string, Set<string>>();
+for (const f of walk(ROOT)) pages.set(pageOf(f), collectAnchors(f));
 
-const genPages = new Map<string, Set<string>>();
-for (const f of walk(GEN)) {
-	genPages.set(
-		pageOf(f).replace("/grindr-api-generated/", "/grindr-api/"),
-		collectAnchors(f),
-	);
-}
-
-const broken: Array<{
+interface Broken {
 	file: string;
 	link: string;
 	label: string;
 	reason: string;
-}> = [];
+}
+
+const broken: Broken[] = [];
 const linkRe = /\[([^\]]*)\]\((\/grindr-api\/[^)#\s]*)(#[^)\s]+)?\)/g;
 
-for (const f of walk(GEN)) {
+for (const f of walk(ROOT)) {
 	const content = readFileSync(f, "utf8");
-	const fromPage = pageOf(f).replace("/grindr-api-generated/", "/grindr-api/");
+	const fromPage = pageOf(f);
 	for (const m of content.matchAll(linkRe)) {
-		const [, label = "", path = "", hash] = m;
-		const target = path;
+		const label = m[1] ?? "";
+		const path = m[2] ?? "";
+		const hash = m[3];
 		const anchor = hash ? hash.slice(1) : "";
-		const anchors = genPages.get(target) || handPages.get(target);
+		const anchors = pages.get(path);
 		if (!anchors) {
 			broken.push({
 				file: fromPage,
-				link: `${path}${hash || ""}`,
+				link: `${path}${hash ?? ""}`,
 				label,
 				reason: "missing page",
 			});
@@ -79,7 +69,7 @@ for (const f of walk(GEN)) {
 		if (anchor && !anchors.has(anchor)) {
 			broken.push({
 				file: fromPage,
-				link: `${path}${hash || ""}`,
+				link: `${path}${hash ?? ""}`,
 				label,
 				reason: "missing anchor",
 			});
@@ -92,10 +82,13 @@ const grouped = new Map<
 	{ reason: string; label: string; refs: string[] }
 >();
 for (const b of broken) {
-	const key = b.link;
-	if (!grouped.has(key))
-		grouped.set(key, { reason: b.reason, label: b.label, refs: [] });
-	grouped.get(key)!.refs.push(b.file);
+	const existing = grouped.get(b.link) ?? {
+		reason: b.reason,
+		label: b.label,
+		refs: [],
+	};
+	existing.refs.push(b.file);
+	grouped.set(b.link, existing);
 }
 
 console.log(`Total broken link occurrences: ${broken.length}`);

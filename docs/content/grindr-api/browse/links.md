@@ -1,6 +1,8 @@
-# Links
+# Links, WIP
 
-Unknown, WIP
+> [!NOTE] This page is a work in progress. Endpoints below haven't been fully researched. Unknown, WIP
+
+## Get link, WIP
 
 ```
 GET /v4/links/{key}
@@ -8,4 +10,4 @@ GET /v4/links/{key}
 
 Response:
 
-- `destination` — string
+- `destination` — URL

@@ -1,11 +1,5 @@
 # Views
 
-## ViewSourceEnum
-
-- `DISCOVER`
-- `FOR_YOU`
-- `UNKNOWN` (fallback)
-
 ## Get views number
 
 Requires [Authorization](/grindr-api/api-authorization).
@@ -19,7 +13,7 @@ Response:
 - `viewedCount` — number or `null`
 - `mostRecent` — object or `null`
   - `profileId` — string with number
-  - `photoHash` — 40 characters hex string
+  - `photoHash` — string, See [Media](/grindr-api/media/)
   - `timestamp` — unix timestamp in milliseconds
 
 ## Get viewers list
@@ -33,27 +27,12 @@ GET /v7/views/list
 Response:
 
 - `totalViewers` — integer
-- `previews` — array of objects
-  - *everything from [ProfileMasked](/grindr-api/users/profiles#profilemasked)*
-  - `isInBadNeighborhood` — boolean
-  - `isViewedMeFreshFace` — boolean
-  - `isSecretAdmirer` — boolean
-  - `viewedCount` — object
-    - `totalCount` — integer
-    - `maxDisplayCount` — integer
-- `profiles` — array of objects
-  - *everything from `previews`*
-  - *everything from [ProfileShort](/grindr-api/users/profiles#profileshort)*
-  - `hasFaceRecognition` — boolean
-  - `isIncognito` — boolean
-  - `boosting` — boolean
-  - `showUnlockReward` — boolean
-  - `unreadMessageCount` — integer
-  - `hasChatted` — boolean
+- `previews` — array of [ViewPreview](/grindr-api/interest/views#viewpreview)
+- `profiles` — array of [ViewerProfile](/grindr-api/interest/views#viewerprofile)
 
-## Record profile views (batch)
+## Record profile views (batch), WIP
 
-WIP
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
 
@@ -63,12 +42,12 @@ POST /v4/views
 
 Body:
 
-- `viewedProfileIds` — array of strings with numeric ids
-- `foundVia` — unknown or `null`
+- `viewedProfileIds` — array of strings
+- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`
 
-## Record single profile view
+## Record single profile view, WIP
 
-WIP
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
 
@@ -76,9 +55,9 @@ Requires [Authorization](/grindr-api/api-authorization).
 POST /v4/views/{profileId}
 ```
 
-## Record profile view v2
+## Record profile view v2, WIP
 
-WIP
+> [!NOTE] This endpoint hasn't been researched yet
 
 Requires [Authorization](/grindr-api/api-authorization).
 
@@ -88,6 +67,48 @@ POST /v5/views/{profileId}
 
 Body:
 
-- `foundVia` — unknown or `null`
-- `source` — [ViewSourceEnum](#viewsourceenum)
+- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`
+- `source` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum)
 
+## ViewSourceEnum
+
+View source.
+
+- `DISCOVER`
+- `FOR_YOU`
+- `UNKNOWN` — UNKNOWN (fallback)
+
+## ViewsEyeballResponse
+
+- `viewedCount` — number or `null`
+- `mostRecent` — object or `null`
+  - `profileId` — string with number
+  - `photoHash` — string, See [Media](/grindr-api/media/)
+  - `timestamp` — unix timestamp in milliseconds
+
+## ViewPreview
+
+- *everything from [ProfileMasked](/grindr-api/users/profiles#profilemasked)*
+- `isInBadNeighborhood` — boolean
+- `isViewedMeFreshFace` — boolean
+- `isSecretAdmirer` — boolean
+- `viewedCount` — object
+  - `totalCount` — integer
+  - `maxDisplayCount` — integer
+
+## ViewerProfile
+
+- *everything from [ViewPreview](/grindr-api/interest/views#viewpreview)*
+- *everything from [ProfileShort](/grindr-api/users/profiles#profileshort)*
+- `hasFaceRecognition` — boolean
+- `isIncognito` — boolean
+- `boosting` — boolean
+- `showUnlockReward` — boolean
+- `unreadMessageCount` — integer
+- `hasChatted` — boolean
+
+## ViewsListResponse
+
+- `totalViewers` — integer
+- `previews` — array of [ViewPreview](/grindr-api/interest/views#viewpreview)
+- `profiles` — array of [ViewerProfile](/grindr-api/interest/views#viewerprofile)
