@@ -54,6 +54,7 @@ export interface PropertyGroup {
 	heading: string;
 	allOf?: Array<{ $ref: string }>;
 	properties?: Record<string, Schema>;
+	required?: string[];
 }
 
 export interface Parameter {

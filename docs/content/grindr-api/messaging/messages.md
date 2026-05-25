@@ -273,7 +273,7 @@ Body for `"Video"` message type. Additionally, for expiring videos `viewsRemaini
 - `length` — number
 - `maxViews` — integer or `null`
 - `looping` — boolean or `null`
-- `viewsRemaining` — integer
+- `viewsRemaining` — integer, optional
 
 ## PrivateVideoBody
 
@@ -429,7 +429,7 @@ Empty type.
 - `type` — [Message type](/grindr-api/messaging/messages#message-type)
 - `target` — [MessageTarget](/grindr-api/messaging/messages#messagetarget)
 - `body` — object with [Message contents](/grindr-api/messaging/messages#message-contents) or `null`
-- `replyToMessageId` — string or `null`
+- `replyToMessageId` — string or `null`, optional
 
 ## MessageMutationRequest
 

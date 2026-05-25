@@ -20,9 +20,9 @@ Requires [Authorization](/grindr-api/api-authorization).
 GET /v3/assignment
 ```
 
-Query (optional):
+Query:
 
-- `geohash` — [Geohash](/grindr-api/browse/location#geohash), optional
+- `geohash` — [Geohash](/grindr-api/browse/location#geohash)
 
 Response:
 

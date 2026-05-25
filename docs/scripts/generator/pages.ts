@@ -30,9 +30,10 @@ function resolveGroupParam(
 function appendOptional(propertyLine: string, optional: boolean): string {
 	if (!optional) return propertyLine;
 	const nl = propertyLine.indexOf("\n");
-	const head = nl >= 0 ? propertyLine.slice(0, nl) : propertyLine;
+	let head = nl >= 0 ? propertyLine.slice(0, nl) : propertyLine;
 	const tail = nl >= 0 ? propertyLine.slice(nl) : "";
-	if (/,\s*optional$/i.test(head)) return propertyLine;
+	head = head.replace(/,\s*may be absent/gi, "");
+	if (/,\s*optional$/i.test(head)) return `${head}${tail}`;
 	return `${head}, optional${tail}`;
 }
 
@@ -78,8 +79,11 @@ function renderPropertyGroups(
 				);
 			}
 		}
+		const groupRequired = group.required;
 		for (const [k, v] of Object.entries(group.properties ?? {})) {
-			lines.push(renderProperty(ctx, k, v, 0, false));
+			const req =
+				groupRequired === undefined ? true : groupRequired.includes(k);
+			lines.push(appendOptional(renderProperty(ctx, k, v, 0, req), !req));
 		}
 	}
 }

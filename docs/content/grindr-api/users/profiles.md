@@ -305,8 +305,8 @@ Masked profile (extra fields revealed).
 - `lastViewed` — number or `null`
 - `seen` — unix timestamp in milliseconds or `null`
 - `rightNow` — [RightNowStatus](/grindr-api/right-now#rightnowstatus)
-- `sexualPosition` — integer or `null`
-- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`
+- `sexualPosition` — integer or `null`, optional
+- `foundVia` — [ViewSourceEnum](/grindr-api/interest/views#viewsourceenum) or `null`, optional
 
 ## ProfileMin
 
@@ -314,7 +314,7 @@ Minimal profile fields.
 
 - `profileId` — string with numeric id
 - `displayName` — string or `null`
-- `onlineUntil` — unix timestamp in milliseconds or `null`
+- `onlineUntil` — unix timestamp in milliseconds or `null`, optional
 
 ## ProfileMedia
 
@@ -344,10 +344,10 @@ Short profile, combines ProfileMasked and ProfileMin.
 
 Optional profile fields.
 
-- `meetAt` — array of [Meet at](/grindr-api/users/profiles#meet-at)
-- `vaccines` — array of [Vaccines](/grindr-api/users/profiles#vaccines)
-- `genders` — array of integers
-- `pronouns` — array of integers
+- `meetAt` — array of [Meet at](/grindr-api/users/profiles#meet-at), optional
+- `vaccines` — array of [Vaccines](/grindr-api/users/profiles#vaccines), optional
+- `genders` — array of integers, optional
+- `pronouns` — array of integers, optional
 
 ## ProfileRightNow
 
@@ -417,7 +417,7 @@ Full profile object.
 - `isTeleporting` — boolean
 - `isRoaming` — boolean
 - `arrivalDays` — number or `null`
-- `unreadCount` — number, may be absent
+- `unreadCount` — number, optional
 - `lastThrobTimestamp` — unknown
 - `sexualHealth` — array of [Sexual health](/grindr-api/users/profiles#sexual-health)
 - `isVisiting` — boolean

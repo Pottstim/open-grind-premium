@@ -158,7 +158,7 @@ Only for [v4/cascade](/grindr-api/browse/grid#get-cascade):
 - `age` — integer, optional
 - `heightCm` — integer, optional
 - `weightGrams` — integer, optional
-- `bodyType` — integer, see [Body type](/grindr-api/users/profiles#body-type), optional
+- `bodyType` — integer, see [Body type](/grindr-api/users/profiles#body-type)
 
 ## partial_profile_v1
 
@@ -273,7 +273,7 @@ Profile data returned in cascade items.
 - `profileId` — integer
 - `onlineUntil` — unix timestamp in milliseconds
 - `displayName` — string
-- `distanceMeters` — integer, may be absent
+- `distanceMeters` — integer, optional
 - `rightNow` — [RightNowStatus](/grindr-api/right-now#rightnowstatus)
 - `unreadCount` — integer
 - `isVisiting` — boolean
@@ -284,7 +284,7 @@ Only for [v3/cascade](/grindr-api/browse/grid#get-cascade-legacy):
 - `lastOnline` — unix timestamp in milliseconds
 - `photoMediaHashes` — array of strings, see [Media](/grindr-api/media/index#media)
 - `lookingFor` — array of integers, see [Looking for](/grindr-api/users/profiles#looking-for)
-- `sexualPosition` — integer, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id), may be absent
+- `sexualPosition` — integer, see [Sexual position ID](/grindr-api/users/profiles#sexual-position-id), optional
 - `approximateDistance` — boolean
 - `isFavorite` — boolean
 - `isBoosting` — boolean

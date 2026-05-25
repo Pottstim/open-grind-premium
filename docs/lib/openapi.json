@@ -3166,7 +3166,8 @@
 						"in": "query",
 						"schema": {
 							"$ref": "#/components/schemas/Geohash"
-						}
+						},
+						"required": true
 					}
 				],
 				"responses": {
@@ -9743,7 +9744,14 @@
 						]
 					}
 				},
-				"x-render-on-tag": "authentication"
+				"x-render-on-tag": "authentication",
+				"required": [
+					"email",
+					"password",
+					"authToken",
+					"token",
+					"geohash"
+				]
 			},
 			"AuthSessionResponse": {
 				"type": "object",
@@ -10030,7 +10038,16 @@
 						"type": "string"
 					}
 				},
-				"x-render-on-tag": "browse/travels"
+				"x-render-on-tag": "browse/travels",
+				"required": [
+					"travelPlanId",
+					"profileId",
+					"geohash",
+					"startDate",
+					"endDate",
+					"showOnProfile",
+					"notes"
+				]
 			},
 			"ProfileMaskedMin": {
 				"type": "object",
@@ -10162,7 +10179,15 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"mediaHash",
+					"type",
+					"state",
+					"reason",
+					"takenOnGrindr",
+					"createdAt"
+				]
 			},
 			"ProfileShort": {
 				"allOf": [
@@ -10363,7 +10388,15 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"endDateUtc",
+					"geohash",
+					"id",
+					"locationName",
+					"showOnProfile",
+					"startDateUtc"
+				]
 			},
 			"RightNowMedia": {
 				"type": "object",
@@ -10387,7 +10420,14 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"mediaId",
+					"thumbnailUrl",
+					"fullImageUrl",
+					"contentType",
+					"isNsfw"
+				]
 			},
 			"Profile": {
 				"allOf": [
@@ -10622,7 +10662,30 @@
 						"$ref": "#/components/schemas/ProfileRightNow"
 					}
 				],
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"distance",
+					"profileImageMediaHash",
+					"isFavorite",
+					"lastViewed",
+					"seen",
+					"rightNow",
+					"profileId",
+					"displayName",
+					"age",
+					"showAge",
+					"showDistance",
+					"approximateDistance",
+					"lastChatTimestamp",
+					"isNew",
+					"lastUpdatedTime",
+					"medias",
+					"rightNowText",
+					"rightNowPosted",
+					"rightNowDistance",
+					"rightNowThumbnailUrl",
+					"rightNowFullImageUrl"
+				]
 			},
 			"SocialUserId": {
 				"type": "object",
@@ -10683,7 +10746,11 @@
 						}
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"language",
+					"categoryCollection"
+				]
 			},
 			"ChatMediaUploadResponse": {
 				"type": "object",
@@ -10700,7 +10767,12 @@
 						"format": "uri"
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"mediaId",
+					"mediaHash",
+					"url"
+				]
 			},
 			"LegacyMediaUploadResponse": {
 				"type": "object",
@@ -10741,7 +10813,12 @@
 						"type": "integer"
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"hash",
+					"imageSizes",
+					"mediaId"
+				]
 			},
 			"EditProfilePhotosRequest": {
 				"type": "object",
@@ -10759,7 +10836,11 @@
 						"maxItems": 5
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"primaryImageHash",
+					"secondaryImageHashes"
+				]
 			},
 			"DeleteProfilePhotosRequest": {
 				"type": "object",
@@ -10791,7 +10872,12 @@
 				},
 				"description": "Profile media state.",
 				"x-wip": true,
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"mediaHash",
+					"type",
+					"state"
+				]
 			},
 			"Pronoun": {
 				"type": "object",
@@ -10803,7 +10889,11 @@
 						"type": "string"
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"pronounId",
+					"pronoun"
+				]
 			},
 			"Gender": {
 				"type": "object",
@@ -10850,7 +10940,18 @@
 						}
 					}
 				},
-				"x-render-on-tag": "users/profiles"
+				"x-render-on-tag": "users/profiles",
+				"required": [
+					"genderId",
+					"gender",
+					"displayGroup",
+					"sortProfile",
+					"sortFilter",
+					"genderPlural",
+					"excludeOnProfileSelection",
+					"excludeOnFilterSelection",
+					"alsoClassifiedAs"
+				]
 			},
 			"GenderPronounSuggestionRequest": {
 				"type": "object",
@@ -11015,7 +11116,11 @@
 						"description": "e.g. `\"Profile is not verification required\"` or `\"Profile is already verified\"`"
 					}
 				},
-				"x-render-on-tag": "settings/sms-verification"
+				"x-render-on-tag": "settings/sms-verification",
+				"required": [
+					"code",
+					"message"
+				]
 			},
 			"SmsVerifyCodeLegacyRequest": {
 				"type": "object",
@@ -11030,7 +11135,12 @@
 						"type": "string"
 					}
 				},
-				"x-render-on-tag": "settings/sms-verification"
+				"x-render-on-tag": "settings/sms-verification",
+				"required": [
+					"country_code",
+					"phone_number",
+					"code"
+				]
 			},
 			"FavoriteNote": {
 				"type": "object",
@@ -11319,7 +11429,10 @@
 					"albumName": {
 						"description": "see [Album name](/grindr-api/messaging/albums#album-name)"
 					}
-				}
+				},
+				"required": [
+					"albumName"
+				]
 			},
 			"AlbumContentWithRemainingViews": {
 				"allOf": [
@@ -11335,7 +11448,17 @@
 						}
 					}
 				],
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"contentId",
+					"contentType",
+					"coverUrl",
+					"statusId",
+					"thumbUrl",
+					"url",
+					"processing",
+					"rejectionId"
+				]
 			},
 			"AlbumDetailsResponse": {
 				"allOf": [
@@ -11357,7 +11480,20 @@
 						}
 					}
 				],
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"albumName",
+					"albumId",
+					"albumNumber",
+					"totalAlbumsShared",
+					"hasUnseenContent",
+					"profileId",
+					"albumViewable",
+					"sharedCount",
+					"createdAt",
+					"updatedAt",
+					"content"
+				]
 			},
 			"AlbumShareInfo": {
 				"type": "object",
@@ -11373,7 +11509,12 @@
 						"type": "boolean"
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"profileId",
+					"hasAlbum",
+					"hasSharedWithMe"
+				]
 			},
 			"AlbumsSharedByProfileResponse": {
 				"type": "object",
@@ -11411,7 +11552,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"albums"
+				]
 			},
 			"AlbumNameRequest": {
 				"type": "object",
@@ -11424,7 +11568,10 @@
 				},
 				"x-render-on-tag": "messaging/albums",
 				"x-display-name": "Album name",
-				"description": "String, may be empty (`\"\"`) or `null`, non-string values are coerced into string.\n\nMaximum length: 255 UTF-8 bytes, which is 255 characters for ASCII strings (1 ASCII character is encoded as 1 byte) but less if you include emojis or non-ascii characters (2+ bytes/one codepoint)."
+				"description": "String, may be empty (`\"\"`) or `null`, non-string values are coerced into string.\n\nMaximum length: 255 UTF-8 bytes, which is 255 characters for ASCII strings (1 ASCII character is encoded as 1 byte) but less if you include emojis or non-ascii characters (2+ bytes/one codepoint).",
+				"required": [
+					"albumName"
+				]
 			},
 			"AlbumRenameResponse": {
 				"type": "object",
@@ -11437,7 +11584,11 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"albumId",
+					"albumName"
+				]
 			},
 			"AlbumShareRequest": {
 				"type": "object",
@@ -11457,7 +11608,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"profiles"
+				]
 			},
 			"AlbumUnshareRequest": {
 				"type": "object",
@@ -11479,7 +11633,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"profiles"
+				]
 			},
 			"AlbumStorageLimits": {
 				"type": "object",
@@ -11529,7 +11686,21 @@
 						"type": "integer"
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"subscriptionType",
+					"maxAlbums",
+					"maxContentItemsPerAlbum",
+					"maxShares",
+					"maxViewableAlbums",
+					"maxViewableVideos",
+					"maxContentSize",
+					"maxContentSizeHumanReadable",
+					"maxVideoLength",
+					"minVideoLength",
+					"maxShareableAlbums",
+					"maxVideosPerAlbum"
+				]
 			},
 			"PressieProfileMini": {
 				"type": "object",
@@ -11666,7 +11837,14 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"profileFeeds",
+					"sharedAlbums",
+					"experimentStatus",
+					"nonEmptyPersonalAlbumCount",
+					"emptyAlbumId"
+				]
 			},
 			"PressieAlbumsPaywallResponse": {
 				"type": "object",
@@ -11701,7 +11879,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/albums"
+				"x-render-on-tag": "messaging/albums",
+				"required": [
+					"albumPaywallContent"
+				]
 			},
 			"ConversationParticipant": {
 				"type": "object",
@@ -11757,7 +11938,17 @@
 						"type": "boolean"
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"profileId",
+					"primaryMediaHash",
+					"lastOnline",
+					"onlineUntil",
+					"distanceMetres",
+					"position",
+					"isInAList",
+					"hasDatingPotential"
+				]
 			},
 			"ConversationPreview": {
 				"type": "object",
@@ -11822,7 +12013,25 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"conversationId",
+					"messageId",
+					"chat1MessageId",
+					"senderId",
+					"type",
+					"chat1Type",
+					"text",
+					"url",
+					"lat",
+					"lon",
+					"albumId",
+					"albumContentId",
+					"albumContentReply",
+					"duration",
+					"imageHash",
+					"photoContentReply"
+				]
 			},
 			"ConversationData": {
 				"type": "object",
@@ -11884,7 +12093,23 @@
 						"type": "boolean"
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"conversationId",
+					"name",
+					"participants",
+					"lastActivityTimestamp",
+					"unreadCount",
+					"preview",
+					"muted",
+					"pinned",
+					"favorite",
+					"context",
+					"onlineUntil",
+					"translatable",
+					"rightNow",
+					"hasUnreadThrob"
+				]
 			},
 			"Conversation": {
 				"type": "object",
@@ -11935,7 +12160,16 @@
 						"description": "array of integers, [sexual position IDs](/grindr-api/users/profiles#sexual-position-id)"
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"unreadOnly",
+					"chemistryOnly",
+					"favoritesOnly",
+					"rightNowOnly",
+					"onlineNowOnly",
+					"distanceMeters",
+					"positions"
+				]
 			},
 			"InboxResponse": {
 				"type": "object",
@@ -11966,7 +12200,15 @@
 						"description": "integer, e.g. `2`"
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"entries",
+					"showsFreeHeaderLabel",
+					"totalFullConversations",
+					"totalPartialConversations",
+					"maxDisplayLockCount",
+					"nextPage"
+				]
 			},
 			"MessageReaction": {
 				"type": "object",
@@ -11980,7 +12222,11 @@
 						"description": "(`1` is \"🔥\")"
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"profileId",
+					"reactionType"
+				]
 			},
 			"MessageType": {
 				"type": "string",
@@ -12710,7 +12956,15 @@
 						"type": "boolean"
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"profileId",
+					"name",
+					"mediaHash",
+					"onlineUntil",
+					"distance",
+					"showDistance"
+				]
 			},
 			"ConversationMessagesResponse": {
 				"type": "object",
@@ -12754,7 +13008,13 @@
 						]
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"lastReadTimestamp",
+					"messages",
+					"metadata",
+					"profile"
+				]
 			},
 			"MessageTarget": {
 				"type": "object",
@@ -12772,7 +13032,11 @@
 						"type": "integer"
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"type",
+					"targetId"
+				]
 			},
 			"SendMessageRequest": {
 				"type": "object",
@@ -12797,7 +13061,12 @@
 						"nullable": true
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"type",
+					"target",
+					"body"
+				]
 			},
 			"MessageMutationRequest": {
 				"type": "object",
@@ -12831,7 +13100,11 @@
 						"description": "either `\"Typing\"` or `\"Cleared\"`"
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"conversationId",
+					"status"
+				]
 			},
 			"MessageReactionRequest": {
 				"type": "object",
@@ -12847,7 +13120,12 @@
 						"description": "(`1` is \"🔥\")"
 					}
 				},
-				"x-render-on-tag": "messaging/messages"
+				"x-render-on-tag": "messaging/messages",
+				"required": [
+					"conversationId",
+					"messageId",
+					"reactionType"
+				]
 			},
 			"TranslateMessageRequest": {
 				"type": "object",
@@ -12863,7 +13141,12 @@
 						"description": "e.g. `en`"
 					}
 				},
-				"x-render-on-tag": "messaging/misc"
+				"x-render-on-tag": "messaging/misc",
+				"required": [
+					"conversationId",
+					"messageId",
+					"targetLanguageCode"
+				]
 			},
 			"WingmanFeedbackRequest": {
 				"type": "object",
@@ -12891,7 +13174,14 @@
 						]
 					}
 				},
-				"x-render-on-tag": "messaging/misc"
+				"x-render-on-tag": "messaging/misc",
+				"required": [
+					"message_id",
+					"prompt_id",
+					"rating",
+					"text",
+					"timestamp"
+				]
 			},
 			"SavedPhrase": {
 				"type": "object",
@@ -12908,7 +13198,12 @@
 						"description": "e.g. `\"user\"`"
 					}
 				},
-				"x-render-on-tag": "messaging/saved-phrases"
+				"x-render-on-tag": "messaging/saved-phrases",
+				"required": [
+					"id",
+					"text",
+					"type"
+				]
 			},
 			"SavedPhrasesResponse": {
 				"type": "object",
@@ -12920,7 +13215,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/saved-phrases"
+				"x-render-on-tag": "messaging/saved-phrases",
+				"required": [
+					"phrases"
+				]
 			},
 			"LegacyPrefsResponse": {
 				"type": "object",
@@ -12949,7 +13247,10 @@
 						"x-key-description": "phrase ID (uuid)"
 					}
 				},
-				"x-render-on-tag": "messaging/saved-phrases"
+				"x-render-on-tag": "messaging/saved-phrases",
+				"required": [
+					"phrases"
+				]
 			},
 			"TapProfile": {
 				"allOf": [
@@ -12986,7 +13287,21 @@
 						}
 					}
 				],
-				"x-render-on-tag": "interest/taps"
+				"x-render-on-tag": "interest/taps",
+				"required": [
+					"distance",
+					"profileImageMediaHash",
+					"isFavorite",
+					"profileId",
+					"displayName",
+					"timestamp",
+					"tapType",
+					"lastOnline",
+					"isBoosting",
+					"isMutual",
+					"rightNowType",
+					"isViewable"
+				]
 			},
 			"ViewsEyeballResponse": {
 				"type": "object",
@@ -13018,7 +13333,11 @@
 						}
 					}
 				},
-				"x-render-on-tag": "interest/views"
+				"x-render-on-tag": "interest/views",
+				"required": [
+					"viewedCount",
+					"mostRecent"
+				]
 			},
 			"ViewPreview": {
 				"allOf": [
@@ -13051,7 +13370,19 @@
 						}
 					}
 				],
-				"x-render-on-tag": "interest/views"
+				"x-render-on-tag": "interest/views",
+				"required": [
+					"distance",
+					"profileImageMediaHash",
+					"isFavorite",
+					"lastViewed",
+					"seen",
+					"rightNow",
+					"isInBadNeighborhood",
+					"isViewedMeFreshFace",
+					"isSecretAdmirer",
+					"viewedCount"
+				]
 			},
 			"ViewerProfile": {
 				"allOf": [
@@ -13085,7 +13416,35 @@
 						}
 					}
 				],
-				"x-render-on-tag": "interest/views"
+				"x-render-on-tag": "interest/views",
+				"required": [
+					"distance",
+					"profileImageMediaHash",
+					"isFavorite",
+					"lastViewed",
+					"seen",
+					"rightNow",
+					"isInBadNeighborhood",
+					"isViewedMeFreshFace",
+					"isSecretAdmirer",
+					"viewedCount",
+					"profileId",
+					"displayName",
+					"age",
+					"showAge",
+					"showDistance",
+					"approximateDistance",
+					"lastChatTimestamp",
+					"isNew",
+					"lastUpdatedTime",
+					"medias",
+					"hasFaceRecognition",
+					"isIncognito",
+					"boosting",
+					"showUnlockReward",
+					"unreadMessageCount",
+					"hasChatted"
+				]
 			},
 			"ViewsListResponse": {
 				"type": "object",
@@ -13106,7 +13465,12 @@
 						}
 					}
 				},
-				"x-render-on-tag": "interest/views"
+				"x-render-on-tag": "interest/views",
+				"required": [
+					"totalViewers",
+					"previews",
+					"profiles"
+				]
 			},
 			"CascadeItem": {
 				"type": "object",
@@ -13120,7 +13484,11 @@
 						"description": "object, shape depends on `type` — [full_profile_v1](/grindr-api/browse/grid#full_profile_v1), [partial_profile_v1](/grindr-api/browse/grid#partial_profile_v1), [advert_v1](/grindr-api/browse/grid#advert_v1), [top_picks_v1](/grindr-api/browse/grid#top_picks_v1), [explore_aggregation_v1](/grindr-api/browse/grid#explore_aggregation_v1), [boost_upsell_v1](/grindr-api/browse/grid#boost_upsell_v1), [unlimited_mpu_v1](/grindr-api/browse/grid#unlimited_mpu_v1), [xtra_mpu_v1](/grindr-api/browse/grid#xtra_mpu_v1), [fav_header_v1](/grindr-api/browse/grid#fav_header_v1)"
 					}
 				},
-				"x-render-on-tag": "browse/grid"
+				"x-render-on-tag": "browse/grid",
+				"required": [
+					"type",
+					"data"
+				]
 			},
 			"CascadeResponse": {
 				"type": "object",
@@ -13202,7 +13570,13 @@
 									}
 								}
 							}
-						}
+						},
+						"required": [
+							"@type",
+							"tribes",
+							"socialNetworks",
+							"takenOnGrindrMetadata"
+						]
 					},
 					{
 						"heading": "Only for [v4/cascade](/grindr-api/browse/grid#get-cascade):",
@@ -13221,9 +13595,12 @@
 							},
 							"bodyType": {
 								"type": "integer",
-								"description": "integer, see [Body type](/grindr-api/users/profiles#body-type), optional"
+								"description": "integer, see [Body type](/grindr-api/users/profiles#body-type)"
 							}
-						}
+						},
+						"required": [
+							"bodyType"
+						]
 					}
 				]
 			},
@@ -13511,7 +13888,29 @@
 						"description": "array of integers or `[-1]`, see [Get genders](/grindr-api/users/profiles#get-genders)"
 					}
 				},
-				"x-render-on-tag": "browse/grid"
+				"x-render-on-tag": "browse/grid",
+				"required": [
+					"age",
+					"displayName",
+					"distance",
+					"hasFaceRecognition",
+					"isFavorite",
+					"new",
+					"lastChatTimestamp",
+					"lastViewed",
+					"lastUpdatedTime",
+					"medias",
+					"profileId",
+					"profileImageMediaHash",
+					"profileTags",
+					"seen",
+					"showAge",
+					"showDistance",
+					"approximateDistance",
+					"boosting",
+					"hasAlbum",
+					"gender"
+				]
 			},
 			"SearchProfilesResponse": {
 				"type": "object",
@@ -13556,7 +13955,13 @@
 						}
 					}
 				},
-				"x-render-on-tag": "browse/grid"
+				"x-render-on-tag": "browse/grid",
+				"required": [
+					"profiles",
+					"lastDistanceInKm",
+					"lastProfileId",
+					"inserts"
+				]
 			},
 			"DiscoverResponse": {
 				"type": "object",
@@ -13591,7 +13996,10 @@
 						}
 					}
 				},
-				"x-render-on-tag": "messaging/conversations"
+				"x-render-on-tag": "messaging/conversations",
+				"required": [
+					"suggestions"
+				]
 			},
 			"GaymojiManifest": {
 				"type": "object",
@@ -13644,7 +14052,12 @@
 					}
 				},
 				"x-render-on-tag": "media/public-cdn-files",
-				"x-exclude-from-markdown": true
+				"x-exclude-from-markdown": true,
+				"required": [
+					"lastUpdateTime",
+					"gaymoji",
+					"category"
+				]
 			},
 			"GaymojiCategory": {
 				"type": "string",
@@ -13691,7 +14104,11 @@
 					}
 				},
 				"x-render-on-tag": "woodwork/random-promotion-images",
-				"x-exclude-from-markdown": true
+				"x-exclude-from-markdown": true,
+				"required": [
+					"images",
+					"collection"
+				]
 			},
 			"RedDotListResponse": {
 				"type": "object",
@@ -13977,7 +14394,22 @@
 							"isBoostingSomewhereElse": {
 								"type": "boolean"
 							}
-						}
+						},
+						"required": [
+							"lastOnline",
+							"photoMediaHashes",
+							"lookingFor",
+							"approximateDistance",
+							"isFavorite",
+							"isBoosting",
+							"hasChattedInLast24Hrs",
+							"hasUnviewedSpark",
+							"isTeleporting",
+							"isRoaming",
+							"isRightNow",
+							"hasUnreadThrob",
+							"isBoostingSomewhereElse"
+						]
 					},
 					{
 						"heading": "Only for [v4/cascade](/grindr-api/browse/grid#get-cascade):",
@@ -14019,7 +14451,21 @@
 				],
 				"description": "Body for `\"ExpiringAlbum\"` message type. Extends [Album](#album-message-body).",
 				"x-render-on-tag": "messaging/messages",
-				"x-display-name": "ExpiringAlbumBody"
+				"x-display-name": "ExpiringAlbumBody",
+				"required": [
+					"ownerProfileId",
+					"albumId",
+					"albumNumber",
+					"totalAlbumsShared",
+					"hasUnseenContent",
+					"expiresAt",
+					"expirationType",
+					"coverUrl",
+					"isViewable",
+					"hasVideo",
+					"hasPhoto",
+					"viewableUntil"
+				]
 			},
 			"ExpiringAlbumV2Body": {
 				"allOf": [
@@ -14029,7 +14475,21 @@
 				],
 				"description": "Body for `\"ExpiringAlbumV2\"` message type. For [AlbumExpirationType](/grindr-api/messaging/albums#albumexpirationtype) = `ONCE` but might have other values if expiration settings were changed later. Extends [ExpiringAlbum](#expiring-album-body).",
 				"x-render-on-tag": "messaging/messages",
-				"x-display-name": "ExpiringAlbumV2Body"
+				"x-display-name": "ExpiringAlbumV2Body",
+				"required": [
+					"ownerProfileId",
+					"albumId",
+					"albumNumber",
+					"totalAlbumsShared",
+					"hasUnseenContent",
+					"expiresAt",
+					"expirationType",
+					"coverUrl",
+					"isViewable",
+					"hasVideo",
+					"hasPhoto",
+					"viewableUntil"
+				]
 			},
 			"NonExpiringVideoBody": {
 				"type": "object",

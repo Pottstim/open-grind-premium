@@ -508,17 +508,17 @@ Previously shared [albums in chat](/grindr-api/messaging/messages#albummessagebo
 ## MyAlbum
 
 - *everything from [AlbumDetails](/grindr-api/messaging/albums#albumdetails)*
-- `albumId` — long integer
+- `albumId` — long integer, optional
 - `albumName` — see [Album name](/grindr-api/messaging/albums#album-name) or `null`
-- `profileId` — integer
-- `version` — integer
-- `content` — [AlbumContent](/grindr-api/messaging/albums#albumcontent)
-- `isShareable` — boolean
+- `profileId` — integer, optional
+- `version` — integer, optional
+- `content` — [AlbumContent](/grindr-api/messaging/albums#albumcontent), optional
+- `isShareable` — boolean, optional
 
 ## AlbumContentWithRemainingViews
 
 - *everything from [AlbumContent](/grindr-api/messaging/albums#albumcontent)*
-- `remainingViews` — integer
+- `remainingViews` — integer, optional
 
 ## AlbumDetailsResponse
 
@@ -584,11 +584,11 @@ Maximum length: 255 UTF-8 bytes, which is 255 characters for ASCII strings (1 AS
 
 ## PressieProfileMini
 
-- `profileId` — long integer
-- `name` — string
-- `profileUrl` — string or `null`
-- `onlineUntil` — unknown or `null`
-- `distanceKm` — number or `null`
+- `profileId` — long integer, optional
+- `name` — string, optional
+- `profileUrl` — string or `null`, optional
+- `onlineUntil` — unknown or `null`, optional
+- `distanceKm` — number or `null`, optional
 
 ## PressieAlbumsFeedResponse
 
