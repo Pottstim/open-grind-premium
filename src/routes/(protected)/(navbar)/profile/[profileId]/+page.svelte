@@ -3,6 +3,7 @@
 	import { ChatCircleIcon } from "phosphor-svelte";
 
 	import { getProfile } from "$lib/api/profile";
+	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Skeleton } from "$lib/components/ui/skeleton";
 	import AboutMe from "./AboutMe.svelte";
@@ -137,6 +138,8 @@
 					</div>
 				{/if}
 			</div>
+		{:catch error}
+			<ApiErrorDisplay {error} class="m-auto" />
 		{/await}
 	</main>
 </div>
