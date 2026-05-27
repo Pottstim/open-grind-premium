@@ -28,7 +28,7 @@ fn apply_headers(mut req: RequestBuilder, items: &[(HeaderName, HeaderValue)]) -
 
 impl GrindrClient {
     /// Only for login / refresh-token paths (`/v8/sessions`), they reject `Authorization` headers
-	/// Also breaks the recursive cycle of authorization_header -> refresh_token -> create_session
+    /// Also breaks the recursive cycle of authorization_header -> refresh_token -> create_session
     pub(super) async fn request_json<TReq, TResp>(
         &self,
         method: Method,
@@ -39,13 +39,11 @@ impl GrindrClient {
         TReq: Serialize + ?Sized,
         TResp: DeserializeOwned,
     {
-        let device = self.device.read().await.clone();
-        let user_agent = self.user_agent.read().await.clone();
-        let headers = GrindrHeaders::build(&device, &user_agent, None, None)?;
+        let fp = self.fingerprint().await;
+        let headers = GrindrHeaders::build(&fp.device, &fp.user_agent, None, None)?;
 
-        let http = self.http.read().await.clone();
         let mut request = apply_headers(
-            http.request(method, format!("{BASE_URL}{path}")),
+            fp.http.request(method, format!("{BASE_URL}{path}")),
             &headers.items,
         );
 
@@ -56,15 +54,9 @@ impl GrindrClient {
         let response = request.send().await?;
 
         if !response.status().is_success() {
-            let json: serde_json::Value = response.json().await.unwrap_or_default();
-            return Err(AppError::Api {
-                code: json.get("code").and_then(|c| c.as_i64()).unwrap_or(0) as i32,
-                message: json
-                    .get("message")
-                    .and_then(|m| m.as_str())
-                    .unwrap_or("Unknown error")
-                    .to_owned(),
-            });
+            let status = response.status().as_u16() as i32;
+            let bytes = response.bytes().await.unwrap_or_default();
+            return Err(parse_api_error(&bytes, status));
         }
 
         response.json::<TResp>().await.map_err(Into::into)
@@ -81,11 +73,14 @@ impl GrindrClient {
             .await
             .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
 
-        let device = self.device.read().await.clone();
-        let user_agent = self.user_agent.read().await.clone();
+        let fp = self.fingerprint().await;
 
-        let headers =
-            GrindrHeaders::build(&device, &user_agent, Some(&authorization), Some("[FREE]"))?;
+        let headers = GrindrHeaders::build(
+            &fp.device,
+            &fp.user_agent,
+            Some(&authorization),
+            Some("[FREE]"),
+        )?;
 
         #[cfg(debug_assertions)]
         {
@@ -97,9 +92,8 @@ impl GrindrClient {
             println!("========================");
         }
 
-        let http = self.http.read().await.clone();
         let mut request = apply_headers(
-            http.request(method, format!("{BASE_URL}{path}")),
+            fp.http.request(method, format!("{BASE_URL}{path}")),
             &headers.items,
         );
 
@@ -114,6 +108,43 @@ impl GrindrClient {
         let body = response.bytes().await?.to_vec();
 
         Ok(RawResponse { status, body })
+    }
+}
+
+const MAX_ERROR_BODY: usize = 1024;
+
+fn parse_api_error(bytes: &[u8], http_status: i32) -> AppError {
+    if let Ok(json) = serde_json::from_slice::<serde_json::Value>(bytes) {
+        let code = json
+            .get("code")
+            .and_then(|c| c.as_i64())
+            .map(|c| c as i32)
+            .unwrap_or(http_status);
+        if let Some(msg) = json.get("message").and_then(|m| m.as_str()) {
+            return AppError::Api {
+                code,
+                message: msg.to_owned(),
+            };
+        }
+    }
+    let text = String::from_utf8_lossy(bytes);
+    let truncated = if text.len() > MAX_ERROR_BODY {
+        // Slice at a UTF-8 char boundary so we don't panic mid-codepoint.
+        let mut end = MAX_ERROR_BODY;
+        while end > 0 && !text.is_char_boundary(end) {
+            end -= 1;
+        }
+        format!("{}…", &text[..end])
+    } else {
+        text.into_owned()
+    };
+    AppError::Api {
+        code: http_status,
+        message: if truncated.is_empty() {
+            "Unknown error".to_owned()
+        } else {
+            truncated
+        },
     }
 }
 
