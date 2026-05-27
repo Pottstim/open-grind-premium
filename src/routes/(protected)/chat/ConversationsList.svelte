@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { ChatCircleSlashIcon } from "phosphor-svelte";
 	import { onMount, tick } from "svelte";
 
-	import * as Empty from "$lib/components/ui/empty";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import Conversation from "./Conversation.svelte";
 	import { getConversations } from "./conversations-context.svelte";
 	import type { ConversationsState } from "./conversations.svelte";
+	import EmptyConversationsList from "./EmptyConversationsList.svelte";
 
 	const conversations: ConversationsState = getConversations();
 
@@ -59,17 +58,7 @@
 		{#each conversations.entries as conversation (conversation.data.conversationId)}
 			<Conversation {conversation} />
 		{:else}
-			<Empty.Root>
-				<Empty.Header>
-					<Empty.Media variant="icon">
-						<ChatCircleSlashIcon weight="fill" />
-					</Empty.Media>
-					<Empty.Title>No Conversations Yet</Empty.Title>
-					<Empty.Description>
-						Browse <a href="/">Grid</a> to find people to chat with.
-					</Empty.Description>
-				</Empty.Header>
-			</Empty.Root>
+			<EmptyConversationsList />
 		{/each}
 		{#if conversations.loadingMore}
 			{#each Array(6)}
