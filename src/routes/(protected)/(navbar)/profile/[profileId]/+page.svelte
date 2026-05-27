@@ -37,8 +37,8 @@
 	const profile = $derived(getProfile(profileId));
 </script>
 
-<div class="flex">
-	<main class="w-full max-w-200 m-auto relative">
+<div class="flex flex-1">
+	<main class="w-full max-w-200 flex-1 mx-auto relative">
 		{#await profile}
 			<Skeleton />
 		{:then profile}
@@ -139,7 +139,9 @@
 				{/if}
 			</div>
 		{:catch error}
-			<ApiErrorDisplay {error} class="m-auto" />
+			<div class="h-full flex">
+				<ApiErrorDisplay {error} class="m-auto" />
+			</div>
 		{/await}
 	</main>
 </div>

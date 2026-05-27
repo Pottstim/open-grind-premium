@@ -101,7 +101,7 @@
 			/>
 		{/each}
 	{:else if conversationState.error}
-		<ApiErrorDisplay error={conversationState.error} class="flex-1 m-auto" />
+		<ApiErrorDisplay error={conversationState.error} class="m-auto" />
 	{:else}
 		{#if conversationState.loadingMore}
 			<Spinner class="mt-25 shrink-0 self-center" />

@@ -54,6 +54,6 @@
 </script>
 
 <div class={["flex flex-col items-center gap-2 p-4", className]}>
-	<p class="text-muted-foreground text-sm">Something went wrong</p>
+	<p class="text-muted-foreground text-sm text-center">Something went wrong</p>
 	<Button variant={buttonVariant} size="sm" onclick={copy}>Copy details</Button>
 </div>
