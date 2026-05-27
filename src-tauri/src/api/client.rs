@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use serde::Serialize;
 use tokio::sync::{Mutex, RwLock};
 use wreq::{
@@ -98,17 +100,19 @@ fn grindr_emulation() -> EmulationProvider {
         .build()
 }
 
-pub struct GrindrClient {
+pub struct Fingerprint {
     /// ALPN: `["h2", "http/1.1"]`
-    pub(super) http: RwLock<Client>,
-
+    pub http: Client,
     /// ALPN: `["http/1.1"]`
-    pub(super) ws_http: RwLock<Client>,
+    pub ws_http: Client,
+    pub device: DeviceInfo,
+    pub user_agent: String,
+}
 
-    pub(super) device: RwLock<DeviceInfo>,
+pub struct GrindrClient {
+    pub(super) fingerprint: RwLock<Arc<Fingerprint>>,
     pub(super) session: RwLock<Option<Session>>,
     pub(super) refresh_lock: Mutex<()>,
-    pub user_agent: RwLock<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -175,13 +179,19 @@ impl GrindrClient {
         };
 
         Ok(Self {
-            http: RwLock::new(http),
-            ws_http: RwLock::new(ws_http),
-            device: RwLock::new(device),
+            fingerprint: RwLock::new(Arc::new(Fingerprint {
+                http,
+                ws_http,
+                device,
+                user_agent,
+            })),
             session: RwLock::new(session),
             refresh_lock: Mutex::new(()),
-            user_agent: RwLock::new(user_agent),
         })
+    }
+
+    pub async fn fingerprint(&self) -> Arc<Fingerprint> {
+        Arc::clone(&*self.fingerprint.read().await)
     }
 
     #[allow(dead_code)]
@@ -198,27 +208,30 @@ pub async fn rotate_api_params(
     state: tauri::State<'_, AppState>,
 ) -> Result<RotateResult, AppError> {
     let client = state.client()?;
-    let old_ua = client.user_agent.read().await.clone();
-    let old_device = client.device.read().await.clone();
-    let old_device_info = super::headers::build_device_info_header(&old_device);
 
     let device = DeviceInfo::default();
     if let Err(e) = DeviceStorage::save(&device) {
         eprintln!("[client] could not persist rotated device info: {e}");
     }
     let user_agent = build_user_agent(&device, "Free");
-
     let http = build_api_client()?;
     let ws_http = build_ws_client()?;
 
-    *client.http.write().await = http;
-    *client.ws_http.write().await = ws_http;
-    *client.device.write().await = device;
-    *client.user_agent.write().await = user_agent;
+    let new_fp = Arc::new(Fingerprint {
+        http,
+        ws_http,
+        device,
+        user_agent,
+    });
+
+    let old_fp = {
+        let mut guard = client.fingerprint.write().await;
+        std::mem::replace(&mut *guard, new_fp)
+    };
 
     Ok(RotateResult {
-        user_agent: old_ua,
-        l_device_info: old_device_info,
+        user_agent: old_fp.user_agent.clone(),
+        l_device_info: super::headers::build_device_info_header(&old_fp.device),
     })
 }
 
