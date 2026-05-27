@@ -16,6 +16,10 @@ export default defineConfig({
 
 	cleanUrls: true,
 
+	rewrites: {
+		"generated/:path*": ":path*",
+	},
+
 	title: "Open Grind",
 	description: "Open Grind project documentation and Grindr API reference",
 	head: [["link", { rel: "icon", href: "/logo.svg" }]],

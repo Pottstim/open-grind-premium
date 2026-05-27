@@ -21,7 +21,7 @@ PRs are welcome! All contributions must be aligned with [CODE_OF_CONDUCT.md](./C
 
 ## Documentation
 
-All research efforts contributing to [docs](./docs/content) are highly valued and appreciated! Seek for "WIP" in documents texts to find out which areas of API haven't been reverse engineered yet.
+All research efforts contributing to [docs](./docs/content) are highly valued and appreciated! Seek for "WIP" in [OpenAPI spec file](./docs/lib/openapi.json) to find out which areas of API haven't been reverse engineered yet. OpenAPI is the source of truth for API reference documentation, which is generated from it automatically. If you want to contribute to documentation, please update OpenAPI spec file manually or using a GUI editor.
 
 ## Quick start
 
