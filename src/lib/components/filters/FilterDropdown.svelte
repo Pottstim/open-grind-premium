@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CaretDownIcon } from "phosphor-svelte";
+	import { onMount } from "svelte";
 	import { expoOut } from "svelte/easing";
 	import type { TransitionConfig } from "svelte/transition";
 
@@ -24,6 +25,12 @@
 	} = $props();
 
 	let expanded = $state(false);
+
+	onMount(() => {
+		if (checked) {
+			expanded = true;
+		}
+	});
 
 	const hide = (node: HTMLDivElement): TransitionConfig => {
 		const height = node.scrollHeight;
