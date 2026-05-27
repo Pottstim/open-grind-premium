@@ -10,6 +10,7 @@ const preferencesSchema = z.object({
 	gridSearchFilters: gridSearchFiltersSchema.optional(),
 	revealMessageRead: z.boolean().default(false),
 	revealProfileViews: z.boolean().default(false),
+	warnBeforeCopyingErrorDetails: z.boolean().default(true),
 });
 
 export async function getPreferences(): Promise<
@@ -20,11 +21,7 @@ export async function getPreferences(): Promise<
 			.then(decode)
 			.then((data) => preferencesSchema.parse(data));
 	} else {
-		return {
-			geohash: null,
-			revealMessageRead: false,
-			revealProfileViews: false,
-		};
+		return preferencesSchema.parse({});
 	}
 }
 

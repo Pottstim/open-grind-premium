@@ -2,6 +2,7 @@
 	import { uniqBy } from "lodash-es";
 	import { onMount } from "svelte";
 
+	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { gridState } from "./grid-state.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
@@ -82,12 +83,10 @@
 		{#each Array.from({ length: 20 })}
 			<div class="aspect-square bg-stone-700 animate-pulse"></div>
 		{/each}
-	{:else if gridState.errorMessage}
+	{:else if gridState.error}
 		<div class="p-4 flex col-span-full">
-			<div class="m-auto flex flex-col gap-4">
-				<p class="text-center text-red-400 font-medium select-text">
-					{gridState.errorMessage}
-				</p>
+			<div class="m-auto flex flex-col items-center gap-2">
+				<ApiErrorDisplay error={gridState.error} />
 				<Button onclick={() => gridState.refresh()}>Retry</Button>
 			</div>
 		</div>

@@ -4,6 +4,7 @@ import { goto } from "$app/navigation";
 import { toast } from "svelte-sonner";
 import z from "zod";
 
+import { ApiError } from "$lib/api/api-error";
 import { requestBlockedAlertState } from "$lib/api/request-blocked/request-blocked-state.svelte";
 import { fromBase64, toBase64 } from "$lib/base64";
 
@@ -79,6 +80,11 @@ export async function fetchRest(
 		abortController?: AbortController;
 	} = { method: "GET" },
 ) {
+	const requestInfo = {
+		method: options.method ?? "GET",
+		path,
+		body: options.body,
+	};
 	try {
 		const payload = encode({
 			method: options.method || "GET",
@@ -109,39 +115,62 @@ export async function fetchRest(
 				return responseBody;
 			},
 			text() {
-				return new TextDecoder().decode(this.bytes());
+				return new TextDecoder().decode(responseBody);
 			},
 			json() {
-				const text = this.text();
+				const text = new TextDecoder().decode(responseBody);
+				const responseInfo = { status, body: text };
 				if (
-					this.status === 403 &&
+					status === 403 &&
 					text.includes("<title>Attention Required! | Cloudflare</title>") &&
 					text.includes("Sorry, you have been blocked")
 				) {
 					if (!requestBlockedAlertState.disable) {
 						requestBlockedAlertState.open = true;
 					}
-					throw new Error("Request blocked");
-				} else {
-					try {
-						return JSON.parse(text);
-					} catch (error) {
-						console.error("Failed to parse JSON response", {
-							path,
-							text,
-						});
-						throw error;
-					}
+					throw new ApiError({
+						message: "Request blocked",
+						request: requestInfo,
+						response: responseInfo,
+					});
+				}
+				try {
+					return JSON.parse(text);
+				} catch (error) {
+					console.error("Failed to parse JSON response", {
+						path,
+						text,
+					});
+					throw new ApiError({
+						message: "Failed to parse API response",
+						request: requestInfo,
+						response: responseInfo,
+						cause: error,
+					});
 				}
 			},
 			jsonParsed<TSchema extends z.ZodType>(schema: TSchema) {
 				const data = this.json();
-				return parseApiResponse({
-					schema,
-					data,
-					path,
-					method: options.method || "GET",
-				});
+				const bodyText = new TextDecoder().decode(responseBody);
+				try {
+					return parseApiResponse({
+						schema,
+						data,
+						path,
+						method: options.method || "GET",
+					});
+				} catch (error) {
+					if (error instanceof ApiError) throw error;
+					throw new ApiError({
+						message:
+							error instanceof Error
+								? error.message
+								: "API response validation failed",
+						request: requestInfo,
+						response: { status, body: bodyText },
+						cause: error,
+					});
+				}
 			},
 			debugJsonParsed<TSchema extends z.ZodType>(schema: TSchema) {
 				console.log(this.json());
@@ -149,6 +178,7 @@ export async function fetchRest(
 			},
 		};
 	} catch (error) {
+		if (error instanceof ApiError) throw error;
 		const appError = asAppError(error);
 		if (appError) {
 			if (appError.kind === "Auth" && appError.message === "Not logged in") {
@@ -156,7 +186,14 @@ export async function fetchRest(
 				goto("/auth/sign-in").catch((error) => console.error(error));
 			}
 		}
-		throw error;
+		throw new ApiError({
+			message:
+				appError?.prettyMessage ??
+				(error instanceof Error ? error.message : String(error)),
+			request: requestInfo,
+			response: null,
+			cause: error,
+		});
 	}
 }
 
@@ -181,3 +218,5 @@ export function parseApiResponse<TSchema extends z.ZodType>(options: {
 
 	throw parsed.error;
 }
+
+export { ApiError };

@@ -3,6 +3,7 @@
 	import { toast } from "svelte-sonner";
 
 	import { deleteMessageForMe, unsendMessage } from "$lib/api/messages";
+	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import { Skeleton } from "$lib/components/ui/skeleton";
 	import { Spinner } from "$lib/components/ui/spinner";
 	import type { ConversationState } from "./conversation-state.svelte";
@@ -100,11 +101,7 @@
 			/>
 		{/each}
 	{:else if conversationState.error}
-		<p
-			class="flex-1 m-auto whitespace-pre bg-card ring ring-card-foreground/10 rounded-lg p-2 select-text overflow-x-auto w-full font-mono"
-		>
-			{conversationState.error.message}
-		</p>
+		<ApiErrorDisplay error={conversationState.error} class="flex-1 m-auto" />
 	{:else}
 		{#if conversationState.loadingMore}
 			<Spinner class="mt-25 shrink-0 self-center" />

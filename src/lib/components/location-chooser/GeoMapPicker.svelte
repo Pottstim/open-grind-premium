@@ -12,7 +12,7 @@
 	import type { Map as LeafletMap, LeafletMouseEventHandlerFn } from "leaflet";
 
 	import { getPlaces } from "$lib/api/places";
-	import Alert from "$lib/components/ui/alert/alert.svelte";
+	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Input } from "$lib/components/ui/input";
 	import Spinner from "$lib/components/ui/spinner/spinner.svelte";
@@ -158,7 +158,7 @@
 						{/each}
 					{/if}
 				{:catch error}
-					<Alert>{error}</Alert>
+					<ApiErrorDisplay {error} />
 				{/await}
 			</div>
 		</div>
