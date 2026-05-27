@@ -63,13 +63,23 @@ async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
         .await
         .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
 
-    let device = client.device.read().await.clone();
-    let user_agent = client.user_agent.read().await.clone();
+    let session_id = client
+        .session
+        .read()
+        .await
+        .as_ref()
+        .map(|s| s.session_id.clone())
+        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
 
-    let headers = GrindrHeaders::build(&device, &user_agent, Some(&authorization), Some("[FREE]"))?;
+    let fp = client.fingerprint().await;
+    let headers = GrindrHeaders::build(
+        &fp.device,
+        &fp.user_agent,
+        Some(&authorization),
+        Some("[FREE]"),
+    )?;
 
-    let ws_http = client.ws_http.read().await.clone();
-    let mut builder = ws_http.websocket(WS_URL);
+    let mut builder = fp.ws_http.websocket(WS_URL);
     for (name, value) in &headers.items {
         builder = builder.header(name.clone(), value.clone());
     }
@@ -92,14 +102,6 @@ async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
         .await
         .take()
         .ok_or_else(|| AppError::Http("WS already running".to_owned()))?;
-
-    let session_id = client
-        .session
-        .read()
-        .await
-        .as_ref()
-        .map(|s| s.session_id.clone())
-        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
 
     let result = run_message_loop(&mut ws, &mut cmd_rx, &session_id, app).await;
 
@@ -158,11 +160,10 @@ async fn run_message_loop(
 
 #[tauri::command]
 pub async fn ws_connect(state: tauri::State<'_, AppState>) -> Result<(), AppError> {
-    let has_session = state
-        .client()
-        .ok()
-        .and_then(|c| c.session.try_read().ok().map(|s| s.is_some()))
-        .unwrap_or(false);
+    let has_session = match state.client() {
+        Ok(c) => c.session.read().await.is_some(),
+        Err(_) => false,
+    };
 
     if has_session {
         state.auth_notify.notify_one();
