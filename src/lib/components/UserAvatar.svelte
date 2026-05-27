@@ -32,11 +32,14 @@
 			<UserIcon
 				weight="fill"
 				color="var(--color-stone-400)"
-				class={["m-auto", {
-					"size-1/2": size === "md",
-					"size-3/5": size === "lg",
-					"size-3/4": size === "xl"
-				}]}
+				class={[
+					"m-auto",
+					{
+						"size-1/2": size === "md",
+						"size-3/5": size === "lg",
+						"size-3/4": size === "xl",
+					},
+				]}
 			/>
 		</div>
 	{/if}

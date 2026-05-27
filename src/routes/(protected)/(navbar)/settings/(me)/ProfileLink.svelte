@@ -2,6 +2,7 @@
 	import { CaretRightIcon } from "phosphor-svelte";
 
 	import { getMyProfile } from "$lib/api/profile";
+	import BrokenUserAvatar from "$lib/components/BrokenUserAvatar.svelte";
 	import DisplayName from "$lib/components/DisplayName.svelte";
 	import * as Item from "$lib/components/ui/item";
 	import { Skeleton } from "$lib/components/ui/skeleton";
@@ -34,6 +35,8 @@
 							size="lg"
 						/>
 					{/if}
+				{:catch}
+					<BrokenUserAvatar />
 				{/await}
 			</Item.Media>
 			<Item.Content class="min-w-0">
@@ -42,6 +45,8 @@
 						<Skeleton class="h-3.75 my-0.5 w-32" />
 					{:then profile}
 						<DisplayName name={profile.displayName} />
+					{:catch}
+						<span class="load-fail">Failed to load name</span>
 					{/await}
 				</Item.Title>
 				<Item.Description class="truncate inline-block">
@@ -54,3 +59,11 @@
 		</a>
 	{/snippet}
 </Item.Root>
+
+<style lang="postcss">
+	@reference "$layout";
+
+	.load-fail {
+		@apply italic text-muted-foreground;
+	}
+</style>

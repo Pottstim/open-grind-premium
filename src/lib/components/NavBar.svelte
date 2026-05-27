@@ -6,6 +6,7 @@
 	import FireIcon from "phosphor-svelte/lib/FireIcon";
 
 	import { getMyProfile } from "$lib/api/profile";
+	import BrokenUserAvatar from "$lib/components/BrokenUserAvatar.svelte";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
 	import { tabsListVariants } from "$lib/components/ui/tabs";
 	import UserAvatar from "$lib/components/UserAvatar.svelte";
@@ -80,6 +81,8 @@
 				class="size-full *:rounded-full"
 				size="lg"
 			/>
+		{:catch}
+			<BrokenUserAvatar />
 		{/await}
 	</a>
 </ProgressiveBlur>

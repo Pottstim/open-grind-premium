@@ -50,6 +50,8 @@
 							allGenders.find((g) => g.genderId === genderId)?.gender,
 					)
 					.join(", ")}
+			{:catch}
+				<span class="load-fail">Failed to load genders</span>
 			{/await}
 		{/if}
 		{#if genders !== null && genders.length > 0 && pronouns !== null && pronouns.length > 0}
@@ -65,7 +67,16 @@
 							allPronouns.find((p) => p.pronounId === pronounId)?.pronoun,
 					)
 					.join(", ")}
+			{:catch}
+				<span class="load-fail">Failed to load pronouns</span>
 			{/await}
 		{/if}
 	</ProfileField>
 {/if}
+
+<style lang="postcss">
+	@reference "$layout";
+	.load-fail {
+		@apply italic text-muted-foreground;
+	}
+</style>

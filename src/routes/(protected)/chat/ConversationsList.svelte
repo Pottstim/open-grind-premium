@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from "svelte";
 
+	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
 	import Conversation from "./Conversation.svelte";
 	import { getConversations } from "./conversations-context.svelte";
@@ -68,5 +69,9 @@
 		{#if conversations.nextPage !== null}
 			<div class="h-0" use:observeSentinel></div>
 		{/if}
+	{:catch error}
+		<div class="flex-1 flex">
+			<ApiErrorDisplay {error} class="m-auto" />
+		</div>
 	{/await}
 </div>
