@@ -11,7 +11,7 @@
 	} from "$lib/app-data/preferences.svelte";
 	import { defaultFilters } from "$lib/components/filters/filters";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
-	import Filters from "../GridFilters.svelte";
+	import GridFilters from "../GridFilters.svelte";
 	import LocationChange from "../LocationChange.svelte";
 	import QuickFilters from "./QuickFilters.svelte";
 
@@ -94,6 +94,11 @@
 			toast.error("Failed to update filters");
 		}
 	}
+
+	export function resetFilters() {
+		filters = defaultFilters;
+		void onUpdateFilters();
+	}
 </script>
 
 <svelte:window
@@ -147,4 +152,4 @@
 	</div>
 </ProgressiveBlur>
 <div class="h-20"></div>
-<Filters bind:filters bind:open={openFilters.all} {onUpdateFilters} />
+<GridFilters bind:filters bind:open={openFilters.all} {onUpdateFilters} />

@@ -6,6 +6,8 @@
 	import TopBar from "./top-bar/TopBar.svelte";
 
 	let preferences = $state(getPreferences());
+
+	let topBar: TopBar | null = $state(null);
 </script>
 
 <svelte:head>
@@ -21,8 +23,9 @@
 			<TopBar
 				onUpdatePreferences={() => (preferences = getPreferences())}
 				onRefreshGrid={() => gridState.refresh()}
+				bind:this={topBar}
 			/>
-			<Grid {geohash} />
+			<Grid {geohash} onResetFilters={() => void topBar?.resetFilters()} />
 		</main>
 	{/if}
 {/await}

@@ -4,13 +4,16 @@
 
 	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import EmptyGrid from "./EmptyGrid.svelte";
 	import { gridState } from "./grid-state.svelte";
 	import ProfileMiniCard from "./ProfileMiniCard.svelte";
 
 	let {
 		geohash,
+		onResetFilters,
 	}: {
 		geohash: string;
+		onResetFilters: () => void;
 	} = $props();
 
 	const gridProfiles = $derived(uniqBy(gridState.items, "id"));
@@ -107,6 +110,8 @@
 					use:observePartial={{ batchIndex: item.batchIndex }}
 				></div>
 			{/if}
+		{:else}
+			<EmptyGrid {onResetFilters} />
 		{/each}
 		{#if gridState.loadingMore}
 			{#each Array.from({ length: 20 })}
