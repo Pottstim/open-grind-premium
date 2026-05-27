@@ -1,5 +1,18 @@
 # Rewarded chats, WIP
 
-- POST /{version}/rewarded-chats
-- GET /{version}/rewarded-chats . ExploreFreeChatsResponse
+> [!NOTE]
+> This page is a work in progress. Endpoints below haven't been fully researched.
 
+## Get rewarded chats, WIP
+
+Response type: `ExploreFreeChatsResponse` (undocumented).
+
+```
+GET /{version}/rewarded-chats
+```
+
+## Create rewarded chat action, WIP
+
+```
+POST /{version}/rewarded-chats
+```

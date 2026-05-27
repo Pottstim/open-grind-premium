@@ -10,15 +10,8 @@ GET /v6/profiles/travel/{profileId}
 
 Response:
 
-- `travelPlans` — array of objects
-  - `travelPlanId` — long integer, required for update, ignored for create
-  - `profileId` — long integer
-  - `geohash` — [Geohash](/grindr-api/browse/location#geohash)
-  - `startDate` — long integer, unix timestamp in milliseconds
-  - `endDate` — long integer, unix timestamp in milliseconds
-  - `showOnProfile` — boolean
-  - `notes` — string
-  
+- `travelPlans` — array of [TravelPlanMutation](/grindr-api/browse/travels#travelplanmutation)
+
 ## Create travel plans
 
 Requires [Authorization](/grindr-api/api-authorization).
@@ -29,10 +22,11 @@ POST /v6/profiles/travel
 
 Body:
 
+- `travelPlanId` — long integer, required for update, ignored for create
 - `profileId` — long integer
 - `geohash` — [Geohash](/grindr-api/browse/location#geohash)
-- `startDate` — long integer, unix timestamp in milliseconds
-- `endDate` — long integer, unix timestamp in milliseconds
+- `startDate` — unix timestamp in milliseconds
+- `endDate` — unix timestamp in milliseconds
 - `showOnProfile` — boolean
 - `notes` — string
 
@@ -50,11 +44,11 @@ POST /v6/profiles/travel/update
 
 Body:
 
-- `travelPlanId` — long integer
+- `travelPlanId` — long integer, required for update, ignored for create
 - `profileId` — long integer
 - `geohash` — [Geohash](/grindr-api/browse/location#geohash)
-- `startDate` — long integer, unix timestamp in milliseconds
-- `endDate` — long integer, unix timestamp in milliseconds
+- `startDate` — unix timestamp in milliseconds
+- `endDate` — unix timestamp in milliseconds
 - `showOnProfile` — boolean
 - `notes` — string
 
@@ -76,3 +70,12 @@ Response:
 
 Empty.
 
+## TravelPlanMutation
+
+- `travelPlanId` — long integer, required for update, ignored for create
+- `profileId` — long integer
+- `geohash` — [Geohash](/grindr-api/browse/location#geohash)
+- `startDate` — unix timestamp in milliseconds
+- `endDate` — unix timestamp in milliseconds
+- `showOnProfile` — boolean
+- `notes` — string

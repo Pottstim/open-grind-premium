@@ -1,30 +1,69 @@
-# Spotify
+# Spotify, WIP
 
-## Get Spotify favorites profile ID, WIP
+> [!NOTE]
+> This page is a work in progress. Endpoints below haven't been fully researched.
+
+## Spotify token, WIP
+
+Body is URL-encoded (grant_type=authorization_code&code=...&redirect_uri=... or grant_type=refresh_token&refresh_token=... or grant_type=client_credentials).
+
+Response type: `SpotifyAuthResponse` (undocumented).
+
+```
+POST /api/token
+```
+
+Body:
+
+Content-Type: `application/x-www-form-urlencoded`
+
+Map of string to string.
+
+## Get spotify favorites, WIP
+
+Response type: `SpotifyBackendResponse` (undocumented).
 
 ```
 GET /v4/spotify/favorites/{profileId}
 ```
 
-Response: SpotifyBackendResponse
+## Post spotify favorites, WIP
 
-## Post Spotify favorites, WIP
+Body type: `SpotifyPostRequest` (undocumented).
 
 ```
 POST /v4/spotify/favorites
 ```
 
-Body: SpotifyPostRequest, WIP
+## Search spotify tracks, WIP
 
-## Auth, WIP
+Response type: `SpotifySearchTrackResponse` (undocumented).
 
-`grant_type` string, `refresh_token` string
-| `grant_type` string, `code` string, `redirect_uri` string
-| `grant_type` string
+```
+GET /v1/search
+```
 
-## Tracks, WIP
+Query (optional):
 
-- GET /v1/search?q=string&type=string . SpotifySearchTrackResponse
-- GET /v1/tracks?ids=string . SpotifyGetTrackResponse
-- GET /v1/me/player/recently-played . SpotifyRecentlyPlayedResponse
+- `q` — string, optional
+- `type` — string, optional
 
+## Get spotify tracks, WIP
+
+Response type: `SpotifyGetTrackResponse` (undocumented).
+
+```
+GET /v1/tracks
+```
+
+Query (optional):
+
+- `ids` — string, optional
+
+## Get spotify recently played, WIP
+
+Response type: `SpotifyRecentlyPlayedResponse` (undocumented).
+
+```
+GET /v1/me/player/recently-played
+```

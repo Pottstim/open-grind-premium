@@ -1,66 +1,18 @@
 # Conversations
 
-## Conversation ID
-
-String with two long integers separated by `:`, e.g. `"12345678:23456789"`. Long integers are IDs of [Profile](/grindr-api/users/profiles#profile). The order of these IDs is always from smaller ID to higher ID, regardless of who started the chat.
-
-## Conversation
-
-- `type` — string, e.g. `"full_conversation_v1"`
-- `data` — nested object
-  - `conversationId` — [Conversation ID](#conversation-id)
-  - `name` — string, profile name, may be an empty string, e.g. `""`
-  - `participants` — array of objects
-    - `profileId` — integer, [Profile ID](/grindr-api/users/profiles#profilemin)
-    - `primaryMediaHash` — string or `null`, see [Media -> Public CDN files](/grindr-api/media/public-cdn-files)
-    - `lastOnline` — unix timestamp in milliseconds
-    - `onlineUntil` — unix timestamp in milliseconds or `null`
-    - `distanceMetres` — float number or `null`
-    - `position` — [Sexual position ID](/grindr-api/users/profiles#sexual-position-id) or `null`
-    - `isInAList` — boolean
-    - `hasDatingPotential` — boolean
-  - `lastActivityTimestamp` — unix timestamp in milliseconds
-  - `unreadCount` — integer
-  - `preview` — nested object
-    - `conversationId` — nested object
-        - `value` — [Conversation ID](#conversation-id)
-    - `messageId` — string, see [Message](/grindr-api/messaging/messages#message) for format
-    - `chat1MessageId` — string with UUIDv4, second part of `messageId`
-    - `senderId` — integer, [Profile ID](/grindr-api/users/profiles#profilemin)
-    - `type` — [Message type](/grindr-api/messaging/messages#message-type)
-    - `chat1Type` — string, see [Message type](/grindr-api/messaging/messages#message-type)
-    - `text` — string or `null`, message text
-    - `url` — unknown, appears to be `null`
-    - `lat` — unknown, appears to be `null`
-    - `lon` — unknown, appears to be `null`
-    - `albumId` — integer, appears to be `null`
-    - `albumContentId` — unknown, appears to be `null`
-    - `albumContentReply` — unknown, appears to be `null`
-    - `duration` — unknown, appears to be `null`
-    - `imageHash` — public media hash or `null`
-    - `photoContentReply` — unknown, appears to be `null`
-  - `muted` — boolean
-  - `pinned` — boolean
-  - `favorite` — boolean
-  - `context` — unknown, appears to be `null`
-  - `onlineUntil` — unknown, appears to be `null`
-  - `translatable` — boolean
-  - `rightNow` — string, e.g. `"NOT_ACTIVE"`
-  - `hasUnreadThrob` — boolean
-
 ## Get conversations
 
 Requires [Authorization](/grindr-api/api-authorization).
+
+*Also `POST /v3/inbox`, seems to be aliased to v4 now*
 
 ```
 POST /v4/inbox
 ```
 
-*Also `POST /v3/inbox`, seems to be aliased to v4 now*
-
 Query (optional):
 
-- `page` — 1-based number, pagination
+- `page` — 1-based number, pagination, optional
 
 Body (optional):
 
@@ -74,7 +26,38 @@ Body (optional):
 
 Response:
 
-- `entries` — array of [Conversation](#conversation)
+- `entries` — array of [Conversation](/grindr-api/messaging/conversations#conversation)
+- `showsFreeHeaderLabel` — boolean
+- `totalFullConversations` — number, e.g. `"5"`
+- `totalPartialConversations` — number, e.g. `0`
+- `maxDisplayLockCount` — number, e.g. `99`
+- `nextPage` — integer, e.g. `2`
+
+## Get conversations (v3 alias)
+
+Requires [Authorization](/grindr-api/api-authorization).
+
+```
+POST /v3/inbox
+```
+
+Query (optional):
+
+- `page` — 1-based number, pagination, optional
+
+Body (optional):
+
+- `unreadOnly` — boolean
+- `chemistryOnly` — boolean
+- `favoritesOnly` — boolean
+- `rightNowOnly` — boolean
+- `onlineNowOnly` — boolean
+- `distanceMeters` — "double" number value or `null`
+- `positions` — array of integers, [sexual position IDs](/grindr-api/users/profiles#sexual-position-id)
+
+Response:
+
+- `entries` — array of [Conversation](/grindr-api/messaging/conversations#conversation)
 - `showsFreeHeaderLabel` — boolean
 - `totalFullConversations` — number, e.g. `"5"`
 - `totalPartialConversations` — number, e.g. `0`
@@ -83,50 +66,19 @@ Response:
 
 ## Get conversations by IDs
 
+Note: in this v1 endpoint, each `participants` item only includes `profileId`, `primaryMediaHash`, `lastOnline`, and `distanceMetres`. Fields `onlineUntil`, `position`, `isInAList`, and `hasDatingPotential` are absent.
+
 ```
 POST /v1/inbox/conversation
 ```
 
-Body: 
-- Array of [Conversation IDs](#conversation-id)
+Body:
 
-Response (array):
-- `conversationId` — string, e.g. `647135273:771038429`
-- `name` — string, profile name, may be an empty string, e.g. `""`
-- `participants` — array of objects
-    - `profileId` — integer, [Profile ID](/grindr-api/users/profiles#profilemin)
-    - `primaryMediaHash` — string or `null`, see [Media -> Public CDN files -> Profile Images](/grindr-api/media/public-cdn-files#profile-images)
-    - `lastOnline` — unix timestamp in milliseconds
-    - `distanceMetres` — float number or `null`
-  - `lastActivityTimestamp` — unix timestamp in milliseconds
-  - `unreadCount` — integer
-  - `preview` — nested object
-    - `conversationId` — nested object
-      - `value` — [Conversation ID](#conversation-id)
-    - `messageId` — string, see [Message](/grindr-api/messaging/messages#message) for format
-    - `chat1MessageId` — string with UUIDv4, second part of `messageId`
-    - `senderId` — integer, [Profile ID](/grindr-api/users/profiles#profilemin)
-    - `type` — [Message type](/grindr-api/messaging/messages#message-type)
-    - `chat1Type` — string, see [Message type](/grindr-api/messaging/messages#message-type)
-    - `text` — string or `null`, message text
-    - `url` — unknown, appears to be `null`
-    - `lat` — unknown, appears to be `null`
-    - `lon` — unknown, appears to be `null`
-    - `albumId` — integer, appears to be `null`
-    - `albumContentId` — unknown, appears to be `null`
-    - `albumContentReply` — unknown, appears to be `null`
-    - `duration` — unknown, appears to be `null`
-    - `imageHash` — public media hash or `null`
-    - `photoContentReply` — unknown, appears to be `null`
-  - `muted` — boolean
-  - `pinned` — boolean
-  - `favorite` — boolean
-  - `context` — unknown, appears to be `null`
-  - `onlineUntil` — unknown, appears to be `null`
-  - `translatable` — boolean
-  - `rightNow` — string, e.g. `"NOT_ACTIVE"`
-  - `hasUnreadThrob` — boolean
-  
+Array of [Conversation ID](/grindr-api/messaging/conversations#conversation-id).
+
+Response:
+
+Array of [ConversationData](/grindr-api/messaging/conversations#conversationdata).
 
 ## Delete a conversation
 
@@ -148,15 +100,15 @@ Empty.
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-Affects sorting position in [get conversations](#get-conversations) endpoint response.
+Affects sorting position in [get conversations](/grindr-api/messaging/conversations#get-conversations) endpoint response.
 
-Repeated requests are completed without errors. Requests on nonexistent conversations seem to be affecting them after they have been created.
+Requests on nonexistent conversations seem to be affecting them after they have been created.
+
+Repeated requests are completed without errors.
 
 ```
 POST /v4/chat/conversation/{conversationId}/pin
 ```
-
-No body.
 
 Response:
 
@@ -166,15 +118,13 @@ Empty.
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-Affects sorting position in [get conversations](#get-conversations) endpoint response. Requests on nonexistent conversations seem to be affecting them after they have been created.
+Affects sorting position in [get conversations](/grindr-api/messaging/conversations#get-conversations) endpoint response. Requests on nonexistent conversations seem to be affecting them after they have been created.
 
 Repeated requests are completed without errors.
 
 ```
 POST /v4/chat/conversation/{conversationId}/unpin
 ```
-
-No body.
 
 Response:
 
@@ -188,12 +138,9 @@ Requests on nonexistent conversations seem to be affecting them after they have 
 
 Repeated requests are completed without errors.
 
-
 ```
 POST /v1/push/conversation/{conversationId}/mute
 ```
-
-No body.
 
 Response:
 
@@ -211,8 +158,6 @@ Repeated requests are completed without errors.
 POST /v1/push/conversation/{conversationId}/unmute
 ```
 
-No body.
-
 Response:
 
 Empty
@@ -227,13 +172,13 @@ GET /v5/chat/media/shared/images/with-me/{conversationId}
 
 Response:
 
-- `images` — array of [ChatImage](/grindr-api/messaging/messages#chatimage)
+- `images` — array of [ChatImageBody](/grindr-api/messaging/messages#chatimagebody)
 
 ## Refresh messages
 
-Requests the messages from the message id
-
 Requires [Authorization](/grindr-api/api-authorization).
+
+Requests the messages from the message id
 
 ```
 POST /v4/chat/conversation/{conversationId}/message-by-id
@@ -251,17 +196,15 @@ Response:
 
 Requires [Authorization](/grindr-api/api-authorization).
 
-```
-POST /v4/chat/conversation/{conversationId}/read/{messageId}
-```
-
-Regardless of messageId passed, the whole conversation's [`unreadCount`](#conversation) will be reset to 0. messageId is taken into account to present the "Read" label to sender.
+Regardless of messageId passed, the whole conversation's [`unreadCount`](/grindr-api/messaging/conversations#conversation) will be reset to 0. messageId is taken into account to present the "Read" label to sender.
 
 If you'd like to mark conversation as read but don't show it to other participant, you could pass a valid but nonexistent messageId, such as `0:00000000-0000-0000-0000-000000000000`.
 
 Invalid messageIds will cause HTTP status 400 Bad Request errors.
 
-No body.
+```
+POST /v4/chat/conversation/{conversationId}/read/{messageId}
+```
 
 Response:
 
@@ -277,16 +220,114 @@ GET /v1/chat/suggestions
 
 Query:
 
-- `conversationId` — string
+- `conversationId` — [Conversation ID](/grindr-api/messaging/conversations#conversation-id)
 
 Response:
 
 - `suggestions` — array of objects
   - `id` — UUIDv3
   - `text` — string
-  - `type` — `SAVED_PHRASE` | `SMART_PHRASE`
+  - `type` — string, `SAVED_PHRASE` | `SMART_PHRASE`
 
 ## Chat AI summary feedback, WIP
 
-POST /v1/chat/summary/feedback WingmanSummaryFeedbackDto 
+> [!NOTE]
+> This endpoint hasn't been researched yet
 
+```
+POST /v1/chat/summary/feedback
+```
+
+## Conversation ID
+
+String with two long integers separated by `:`, e.g. `"12345678:23456789"`. Long integers are IDs of [Profile](/grindr-api/users/profiles#profile). The order of these IDs is always from smaller ID to higher ID, regardless of who started the chat.
+
+## ConversationParticipant
+
+- `profileId` — integer, [Profile ID](/grindr-api/users/profiles#profilemin)
+- `primaryMediaHash` — string or `null`, see [Media -> Public CDN files](/grindr-api/media/public-cdn-files)
+- `lastOnline` — unix timestamp in milliseconds
+- `onlineUntil` — unix timestamp in milliseconds or `null`
+- `distanceMetres` — float number or `null`
+- `position` — [Sexual position ID](/grindr-api/users/profiles#sexual-position-id) or `null`
+- `isInAList` — boolean
+- `hasDatingPotential` — boolean
+
+## ConversationPreview
+
+- `conversationId` — object
+  - `value` — [Conversation ID](/grindr-api/messaging/conversations#conversation-id)
+- `messageId` — see [Message](/grindr-api/messaging/messages#message) for format
+- `chat1MessageId` — string with UUIDv4, second part of `messageId`
+- `senderId` — [Profile ID](/grindr-api/users/profiles#profilemin)
+- `type` — [Message type](/grindr-api/messaging/messages#message-type)
+- `chat1Type` — [Chat1MessageType](/grindr-api/messaging/messages#chat1messagetype)
+- `text` — string or `null`
+- `url` — unknown, appears to be null
+- `lat` — unknown, appears to be null
+- `lon` — unknown, appears to be null
+- `albumId` — integer, appears to be null
+- `albumContentId` — unknown, appears to be null
+- `albumContentReply` — unknown, appears to be null
+- `duration` — unknown, appears to be null
+- `imageHash` — string or `null`
+- `photoContentReply` — unknown, appears to be null
+
+## ConversationData
+
+- `conversationId` — [Conversation ID](/grindr-api/messaging/conversations#conversation-id)
+- `name` — string, profile name, may be an empty string, e.g. `""`
+- `participants` — array of [ConversationParticipant](/grindr-api/messaging/conversations#conversationparticipant)
+- `lastActivityTimestamp` — unix timestamp in milliseconds
+- `unreadCount` — integer
+- `preview` — [ConversationPreview](/grindr-api/messaging/conversations#conversationpreview)
+- `muted` — boolean
+- `pinned` — boolean
+- `favorite` — boolean
+- `context` — unknown or `null`
+- `onlineUntil` — unknown or `null`
+- `translatable` — boolean
+- `rightNow` — string, e.g. `"NOT_ACTIVE"`
+- `hasUnreadThrob` — boolean
+
+## Conversation
+
+Conversation object.
+
+- `type` — string, e.g. `"full_conversation_v1"`
+- `data` — [ConversationData](/grindr-api/messaging/conversations#conversationdata)
+
+## InboxFilterRequest
+
+- `unreadOnly` — boolean
+- `chemistryOnly` — boolean
+- `favoritesOnly` — boolean
+- `rightNowOnly` — boolean
+- `onlineNowOnly` — boolean
+- `distanceMeters` — "double" number value or `null`
+- `positions` — array of integers, [sexual position IDs](/grindr-api/users/profiles#sexual-position-id)
+
+## InboxResponse
+
+- `entries` — array of [Conversation](/grindr-api/messaging/conversations#conversation)
+- `showsFreeHeaderLabel` — boolean
+- `totalFullConversations` — number, e.g. `"5"`
+- `totalPartialConversations` — number, e.g. `0`
+- `maxDisplayLockCount` — number, e.g. `99`
+- `nextPage` — integer, e.g. `2`
+
+## ConversationProfileMini
+
+- `profileId` — long integer
+- `name` — string
+- `mediaHash` — string, See [Media -> Public CDN files -> Profile Images](/grindr-api/media/public-cdn-files#profile-images) or `null`
+- `onlineUntil` — unknown or `null`
+- `distance` — number or `null`
+- `showDistance` — boolean
+
+## ChatSuggestionsResponse
+
+- `suggestions` — array of objects
+  - `id` — UUIDv3
+  - `text` — string
+  - `type` — string, `SAVED_PHRASE` | `SMART_PHRASE`

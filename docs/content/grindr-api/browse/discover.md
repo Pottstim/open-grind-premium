@@ -1,10 +1,11 @@
 # Discover, WIP
 
-Help needed.
+> [!NOTE]
+> This page is a work in progress. Endpoints below haven't been fully researched. Help needed.
 
-## Get discover profiles
+## Get discover profiles, WIP
 
-WIP
+Response type: `DiscoverResponse` (undocumented).
 
 ```
 GET /v3/discover
@@ -28,9 +29,9 @@ If subscription is not purchased,
   - `upsell` — string, `"Unknown"`
   - `profiles` — array, unknown
 
-## Get discover profiles (legacy)
+## Get discover profiles (legacy), WIP
 
-WIP
+Response type: `DiscoverResponse` (undocumented).
 
 ```
 GET /v2/discover
@@ -52,9 +53,7 @@ If subscription is not purchased,
 - `body` — object
   - `upsell` — string, `"Unknown"`
 
-## Post a pass
-
-WIP
+## Post a pass, WIP
 
 ```
 POST /v1/me/pass/{profileId}
