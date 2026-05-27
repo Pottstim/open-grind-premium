@@ -1,4 +1,5 @@
 import { decode, encode } from "@msgpack/msgpack";
+import { toast } from "svelte-sonner";
 import z from "zod";
 
 import { gridSearchFiltersSchema } from "$lib/components/filters/filters";
@@ -19,7 +20,24 @@ export async function getPreferences(): Promise<
 	if (await existsAppDataFile("preferences.data")) {
 		return await readAppDataFile("preferences.data")
 			.then(decode)
-			.then((data) => preferencesSchema.parse(data));
+			.then((data) => preferencesSchema.parse(data))
+			.catch((e) => {
+				toast.error("Failed to load preferences. Reset to defaults?", {
+					action: {
+						label: "Reset",
+						onClick: async () => {
+							await writeAppDataFile(
+								"preferences.data",
+								encode(preferencesSchema.parse({})),
+							);
+							window.location.reload();
+						},
+					},
+					duration: 10000,
+					id: "load-preferences-error",
+				});
+				throw e;
+			});
 	} else {
 		return preferencesSchema.parse({});
 	}
