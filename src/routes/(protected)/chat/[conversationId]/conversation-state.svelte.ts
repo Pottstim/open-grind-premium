@@ -401,7 +401,8 @@ export class ConversationState {
 				reactionType,
 			});
 		} catch (err) {
-			msg.reactions.pop();
+			const idx = msg.reactions.findIndex((r) => r === optimistic);
+			if (idx !== -1) msg.reactions.splice(idx, 1);
 			this.#syncCache();
 			throw err;
 		}
