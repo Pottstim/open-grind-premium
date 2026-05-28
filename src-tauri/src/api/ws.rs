@@ -176,6 +176,11 @@ pub async fn ws_send(
     state: tauri::State<'_, AppState>,
     command: WsCommand,
 ) -> Result<(), AppError> {
+    let client = state.client()?;
+    if client.session.read().await.is_none() {
+        return Err(AppError::Auth("Not logged in".to_owned()));
+    }
+
     state
         .ws_tx
         .send(command)
