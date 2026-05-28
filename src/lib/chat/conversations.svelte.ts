@@ -1,4 +1,5 @@
 import { toast } from "svelte-sonner";
+import z from "zod";
 
 import {
 	getConversations,
@@ -31,6 +32,7 @@ class ConversationsState {
 	entries = $state<Conversation[]>([]);
 	nextPage = $state<number | null>(null);
 	loadingMore = $state(false);
+	inboxLastViewedAt = $state(0);
 	initial: Promise<void>;
 	listScrollY = 0;
 
@@ -47,6 +49,7 @@ class ConversationsState {
 
 	constructor(ourProfileId: number) {
 		this.ourProfileId = ourProfileId;
+		this.inboxLastViewedAt = this.#loadInboxLastViewed();
 		this.initial = this.#load(1);
 
 		this.#wsPromises.push(
@@ -233,6 +236,38 @@ class ConversationsState {
 		if (this.#activeConversationId === conversationId) {
 			this.#activeConversationId = null;
 		}
+	}
+
+	get hasUnread(): boolean {
+		return this.entries.some(
+			(entry) =>
+				entry.data.unreadCount > 0 &&
+				entry.data.lastActivityTimestamp > this.inboxLastViewedAt,
+		);
+	}
+
+	markInboxViewed(): void {
+		const now = Date.now();
+		if (now <= this.inboxLastViewedAt) return;
+		this.inboxLastViewedAt = now;
+		if (typeof localStorage !== "undefined") {
+			localStorage.setItem(this.#inboxStorageKey(), String(now));
+		}
+	}
+
+	#inboxStorageKey(): string {
+		return `chat:inbox-last-viewed:${this.ourProfileId}`;
+	}
+
+	#loadInboxLastViewed(): number {
+		if (typeof localStorage === "undefined") return 0;
+		return (
+			z.coerce
+				.number()
+				.int()
+				.nonnegative()
+				.safeParse(localStorage.getItem(this.#inboxStorageKey())).data ?? 0
+		);
 	}
 
 	markRead(conversationId: string): void {

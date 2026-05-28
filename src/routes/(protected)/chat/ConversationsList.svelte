@@ -10,6 +10,16 @@
 
 	const conversations: ConversationsState = getConversations();
 
+	const latestActivity = $derived(
+		conversations.entries.reduce(
+			(max, entry) => Math.max(max, entry.data.lastActivityTimestamp),
+			0,
+		),
+	);
+	$effect(() => {
+		if (latestActivity >= 0) conversations.markInboxViewed();
+	});
+
 	let container: HTMLDivElement | null = $state(null);
 
 	onMount(() => {

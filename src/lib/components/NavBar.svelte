@@ -24,12 +24,7 @@
 			conversations = getOrCreateConversationsState(profile.profileId);
 		});
 	});
-	const unreadCount = $derived(
-		conversations?.entries.reduce(
-			(total, entry) => total + entry.data.unreadCount,
-			0,
-		) ?? 0,
-	);
+	const hasUnread = $derived(conversations?.hasUnread ?? false);
 </script>
 
 <ProgressiveBlur
@@ -76,10 +71,8 @@
 		<a href="/chat" data-active={page.route.id === "/(protected)/chat"}>
 			<ChatCircleIcon weight="fill" />
 			Inbox
-			{#if unreadCount > 0}
-				<Badge class="absolute top-0 inset-e-0 px-1">
-					{unreadCount}
-				</Badge>
+			{#if hasUnread}
+				<Badge class="absolute top-1 inset-e-2 size-2.5 p-0 rounded-full" />
 			{/if}
 		</a>
 	</div>
