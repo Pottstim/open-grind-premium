@@ -43,6 +43,7 @@ class ConversationsState {
 	#lastReconcileAt = 0;
 	#reconcileListeners = new Set<() => void | Promise<void>>();
 	#removeVisibility: (() => void) | null = null;
+	#destroyed = false;
 
 	constructor(ourProfileId: number) {
 		this.ourProfileId = ourProfileId;
@@ -50,6 +51,7 @@ class ConversationsState {
 
 		this.#wsPromises.push(
 			ws.onConnected(() => {
+				if (this.#destroyed) return;
 				if (this.#firstConnect) {
 					this.#firstConnect = false;
 					return;
@@ -57,6 +59,7 @@ class ConversationsState {
 				void this.#reconcile();
 			}),
 			ws.on("chat.v1.message_sent", chatV1MessageSentEventSchema, (event) => {
+				if (this.#destroyed) return;
 				const message = event.payload;
 				const entry = this.entries.find(
 					(entry) => entry.data.conversationId === message.conversationId,
@@ -83,6 +86,7 @@ class ConversationsState {
 				"chat.v1.conversation.delete",
 				chatV1ConversationDeleteEventSchema,
 				(event) => {
+					if (this.#destroyed) return;
 					for (const id of event.payload.conversationIds) {
 						this.remove(id);
 					}
@@ -92,6 +96,7 @@ class ConversationsState {
 
 		if (typeof document !== "undefined") {
 			const onVisibility = () => {
+				if (this.#destroyed) return;
 				if (document.visibilityState === "hidden") {
 					this.#wasHidden = true;
 					return;
@@ -107,6 +112,7 @@ class ConversationsState {
 	}
 
 	async destroy(): Promise<void> {
+		this.#destroyed = true;
 		const unlisteners = await Promise.all(this.#wsPromises);
 		for (const unlisten of unlisteners) unlisten();
 		this.#wsPromises = [];
