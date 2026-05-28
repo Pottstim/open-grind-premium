@@ -7,7 +7,6 @@ import { getPreferences } from "$lib/app-data/preferences.svelte";
 import {
 	apiResponseMessageSchema,
 	previewFromMessage,
-	unsentMessageSchema,
 } from "$lib/model/message";
 import { chatV1MessageSentEventSchema, ws } from "$lib/ws.svelte";
 import type {
@@ -393,7 +392,8 @@ export class ConversationState {
 	async reactTo(messageId: string, reactionType: number): Promise<void> {
 		const msg = this.messages.find((m) => m.messageId === messageId);
 		if (!msg) return;
-		msg.reactions.push({ reactionType, profileId: this.ourProfileId });
+		const optimistic = { reactionType, profileId: this.ourProfileId };
+		msg.reactions.push(optimistic);
 		this.#syncCache();
 		try {
 			await reactToMessage({
