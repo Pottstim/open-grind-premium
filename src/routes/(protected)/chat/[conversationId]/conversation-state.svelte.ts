@@ -9,11 +9,11 @@ import {
 	previewFromMessage,
 } from "$lib/model/message";
 import { chatV1MessageSentEventSchema, ws } from "$lib/ws.svelte";
+import type { ConversationsState } from "$lib/chat/conversations.svelte";
 import type {
 	ApiResponseMessage,
 	Message as MessageType,
 } from "$lib/model/message";
-import type { ConversationsState } from "../conversations.svelte";
 import { getConversation } from "./messages";
 
 export type OptimisticMessage = ApiResponseMessage & {

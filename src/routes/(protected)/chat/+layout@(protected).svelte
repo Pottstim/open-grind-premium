@@ -3,13 +3,13 @@
 	import { untrack } from "svelte";
 	import { MediaQuery } from "svelte/reactivity";
 
-	import NavBar from "$lib/components/NavBar.svelte";
-	import * as Card from "$lib/components/ui/card";
-	import * as Resizable from "$lib/components/ui/resizable";
 	import {
 		getOrCreateConversationsState,
 		setConversations,
-	} from "./conversations-context.svelte";
+	} from "$lib/chat/conversations-context.svelte";
+	import NavBar from "$lib/components/NavBar.svelte";
+	import * as Card from "$lib/components/ui/card";
+	import * as Resizable from "$lib/components/ui/resizable";
 	import ConversationsList from "./ConversationsList.svelte";
 
 	let { data, children }: import("./$types").LayoutProps = $props();

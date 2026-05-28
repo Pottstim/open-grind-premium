@@ -6,13 +6,29 @@
 	import FireIcon from "phosphor-svelte/lib/FireIcon";
 
 	import { getMyProfile } from "$lib/api/profile";
+	import { getOrCreateConversationsState } from "$lib/chat/conversations-context.svelte";
 	import BrokenUserAvatar from "$lib/components/BrokenUserAvatar.svelte";
 	import ProgressiveBlur from "$lib/components/ProgressiveBlur.svelte";
+	import { Badge } from "$lib/components/ui/badge";
 	import { tabsListVariants } from "$lib/components/ui/tabs";
 	import UserAvatar from "$lib/components/UserAvatar.svelte";
+	import type { ConversationsState } from "$lib/chat/conversations.svelte";
 
 	const myProfilePhotos = $derived(
 		getMyProfile().then((profile) => profile.medias),
+	);
+
+	let conversations = $state<ConversationsState | null>(null);
+	$effect(() => {
+		void getMyProfile().then((profile) => {
+			conversations = getOrCreateConversationsState(profile.profileId);
+		});
+	});
+	const unreadCount = $derived(
+		conversations?.entries.reduce(
+			(total, entry) => total + entry.data.unreadCount,
+			0,
+		) ?? 0,
 	);
 </script>
 
@@ -60,6 +76,11 @@
 		<a href="/chat" data-active={page.route.id === "/(protected)/chat"}>
 			<ChatCircleIcon weight="fill" />
 			Inbox
+			{#if unreadCount > 0}
+				<Badge class="absolute top-0 inset-e-0 px-1">
+					{unreadCount}
+				</Badge>
+			{/if}
 		</a>
 	</div>
 	<a

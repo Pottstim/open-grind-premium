@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount, tick } from "svelte";
 
+	import { getConversations } from "$lib/chat/conversations-context.svelte";
 	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import Skeleton from "$lib/components/ui/skeleton/skeleton.svelte";
+	import type { ConversationsState } from "$lib/chat/conversations.svelte";
 	import Conversation from "./Conversation.svelte";
-	import { getConversations } from "./conversations-context.svelte";
-	import type { ConversationsState } from "./conversations.svelte";
 	import EmptyConversationsList from "./EmptyConversationsList.svelte";
 
 	const conversations: ConversationsState = getConversations();
