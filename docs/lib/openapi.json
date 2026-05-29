@@ -10750,8 +10750,12 @@
 								"type": "boolean"
 							},
 							"tapType": {
-								"type": "boolean",
-								"nullable": true
+								"nullable": true,
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/TapType"
+									}
+								]
 							},
 							"lastReceivedTapTimestamp": {
 								"allOf": [

@@ -1,6 +1,7 @@
 import z from "zod";
 
 import { viewSourceEnumSchema } from "$lib/model/interest";
+import { tapIdSchema } from "$lib/model/interest/taps";
 import { mediaHashPublicSchema } from "$lib/model/media";
 import { rightNowStatusSchema } from "$lib/model/right-now";
 
@@ -376,7 +377,7 @@ export const profileSchema = profileShortSchema
 		hashtags: z.array(z.unknown()),
 		profileTags: z.array(z.string()),
 		tapped: z.boolean(),
-		tapType: z.boolean().nullable(),
+		tapType: tapIdSchema.nullable(),
 		lastReceivedTapTimestamp: z.number().nullable(),
 		isTeleporting: z.boolean(),
 		isRoaming: z.boolean(),
