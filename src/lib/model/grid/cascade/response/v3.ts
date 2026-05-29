@@ -13,6 +13,7 @@ import {
 	cascadeResponseBoostUpsellV1Schema,
 	cascadeResponseExploreAggregationV1Schema,
 	cascadeResponseFavHeaderV1Schema,
+	cascadeResponseFavoritesHeaderNoFreeResultsV1Schema,
 	cascadeResponseFullProfileV1Schema,
 	cascadeResponsePartialProfileV1Schema,
 	cascadeResponseProfileSchema,
@@ -125,6 +126,24 @@ export const cascadeV3ResponseFavHeaderV1Schema = z.object({
 	}),
 });
 
+// TODO: export const cascadeV3ResponseHiddenProfileV1Schema
+// TODO: export const cascadeV3ResponseSmartBoostProfileV1Schema
+// TODO: export const cascadeV3ResponseSponsoredProfileV1Schema
+// TODO: export const cascadeV3ResponseBrazeEventProfileV1Schema
+// TODO: export const cascadeV3ResponseFavsXtraUpsellV1Schema
+// TODO: export const cascadeV3ResponseFavsUnlimitedUpsellV1Schema
+
+export const cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema = z.object({
+	...cascadeResponseFavoritesHeaderNoFreeResultsV1Schema.shape,
+	data: z.object({
+		...cascadeResponseFavoritesHeaderNoFreeResultsV1Schema.shape.data.shape,
+		"@type": z.literal("CascadeItemData$FavsFreeNoResultsV1"),
+	}),
+});
+
+// TODO: export const cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema
+// TODO: export const cascadeV3ResponseProfileHideStatusSchema
+
 export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseFullProfileV1Schema,
 	cascadeV3ResponsePartialProfileV1Schema,
@@ -135,6 +154,15 @@ export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseUnlimitedMpuV1Schema,
 	cascadeV3ResponseXtraMpuV1Schema,
 	cascadeV3ResponseFavHeaderV1Schema,
+	// TODO: cascadeV3ResponseHiddenProfileV1Schema,
+	// TODO: cascadeV3ResponseSmartBoostProfileV1Schema,
+	// TODO: cascadeV3ResponseSponsoredProfileV1Schema,
+	// TODO: cascadeV3ResponseBrazeEventProfileV1Schema,
+	// TODO: cascadeV3ResponseFavsXtraUpsellV1Schema,
+	// TODO: cascadeV3ResponseFavsUnlimitedUpsellV1Schema,
+	cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema,
+	// TODO: cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema,
+	// TODO: cascadeV3ResponseProfileHideStatusSchema,
 ]);
 
 export const cascadeV3ResponseSchema = z.object({
