@@ -2,7 +2,9 @@ import z from "zod";
 
 import { fetchRest } from "$lib/api";
 import { cascadeV3QuerySchema } from "$lib/model/grid/cascade/query/v3";
+import { cascadeV4QuerySchema } from "$lib/model/grid/cascade/query/v4";
 import { cascadeV3ResponseSchema } from "$lib/model/grid/cascade/response/v3";
+import { cascadeV4ResponseSchema } from "$lib/model/grid/cascade/response/v4";
 import { searchProfileSchema, searchQuerySchema } from "$lib/model/grid/search";
 import { urlSearchParamsCodec } from "$lib/utils";
 
@@ -23,9 +25,6 @@ export async function searchProfiles(query: z.infer<typeof searchQuerySchema>) {
 		);
 }
 
-/**
- * Main endpoint used in the source apk. /v4/cascade is currently feature-flagged, /v7/search is only for profile tags
- */
 export async function getCascadeV3(
 	query: z.infer<typeof cascadeV3QuerySchema>,
 ) {
@@ -35,4 +34,15 @@ export async function getCascadeV3(
 				urlSearchParamsCodec(cascadeV3QuerySchema).encode(query),
 			).toString(),
 	).then((res) => res.jsonParsed(cascadeV3ResponseSchema));
+}
+
+export async function getCascadeV4(
+	query: z.infer<typeof cascadeV4QuerySchema>,
+) {
+	return await fetchRest(
+		"/v4/cascade?" +
+			new URLSearchParams(
+				urlSearchParamsCodec(cascadeV4QuerySchema).encode(query),
+			).toString(),
+	).then((res) => res.jsonParsed(cascadeV4ResponseSchema));
 }

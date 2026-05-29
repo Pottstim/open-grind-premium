@@ -11,13 +11,21 @@ import { unixTimestampMsSchema } from "$lib/model/types";
 import {
 	cascadeResponseAdvertV1Schema,
 	cascadeResponseBoostUpsellV1Schema,
+	cascadeResponseBrazeEventProfileV1Schema,
 	cascadeResponseExploreAggregationV1Schema,
 	cascadeResponseFavHeaderV1Schema,
 	cascadeResponseFavoritesHeaderNoFreeResultsV1Schema,
+	cascadeResponseFavoritesHeaderNoXtraResultsV1Schema,
+	cascadeResponseFavsUnlimitedUpsellV1Schema,
+	cascadeResponseFavsXtraUpsellV1Schema,
 	cascadeResponseFullProfileV1Schema,
+	cascadeResponseHiddenProfileV1Schema,
 	cascadeResponsePartialProfileV1Schema,
+	cascadeResponseProfileHideStatusSchema,
 	cascadeResponseProfileSchema,
 	cascadeResponseSchema,
+	cascadeResponseSmartBoostProfileV1Schema,
+	cascadeResponseSponsoredProfileV1Schema,
 	cascadeResponseTopPicksV1Schema,
 	cascadeResponseUnlimitedMpuV1Schema,
 	cascadeResponseXtraMpuV1Schema,
@@ -126,12 +134,53 @@ export const cascadeV3ResponseFavHeaderV1Schema = z.object({
 	}),
 });
 
-// TODO: export const cascadeV3ResponseHiddenProfileV1Schema
-// TODO: export const cascadeV3ResponseSmartBoostProfileV1Schema
-// TODO: export const cascadeV3ResponseSponsoredProfileV1Schema
-// TODO: export const cascadeV3ResponseBrazeEventProfileV1Schema
-// TODO: export const cascadeV3ResponseFavsXtraUpsellV1Schema
-// TODO: export const cascadeV3ResponseFavsUnlimitedUpsellV1Schema
+export const cascadeV3ResponseHiddenProfileV1Schema = z.object({
+	...cascadeResponseHiddenProfileV1Schema.shape,
+	data: z.object({
+		...cascadeResponseHiddenProfileV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseSmartBoostProfileV1Schema = z.object({
+	...cascadeResponseSmartBoostProfileV1Schema.shape,
+	data: z.object({
+		...cascadeResponseSmartBoostProfileV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseSponsoredProfileV1Schema = z.object({
+	...cascadeResponseSponsoredProfileV1Schema.shape,
+	data: z.object({
+		...cascadeResponseSponsoredProfileV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseBrazeEventProfileV1Schema = z.object({
+	...cascadeResponseBrazeEventProfileV1Schema.shape,
+	data: z.object({
+		...cascadeResponseBrazeEventProfileV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseFavsXtraUpsellV1Schema = z.object({
+	...cascadeResponseFavsXtraUpsellV1Schema.shape,
+	data: z.object({
+		...cascadeResponseFavsXtraUpsellV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseFavsUnlimitedUpsellV1Schema = z.object({
+	...cascadeResponseFavsUnlimitedUpsellV1Schema.shape,
+	data: z.object({
+		...cascadeResponseFavsUnlimitedUpsellV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
 
 export const cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema = z.object({
 	...cascadeResponseFavoritesHeaderNoFreeResultsV1Schema.shape,
@@ -141,8 +190,21 @@ export const cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema = z.object({
 	}),
 });
 
-// TODO: export const cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema
-// TODO: export const cascadeV3ResponseProfileHideStatusSchema
+export const cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema = z.object({
+	...cascadeResponseFavoritesHeaderNoXtraResultsV1Schema.shape,
+	data: z.object({
+		...cascadeResponseFavoritesHeaderNoXtraResultsV1Schema.shape.data.shape,
+		// TODO: fix @type
+	}),
+});
+
+export const cascadeV3ResponseProfileHideStatusSchema = z.object({
+	...cascadeResponseProfileHideStatusSchema.shape,
+	// data: z.object({
+	// 	...cascadeResponseProfileHideStatusSchema.shape.data.shape,
+	// TODO: fix @type
+	// }),
+});
 
 export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseFullProfileV1Schema,
@@ -154,15 +216,15 @@ export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseUnlimitedMpuV1Schema,
 	cascadeV3ResponseXtraMpuV1Schema,
 	cascadeV3ResponseFavHeaderV1Schema,
-	// TODO: cascadeV3ResponseHiddenProfileV1Schema,
-	// TODO: cascadeV3ResponseSmartBoostProfileV1Schema,
-	// TODO: cascadeV3ResponseSponsoredProfileV1Schema,
-	// TODO: cascadeV3ResponseBrazeEventProfileV1Schema,
-	// TODO: cascadeV3ResponseFavsXtraUpsellV1Schema,
-	// TODO: cascadeV3ResponseFavsUnlimitedUpsellV1Schema,
+	cascadeV3ResponseHiddenProfileV1Schema, // TODO: incomplete
+	cascadeV3ResponseSmartBoostProfileV1Schema, // TODO: incomplete
+	cascadeV3ResponseSponsoredProfileV1Schema, // TODO: incomplete
+	cascadeV3ResponseBrazeEventProfileV1Schema, // TODO: incomplete
+	cascadeV3ResponseFavsXtraUpsellV1Schema, // TODO: incomplete
+	cascadeV3ResponseFavsUnlimitedUpsellV1Schema, // TODO: incomplete
 	cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema,
-	// TODO: cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema,
-	// TODO: cascadeV3ResponseProfileHideStatusSchema,
+	cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema, // TODO: incomplete
+	cascadeV3ResponseProfileHideStatusSchema, // TODO: incomplete
 ]);
 
 export const cascadeV3ResponseSchema = z.object({
