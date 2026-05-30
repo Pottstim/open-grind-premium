@@ -595,7 +595,7 @@ mod tests {
     fn headers_authorized_order() {
         let device = test_device();
         let headers =
-            GrindrHeaders::build(&device, "ua/1.0", Some("Grindr3 sid"), Some("[FREE]")).unwrap();
+            GrindrHeaders::build(&device, "ua/1.0", Some("Grindr3 sid"), Some("[PREMIUM,UNLIMITED]")).unwrap();
         let names: Vec<&str> = headers.items.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(
             names,

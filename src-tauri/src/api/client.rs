@@ -162,7 +162,7 @@ impl GrindrClient {
                 DeviceInfo::default()
             }
         };
-        let user_agent = build_user_agent(&device, "Free");
+        let user_agent = build_user_agent(&device, "Unlimited");
 
         let http = build_api_client()?;
         let ws_http = build_ws_client()?;
@@ -213,7 +213,7 @@ pub async fn rotate_api_params(
     if let Err(e) = DeviceStorage::save(&device) {
         eprintln!("[client] could not persist rotated device info: {e}");
     }
-    let user_agent = build_user_agent(&device, "Free");
+    let user_agent = build_user_agent(&device, "Unlimited");
     let http = build_api_client()?;
     let ws_http = build_ws_client()?;
 
