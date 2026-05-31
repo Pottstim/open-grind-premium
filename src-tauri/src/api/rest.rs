@@ -106,7 +106,7 @@ impl GrindrClient {
         let response = request.send().await?;
         let status = response.status().as_u16();
         let body = response.bytes().await?.to_vec();
-        let body = maybe_rewrite_response(path, body);
+        let (status, body) = maybe_rewrite_response(status, path, body);
 
         Ok(RawResponse { status, body })
     }
@@ -114,11 +114,18 @@ impl GrindrClient {
 
 const MAX_ERROR_BODY: usize = 1024;
 
-fn maybe_rewrite_response(path: &str, body: Vec<u8>) -> Vec<u8> {
+fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u8>) {
     let Ok(mut json) = serde_json::from_slice::<serde_json::Value>(&body) else {
-        return body;
+        return (status, body);
     };
     let path = path.to_lowercase();
+
+    // Ban/shadowban detection — intercept and neutralize
+    let body_str = String::from_utf8_lossy(&body).to_lowercase();
+    if body_str.contains("\"banned\"") || body_str.contains("\"suspended\"") || body_str.contains("\"restricted\"") {
+        return (status, serde_json::json!({"status": "ok"}).to_string().into_bytes());
+    }
+
     if path.starts_with("/v3/bootstrap") {
         json["userRole"] = serde_json::json!("UNLIMITED");
         json["subscriptionTier"] = serde_json::json!("UNLIMITED");
@@ -132,21 +139,24 @@ fn maybe_rewrite_response(path: &str, body: Vec<u8>) -> Vec<u8> {
             }
         }
         json["featureFlags"] = serde_json::Value::Object(flags);
-        serde_json::to_vec(&json).unwrap_or(body)
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
     } else if path.starts_with("/v1/entitlements") {
         if let Some(right_now) = json.get_mut("rightNow") {
             *right_now = serde_json::json!(999);
         }
-        serde_json::to_vec(&json).unwrap_or(body)
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
     } else if path.starts_with("/v3/me/profile") || path.starts_with("/v4/subscriptions") {
         json["subscription"] = serde_json::json!({
             "premium": true,
             "userRole": "UNLIMITED",
             "subscriptionTier": "UNLIMITED"
         });
-        serde_json::to_vec(&json).unwrap_or(body)
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
     } else {
-        body
+        return (status, body);
     }
 }
 
