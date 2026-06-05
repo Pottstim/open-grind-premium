@@ -14,9 +14,9 @@ warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 err()  { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
 
 # Load environment
-export JAVA_HOME="${JAVA_HOME:-$HOME/.sdkman/candidates/java/current}"
+export JAVA_HOME="${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}"
 export ANDROID_HOME="${ANDROID_HOME:-/opt/android-sdk}"
-export ANDROID_NDK_HOME="${ANDROID_NDK_HOME:-$ANDROID_HOME/ndk/28.1.13356709}"
+export ANDROID_NDK_HOME="${ANDROID_NDK_HOME:-$ANDROID_HOME/ndk/27.0.12077973}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_NDK_HOME:$PATH"
 
 # Verify prerequisites
@@ -54,7 +54,7 @@ case "$MODE" in
     log "Building Android APK..."
     bun run tauri android build
     log "✅ Android build complete!"
-    log "APK: src-tauri/gen/android/app/build/outputs/apk/universal/universal-release.apk"
+    log "APK: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk"
     ;;
   all)
     log "Building desktop..."

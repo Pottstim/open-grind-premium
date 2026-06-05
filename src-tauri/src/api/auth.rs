@@ -124,10 +124,10 @@ impl AuthStorage {
 
     pub fn delete_session() {
         match Self::get_session_entry() {
-            Ok(entry) => match entry.delete_credential() {
-                Ok(()) | Err(keyring_core::Error::NoEntry) => {}
-                Err(e) => eprintln!("[auth] failed to delete keyring session: {e}"),
-            },
+            Ok(entry) => {
+                // Attempt deletion; ignore NoEntry since already gone
+                let _ = entry.delete_credential();
+            }
             Err(e) => eprintln!("[auth] failed to open keyring entry for deletion: {e}"),
         }
     }

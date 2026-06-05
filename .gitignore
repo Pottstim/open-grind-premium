@@ -19,4 +19,10 @@ keystore.properties
 *.jks
 *.keystore
 
+# Build outputs
+build-output/
+
+# Rust
+src-tauri/target/
+
 .local

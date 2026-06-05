@@ -125,36 +125,54 @@ pub fn init_file_store(base: std::path::PathBuf) {
 pub fn init_keyring() {
     #[cfg(target_os = "ios")]
     {
-        let store = apple_native_keyring_store::protected::Store::new()
-            .expect("failed to init iOS keyring");
-        keyring_core::set_default_store(store);
+        if let Ok(store) = apple_native_keyring_store::protected::Store::new() {
+            keyring_core::set_default_store(store);
+            return;
+        } else {
+            eprintln!("[storage] failed to init iOS keyring store");
+        }
     }
 
     #[cfg(target_os = "android")]
     {
-        let store =
-            android_native_keyring_store::Store::new().expect("failed to init Android keyring");
-        keyring_core::set_default_store(store);
+        if let Ok(store) = android_native_keyring_store::Store::new() {
+            keyring_core::set_default_store(store);
+            return;
+        } else {
+            eprintln!("[storage] failed to init Android keyring store");
+        }
     }
 
     #[cfg(all(target_os = "macos", feature = "keychain"))]
     {
-        let store = apple_native_keyring_store::keychain::Store::new()
-            .expect("failed to init macOS keyring");
-        keyring_core::set_default_store(store);
+        if let Ok(store) = apple_native_keyring_store::keychain::Store::new() {
+            keyring_core::set_default_store(store);
+            return;
+        } else {
+            eprintln!("[storage] failed to init macOS keychain store");
+        }
     }
 
     #[cfg(target_os = "windows")]
     {
-        let store =
-            windows_native_keyring_store::Store::new().expect("failed to init Windows keyring");
-        keyring_core::set_default_store(store);
+        if let Ok(store) = windows_native_keyring_store::Store::new() {
+            keyring_core::set_default_store(store);
+            return;
+        } else {
+            eprintln!("[storage] failed to init Windows keyring store");
+        }
     }
 
     #[cfg(target_os = "linux")]
     {
-        let store =
-            linux_keyutils_keyring_store::Store::new().expect("failed to init Linux keyring");
-        keyring_core::set_default_store(store);
+        if let Ok(store) = linux_keyutils_keyring_store::Store::new() {
+            keyring_core::set_default_store(store);
+            return;
+        } else {
+            eprintln!("[storage] failed to init Linux keyring store");
+        }
     }
+
+    // Unsupported platform — keyring operations will fail gracefully at runtime
+    // rather than panicking during initialization.
 }
