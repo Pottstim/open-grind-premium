@@ -146,7 +146,7 @@ impl AuthStorage {
         keyring_entry(&session_key_for(&session.profile_id))?
             .set_secret(&bytes)
             .map_err(|e| AppError::Auth(e.to_string()))?;
-        Self::upsert_account_index(&session.profile_id, &session.email)?;
+        Self::upsert_account_index(&session.profile_id)?;
         Ok(())
     }
 
@@ -177,7 +177,7 @@ impl AuthStorage {
         }
     }
 
-    fn upsert_account_index(profile_id: &str, _email: &str) -> Result<(), AppError> {
+    fn upsert_account_index(profile_id: &str) -> Result<(), AppError> {
         let mut ids = Self::accounts_index();
         if !ids.contains(&profile_id.to_string()) {
             ids.push(profile_id.to_string());
@@ -460,12 +460,10 @@ pub async fn logout(state: tauri::State<'_, AppState>) -> Result<(), AppError> {
 }
 
 #[tauri::command]
-pub async fn auth_state(state: tauri::State<'_, AppState>) -> Result<Option<u64>, AppError> {
+pub async fn auth_state(state: tauri::State<'_, AppState>) -> Result<Option<String>, AppError> {
     let Ok(client) = state.client() else {
         return Ok(None);
     };
     let session = client.session.read().await;
-    Ok(session
-        .as_ref()
-        .and_then(|s| s.profile_id.parse::<u64>().ok()))
+    Ok(session.as_ref().map(|s| s.profile_id.clone()))
 }

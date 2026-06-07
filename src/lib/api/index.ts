@@ -15,12 +15,12 @@ export const methods = {
 			password: z.string().min(1),
 		}),
 		response: z.object({
-			profileId: z.coerce.number().int().nonnegative(),
+			profileId: z.string(),
 		}),
 	},
 	auth_state: {
 		request: z.undefined(),
-		response: z.number().int().nonnegative().nullable(),
+		response: z.string().nullable(),
 	},
 	rotate_api_params: {
 		request: z.undefined(),
@@ -46,13 +46,25 @@ export const methods = {
 		request: z.object({
 			profileId: z.string(),
 		}),
-		response: z.undefined(),
+		response: z.object({
+			profileId: z.string(),
+		}),
 	},
 	remove_account: {
 		request: z.object({
 			profileId: z.string(),
 		}),
-		response: z.undefined(),
+		response: z.object({
+			removed: z.boolean(),
+			wasActive: z.boolean(),
+			accounts: z.array(
+				z.object({
+					profileId: z.string(),
+					email: z.string(),
+					isActive: z.boolean(),
+				}),
+			),
+		}),
 	},
 	list_accounts: {
 		request: z.undefined(),
