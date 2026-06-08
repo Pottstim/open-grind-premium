@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Android NDK
         run: |
-          sdkmanager "ndk;27.0.12077973"
+          yes | sdkmanager "ndk;27.0.12077973"
           echo "NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> $GITHUB_ENV
 
       - name: Install dependencies
@@ -41,15 +41,20 @@ jobs:
       - name: Build frontend
         run: bun run build
 
-      - name: Build APK
-        run: |
-          cd src-tauri
-          cargo tauri android build --apk
+      - name: Init Android project
+        run: bun run tauri android init
         env:
-          NDK_HOME: ${{ env.NDK_HOME }}
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          NDK_HOME: ${{ env.NDK_HOME }}
+
+      - name: Build APK
+        run: bun run tauri android build --apk
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          NDK_HOME: ${{ env.NDK_HOME }}
 
       - name: Upload APK to release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: |
