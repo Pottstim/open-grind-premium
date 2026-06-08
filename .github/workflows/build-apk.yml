@@ -33,6 +33,7 @@ jobs:
       - name: Install Android NDK
         run: |
           yes | sdkmanager "ndk;27.0.12077973"
+          yes | sdkmanager --uninstall "ndk;29.0.14206865" || true
           echo "NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> $GITHUB_ENV
 
       - name: Install dependencies
@@ -40,12 +41,6 @@ jobs:
 
       - name: Build frontend
         run: bun run build
-
-      - name: Init Android project
-        run: bun run tauri android init
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
-          NDK_HOME: ${{ env.NDK_HOME }}
 
       - name: Build APK
         run: bun run tauri android build --apk
