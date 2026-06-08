@@ -20,8 +20,8 @@ open class BuildTask @Inject constructor(
     @Input
     var release: Boolean? = null
 
-    @get:Internal
-    val projectDirectory: File = project.projectDir
+    @Internal
+    var projectDirectory: File? = null
 
     @TaskAction
     fun assemble() {
@@ -55,11 +55,12 @@ open class BuildTask @Inject constructor(
         val rootDirRel = rootDirRel ?: throw GradleException("rootDirRel cannot be null")
         val target = target ?: throw GradleException("target cannot be null")
         val release = release ?: throw GradleException("release cannot be null")
+        val projDir = projectDirectory ?: throw GradleException("projectDirectory cannot be null")
         val args = listOf("tauri", "android", "android-studio-script")
         val logger = Logging.getLogger(BuildTask::class.java)
 
         execOps.exec {
-            workingDir(File(projectDirectory, rootDirRel))
+            workingDir(File(projDir, rootDirRel))
             executable(executable)
             args(args)
             if (logger.isEnabled(LogLevel.DEBUG)) {
