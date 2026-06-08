@@ -232,5 +232,5 @@ pub async fn ws_send(
         .ws_tx
         .send(command)
         .await
-        .map_err(|_| AppError::Http("WS not connected".to_owned()));
+        .map_err(|_| AppError::Http("WS not connected".to_owned()))
 }
