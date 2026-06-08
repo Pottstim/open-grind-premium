@@ -1,9 +1,11 @@
+use std::sync::Arc;
 use std::time::Duration;
 
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager};
+use tokio::sync::Notify;
 use tokio::time::sleep;
 use wreq::websocket::{Message, WebSocket};
 
@@ -21,6 +23,23 @@ pub struct WsCommand {
     pub payload: Value,
 }
 
+/// Dedicated notify for triggering a WS reconnect on account switch.
+/// Separated from `AppState.auth_notify` to avoid a race between the
+/// outer listen loop and the per-connection reconnect watcher — both
+/// waiting on the same `Notify` means `notify_one` only wakes one of them,
+/// and the wrong one can win.
+static WS_RECONNECT: std::sync::OnceLock<Arc<Notify>> = std::sync::OnceLock::new();
+
+fn ws_reconnect_notify() -> &'static Arc<Notify> {
+    WS_RECONNECT.get_or_init(|| Arc::new(Notify::new()))
+}
+
+/// Called by account-switch / remove / logout commands to force the WS
+/// to reconnect with the new session.
+pub fn request_ws_reconnect() {
+    ws_reconnect_notify().notify_one();
+}
+
 pub fn spawn_ws_task(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
         run_ws_loop(app).await;
@@ -32,11 +51,15 @@ async fn run_ws_loop(app: AppHandle) {
     let mut backoff = Duration::from_secs(1);
 
     loop {
-        state.auth_notify.notified().await;
+        // Wait for either an initial auth event or an explicit reconnect.
+        tokio::select! {
+            _ = state.auth_notify.notified() => {}
+            _ = ws_reconnect_notify().notified() => {}
+        };
 
         match connect_and_run(&app).await {
             Ok(()) => {
-                break;
+                backoff = Duration::from_secs(1);
             }
             Err(e @ (AppError::NotInitialized | AppError::Auth(_))) => {
                 eprintln!("[ws] auth error, waiting for login: {e}");
@@ -46,7 +69,6 @@ async fn run_ws_loop(app: AppHandle) {
             Err(e) => {
                 eprintln!("[ws] error: {e}");
                 app.emit("ws:disconnected", ()).ok();
-                state.auth_notify.notify_one();
                 sleep(backoff).await;
                 backoff = (backoff * 2).min(Duration::from_secs(30));
             }
@@ -103,7 +125,25 @@ async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
         .take()
         .ok_or_else(|| AppError::Http("WS already running".to_owned()))?;
 
-    let result = run_message_loop(&mut ws, &mut cmd_rx, &session_id, app).await;
+    // Per-connection reconnect signal. A spawned task listens on both
+    // auth_notify and ws_reconnect_notify; when either fires it signals
+    // this Notify, causing the message loop to exit cleanly so the outer
+    // loop reconnects with updated credentials.
+    let reconnect = Arc::new(Notify::new());
+    let reconnect_watcher = Arc::clone(&reconnect);
+
+    let auth_notify = Arc::clone(&state.auth_notify);
+    let ws_reconn = Arc::clone(ws_reconnect_notify());
+    tauri::async_runtime::spawn(async move {
+        tokio::select! {
+            _ = auth_notify.notified() => {}
+            _ = ws_reconn.notified() => {}
+        };
+        reconnect_watcher.notify_one();
+    });
+
+    let result =
+        run_message_loop(&mut ws, &mut cmd_rx, &session_id, &reconnect, app).await;
 
     *state.ws_rx.lock().await = Some(cmd_rx);
 
@@ -114,6 +154,7 @@ async fn run_message_loop(
     ws: &mut WebSocket,
     cmd_rx: &mut tokio::sync::mpsc::Receiver<WsCommand>,
     session_id: &str,
+    reconnect: &Arc<Notify>,
     app: &AppHandle,
 ) -> Result<(), AppError> {
     loop {
@@ -153,6 +194,12 @@ async fn run_message_loop(
                         .map_err(|e| AppError::Http(e.to_string()))?;
                 }
                 None => return Ok(()),
+            },
+
+            // Reconnect requested — exit cleanly so outer loop reconnects.
+            _ = reconnect.notified() => {
+                eprintln!("[ws] reconnect requested, closing current connection");
+                return Ok(());
             }
         }
     }
@@ -185,5 +232,5 @@ pub async fn ws_send(
         .ws_tx
         .send(command)
         .await
-        .map_err(|_| AppError::Http("WS not connected".to_owned()))
+        .map_err(|_| AppError::Http("WS not connected".to_owned()));
 }

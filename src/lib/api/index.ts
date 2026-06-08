@@ -84,7 +84,17 @@ export async function callMethod<T extends keyof typeof methods>(
 		? []
 		: [data: z.infer<(typeof methods)[T]["request"]>]
 ): Promise<z.infer<(typeof methods)[T]["response"]>> {
-	return await invoke(method, args[0]);
+	const raw = await invoke(method, args[0]);
+	const schema = methods[method].response;
+	const parsed = schema.safeParse(raw);
+	if (!parsed.success) {
+		console.error(`[api] response validation failed for "${String(method)}":`, {
+			issues: parsed.error.issues,
+			raw,
+		});
+		return raw as z.infer<(typeof methods)[T]["response"]>;
+	}
+	return parsed.data;
 }
 
 export function asAppError(error: unknown) {

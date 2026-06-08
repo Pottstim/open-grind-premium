@@ -5,6 +5,7 @@ use crate::error::AppError;
 use crate::state::AppState;
 
 use super::client::GrindrClient;
+use super::ws;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Session {
@@ -375,6 +376,7 @@ pub async fn login(
 ) -> Result<LoginResult, AppError> {
     let result = state.client()?.login(&email, &password).await?;
     state.auth_notify.notify_one();
+    ws::request_ws_reconnect();
     Ok(result)
 }
 
@@ -405,6 +407,7 @@ pub async fn switch_account(
 
     client.switch_to_session(session).await?;
     state.auth_notify.notify_one();
+    ws::request_ws_reconnect();
     Ok(LoginResult { profile_id })
 }
 
@@ -421,6 +424,7 @@ pub async fn remove_account(
     if was_active {
         client.logout_current().await?;
         state.auth_notify.notify_one();
+        ws::request_ws_reconnect();
     } else {
         AuthStorage::delete_session(&profile_id);
     }
@@ -456,6 +460,7 @@ pub async fn refresh_token(state: tauri::State<'_, AppState>) -> Result<LoginRes
 pub async fn logout(state: tauri::State<'_, AppState>) -> Result<(), AppError> {
     state.client()?.logout_current().await?;
     state.auth_notify.notify_one();
+    ws::request_ws_reconnect();
     Ok(())
 }
 
