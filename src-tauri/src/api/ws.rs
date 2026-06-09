@@ -50,20 +50,32 @@ async fn run_ws_loop(app: AppHandle) {
     let state = app.state::<AppState>();
     let mut backoff = Duration::from_secs(1);
 
-    loop {
-        // Wait for either an initial auth event or an explicit reconnect.
-        tokio::select! {
-            _ = state.auth_notify.notified() => {}
-            _ = ws_reconnect_notify().notified() => {}
-        };
+    // Dedicated reconnect signal for the outer loop.
+    // The per-connection watcher is the only producer; it signals this
+    // whenever auth state changes, so the outer loop always reconnects
+    // with fresh credentials — no race with the inner watcher.
+    let outer_reconnect = Arc::new(Notify::new());
 
-        match connect_and_run(&app).await {
+    // On first start, kick the outer loop immediately.
+    outer_reconnect.notify_one();
+
+    loop {
+        outer_reconnect.notified().await;
+
+        match connect_and_run(&app, &outer_reconnect).await {
             Ok(()) => {
                 backoff = Duration::from_secs(1);
             }
             Err(e @ (AppError::NotInitialized | AppError::Auth(_))) => {
                 eprintln!("[ws] auth error, waiting for login: {e}");
                 app.emit("ws:disconnected", ()).ok();
+                // Wait for any auth event before retrying.
+                tokio::select! {
+                    _ = state.auth_notify.notified() => {}
+                    _ = ws_reconnect_notify().notified() => {}
+                };
+                // Kick the outer loop again.
+                outer_reconnect.notify_one();
                 backoff = Duration::from_secs(1);
             }
             Err(e) => {
@@ -71,12 +83,17 @@ async fn run_ws_loop(app: AppHandle) {
                 app.emit("ws:disconnected", ()).ok();
                 sleep(backoff).await;
                 backoff = (backoff * 2).min(Duration::from_secs(30));
+                // Retry after backoff.
+                outer_reconnect.notify_one();
             }
         }
     }
 }
 
-async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
+async fn connect_and_run(
+    app: &AppHandle,
+    outer_reconnect: &Arc<Notify>,
+) -> Result<(), AppError> {
     let state = app.state::<AppState>();
     let client = state.client()?;
 
@@ -125,21 +142,22 @@ async fn connect_and_run(app: &AppHandle) -> Result<(), AppError> {
         .take()
         .ok_or_else(|| AppError::Http("WS already running".to_owned()))?;
 
-    // Per-connection reconnect signal. A spawned task listens on both
-    // auth_notify and ws_reconnect_notify; when either fires it signals
-    // this Notify, causing the message loop to exit cleanly so the outer
-    // loop reconnects with updated credentials.
+    // Per-connection reconnect signal (inner loop exit trigger).
     let reconnect = Arc::new(Notify::new());
-    let reconnect_watcher = Arc::clone(&reconnect);
 
     let auth_notify = Arc::clone(&state.auth_notify);
     let ws_reconn = Arc::clone(ws_reconnect_notify());
+    let outer_reconn = Arc::clone(outer_reconnect);
+    let reconnect_watcher = Arc::clone(&reconnect);
     tauri::async_runtime::spawn(async move {
         tokio::select! {
             _ = auth_notify.notified() => {}
             _ = ws_reconn.notified() => {}
         };
+        // Exit the per-connection message loop
         reconnect_watcher.notify_one();
+        // Tell the outer loop to reconnect with new credentials
+        outer_reconn.notify_one();
     });
 
     let result =
@@ -213,7 +231,9 @@ pub async fn ws_connect(state: tauri::State<'_, AppState>) -> Result<(), AppErro
     };
 
     if has_session {
+        // Signal both notifies so the watcher wakes and kicks the outer loop.
         state.auth_notify.notify_one();
+        ws_reconnect_notify().notify_one();
     }
     Ok(())
 }
