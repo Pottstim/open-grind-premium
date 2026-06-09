@@ -3,8 +3,7 @@ use std::sync::Arc;
 use serde::Serialize;
 use tokio::sync::{Mutex, RwLock};
 use wreq::{
-    Client, EmulationProvider, Http2Config, PseudoOrder, SettingsOrder, SslCurve, TlsConfig,
-    TlsVersion,
+    Client,
 };
 
 use crate::error::AppError;
@@ -15,89 +14,11 @@ use super::headers::{build_user_agent, DeviceInfo, DeviceStorage};
 
 pub const BASE_URL: &str = "https://grindr.mobi";
 
-/// References https://opengrind.org/grindr-api/security-headers#cipher-suites
-const MODERN_TLS_CIPHERS: &str = concat!(
-    "TLS_AES_128_GCM_SHA256",
-    ":TLS_AES_256_GCM_SHA384",
-    ":TLS_CHACHA20_POLY1305_SHA256",
-    ":TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-    ":TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-    ":TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-    ":TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-    ":TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
-    ":TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
-    ":TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-    ":TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-    ":TLS_RSA_WITH_AES_128_GCM_SHA256",
-    ":TLS_RSA_WITH_AES_256_GCM_SHA384",
-    ":TLS_RSA_WITH_AES_128_CBC_SHA",
-    ":TLS_RSA_WITH_AES_256_CBC_SHA",
-);
-
-/// References https://opengrind.org/grindr-api/security-headers#extensions
-const SIGALGS: &str = concat!(
-    "ecdsa_secp256r1_sha256",
-    ":rsa_pss_rsae_sha256",
-    ":rsa_pkcs1_sha256",
-    ":ecdsa_secp384r1_sha384",
-    ":rsa_pss_rsae_sha384",
-    ":rsa_pkcs1_sha384",
-    ":rsa_pss_rsae_sha512",
-    ":rsa_pkcs1_sha512",
-    ":rsa_pkcs1_sha1",
-);
-
-const CURVES: &[SslCurve] = &[SslCurve::X25519, SslCurve::SECP256R1, SslCurve::SECP384R1];
-
-/// References https://opengrind.org/grindr-api/security-headers#pseudoheaders
-const PSEUDO_ORDER: [PseudoOrder; 4] = [
-    PseudoOrder::Method,
-    PseudoOrder::Path,
-    PseudoOrder::Authority,
-    PseudoOrder::Scheme,
-];
-
-/// References https://opengrind.org/grindr-api/security-headers#frames
-const SETTINGS_ORDER: [SettingsOrder; 8] = [
-    SettingsOrder::InitialWindowSize,
-    SettingsOrder::HeaderTableSize,
-    SettingsOrder::EnablePush,
-    SettingsOrder::MaxConcurrentStreams,
-    SettingsOrder::MaxFrameSize,
-    SettingsOrder::MaxHeaderListSize,
-    SettingsOrder::UnknownSetting8,
-    SettingsOrder::UnknownSetting9,
-];
-
-const OKHTTP_CLIENT_WINDOW_SIZE: u32 = 16 * 1024 * 1024;
-
-fn okhttp_tls_config() -> TlsConfig {
-    TlsConfig::builder()
-        .enable_ocsp_stapling(true)
-        .pre_shared_key(true)
-        .curves(CURVES)
-        .sigalgs_list(SIGALGS)
-        .cipher_list(MODERN_TLS_CIPHERS)
-        .min_tls_version(TlsVersion::TLS_1_2)
-        .max_tls_version(TlsVersion::TLS_1_3)
-        .build()
-}
-
-fn okhttp_http2_config() -> Http2Config {
-    Http2Config::builder()
-        .initial_stream_window_size(OKHTTP_CLIENT_WINDOW_SIZE)
-        .initial_connection_window_size(OKHTTP_CLIENT_WINDOW_SIZE)
-        .headers_pseudo_order(PSEUDO_ORDER)
-        .settings_order(SETTINGS_ORDER)
-        .build()
-}
-
-fn grindr_emulation() -> EmulationProvider {
-    EmulationProvider::builder()
-        .tls_config(okhttp_tls_config())
-        .http2_config(okhttp_http2_config())
-        .default_headers(None)
-        .build()
+/// Use wreq-util's OkHttp4_12 emulation profile which provides a
+/// real Android OkHttp TLS/JA3/JA4 fingerprint that matches what
+/// Cloudflare expects from the official Grindr Android app.
+fn grindr_emulation() -> wreq_util::Emulation {
+    wreq_util::Emulation::OkHttp4_12
 }
 
 pub struct Fingerprint {
@@ -244,6 +165,6 @@ pub async fn rotate_api_params(
 }
 
 /// Used by `ci/fingerprint_check.rs`
-pub fn probe_emulation() -> EmulationProvider {
+pub fn probe_emulation() -> wreq_util::Emulation {
     grindr_emulation()
 }

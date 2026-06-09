@@ -14,6 +14,7 @@ use open_grind_lib::api::client::probe_emulation;
 use open_grind_lib::api::headers::{build_user_agent, DeviceInfo, GrindrHeaders};
 use serde_json::Value;
 use wreq::Client;
+use wreq_util::Emulation;
 
 const PROBE_URL: &str = "https://tls.peet.ws/api/all";
 
@@ -179,7 +180,7 @@ async fn main() -> ExitCode {
 
 fn build_client(h1: bool) -> Result<Client, Box<dyn std::error::Error>> {
     let mut builder = Client::builder()
-        .emulation(probe_emulation())
+        .emulation(wreq_util::Emulation::OkHttp4_12)
         .gzip(true)
         .no_deflate()
         .no_brotli()
