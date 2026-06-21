@@ -30,6 +30,12 @@ impl From<wreq::Error> for AppError {
     }
 }
 
+impl From<keyring_core::Error> for AppError {
+    fn from(e: keyring_core::Error) -> Self {
+        AppError::Auth(e.to_string())
+    }
+}
+
 impl From<AppError> for String {
     fn from(e: AppError) -> Self {
         e.to_string()

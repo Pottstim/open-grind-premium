@@ -153,14 +153,19 @@ pub async fn rotate_api_params(
         user_agent,
     });
 
-    let old_fp = {
-        let mut guard = client.fingerprint.write().await;
-        std::mem::replace(&mut *guard, new_fp)
-    };
+    // Capture new values before moving into the lock.
+    let new_ua = new_fp.user_agent.clone();
+    let new_device_info = super::headers::build_device_info_header(&new_fp.device);
 
+    {
+        let mut guard = client.fingerprint.write().await;
+        *guard = new_fp;
+    }
+
+    // Return the *new* fingerprint values so the caller can verify the rotation.
     Ok(RotateResult {
-        user_agent: old_fp.user_agent.clone(),
-        l_device_info: super::headers::build_device_info_header(&old_fp.device),
+        user_agent: new_ua,
+        l_device_info: new_device_info,
     })
 }
 

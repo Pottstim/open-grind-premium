@@ -120,31 +120,54 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
     };
     let path = path.to_lowercase();
 
-    // Ban/shadowban detection — intercept and neutralize
-    let body_str = String::from_utf8_lossy(&body).to_lowercase();
-    if body_str.contains("\"banned\"") || body_str.contains("\"suspended\"") || body_str.contains("\"restricted\"") {
-        return (status, serde_json::json!({"status": "ok"}).to_string().into_bytes());
+    // Ban/shadowban detection — check parsed JSON fields, not raw string, to avoid
+    // false positives on profile text that happens to contain these words.
+    let is_banned = json
+        .get("status")
+        .and_then(|v| v.as_str())
+        .map(|s| matches!(s.to_lowercase().as_str(), "banned" | "suspended" | "restricted"))
+        .unwrap_or(false)
+        || json
+            .get("code")
+            .and_then(|v| v.as_i64())
+            .map(|c| matches!(c, 40300 | 40301 | 40302 | 40303))
+            .unwrap_or(false);
+    if is_banned {
+        return (200, serde_json::json!({"status": "ok"}).to_string().into_bytes());
     }
 
     if path.starts_with("/v3/bootstrap") {
         json["userRole"] = serde_json::json!("UNLIMITED");
         json["subscriptionTier"] = serde_json::json!("UNLIMITED");
-        let mut flags = serde_json::Map::new();
-        for key in ["readReceipts", "tapAndGo", "unlimitedTaps", "unlimitedFavorites", "unlimitedBlocks", "incognitoMode", "typingStatus", "expire24hProfile"] {
+        // Start from existing flags so server-side A/B flags are preserved,
+        // then overlay the premium flags so our injections always win.
+        let mut flags: serde_json::Map<String, serde_json::Value> = json
+            .get("featureFlags")
+            .and_then(|f| f.as_object())
+            .cloned()
+            .unwrap_or_default();
+        for key in [
+            "readReceipts",
+            "tapAndGo",
+            "unlimitedTaps",
+            "unlimitedFavorites",
+            "unlimitedBlocks",
+            "incognitoMode",
+            "typingStatus",
+            "expire24hProfile",
+            "hideDistance",
+            "boosts",
+            "profileViews",
+        ] {
             flags.insert(key.to_string(), serde_json::json!(true));
-        }
-        if let Some(existing) = json.get("featureFlags").and_then(|f| f.as_object()) {
-            for (k, v) in existing {
-                flags.insert(k.clone(), v.clone());
-            }
         }
         json["featureFlags"] = serde_json::Value::Object(flags);
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else if path.starts_with("/v1/entitlements") {
-        if let Some(right_now) = json.get_mut("rightNow") {
-            *right_now = serde_json::json!(999);
-        }
+        // Ensure rightNow exists even if the server omits it.
+        json["rightNow"] = serde_json::json!(999);
+        json["total"] = serde_json::json!(999);
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else if path.starts_with("/v3/me/profile") || path.starts_with("/v4/subscriptions") {
@@ -153,6 +176,21 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             "userRole": "UNLIMITED",
             "subscriptionTier": "UNLIMITED"
         });
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v2/inbox") || path.starts_with("/v3/inbox") {
+        // Remove any server-side "upgrade to see more" gate.
+        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v3/me/settings") {
+        // Inject premium settings so the UI renders all options.
+        if let Some(obj) = json.as_object_mut() {
+            obj.entry("showDistance".to_string())
+                .or_insert(serde_json::json!(true));
+            obj.entry("incognito".to_string())
+                .or_insert(serde_json::json!(false));
+        }
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else {

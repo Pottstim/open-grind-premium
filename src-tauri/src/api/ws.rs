@@ -37,7 +37,9 @@ fn ws_reconnect_notify() -> &'static Arc<Notify> {
 /// Called by account-switch / remove / logout commands to force the WS
 /// to reconnect with the new session.
 pub fn request_ws_reconnect() {
-    ws_reconnect_notify().notify_one();
+    // notify_waiters() ensures both the outer loop and any per-connection
+    // watcher receive the signal regardless of which is currently waiting.
+    ws_reconnect_notify().notify_waiters();
 }
 
 pub fn spawn_ws_task(app: AppHandle) {
@@ -154,10 +156,10 @@ async fn connect_and_run(
             _ = auth_notify.notified() => {}
             _ = ws_reconn.notified() => {}
         };
-        // Exit the per-connection message loop
-        reconnect_watcher.notify_one();
-        // Tell the outer loop to reconnect with new credentials
-        outer_reconn.notify_one();
+        // Exit the per-connection message loop.
+        reconnect_watcher.notify_waiters();
+        // Tell the outer loop to reconnect with new credentials.
+        outer_reconn.notify_waiters();
     });
 
     let result =
@@ -191,9 +193,11 @@ async fn run_message_loop(
                         .map_err(|e| AppError::Http(e.to_string()))?;
                 }
                 Some(Ok(Message::Close(_))) | None => {
+                    app.emit("ws:disconnected", ()).ok();
                     return Err(AppError::Http("WS connection closed by server".to_owned()));
                 }
                 Some(Err(e)) => {
+                    app.emit("ws:disconnected", ()).ok();
                     return Err(AppError::Http(e.to_string()));
                 }
                 Some(Ok(_)) => {}
