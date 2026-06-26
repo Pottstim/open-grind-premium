@@ -291,13 +291,13 @@ body: string;
  * Returns the raw JSON body from the server (contains mediaId, mediaHash, url).
  */
 export async function uploadImage(
-imageBase64: string,
-mimeType: string,
+	imageBase64: string,
+	mimeType: string,
 ): Promise<UploadImageResult> {
-return await invoke<UploadImageResult>("upload_image", {
-imageBase64,
-mimeType,
-});
+	return await invoke<UploadImageResult>("upload_image", {
+		image_base64: imageBase64,
+		mime_type: mimeType,
+	});
 }
 
 /**
@@ -305,5 +305,5 @@ mimeType,
  * Only allows https URLs on grindr.com / grindr.mobi domains.
  */
 export async function fetchAuthedBytes(url: string): Promise<string> {
-return await invoke<string>("fetch_authed_bytes", { url });
+	return await invoke<string>("fetch_authed_bytes", { url });
 }

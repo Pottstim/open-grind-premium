@@ -216,16 +216,21 @@ export const cascadeV3ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV3ResponseUnlimitedMpuV1Schema,
 	cascadeV3ResponseXtraMpuV1Schema,
 	cascadeV3ResponseFavHeaderV1Schema,
-	cascadeV3ResponseHiddenProfileV1Schema, // TODO: incomplete
-	cascadeV3ResponseSmartBoostProfileV1Schema, // TODO: incomplete
-	cascadeV3ResponseSponsoredProfileV1Schema, // TODO: incomplete
-	cascadeV3ResponseBrazeEventProfileV1Schema, // TODO: incomplete
-	cascadeV3ResponseFavsXtraUpsellV1Schema, // TODO: incomplete
-	cascadeV3ResponseFavsUnlimitedUpsellV1Schema, // TODO: incomplete
+	cascadeV3ResponseHiddenProfileV1Schema,
+	cascadeV3ResponseSmartBoostProfileV1Schema,
+	cascadeV3ResponseSponsoredProfileV1Schema,
+	cascadeV3ResponseBrazeEventProfileV1Schema,
+	cascadeV3ResponseFavsXtraUpsellV1Schema,
+	cascadeV3ResponseFavsUnlimitedUpsellV1Schema,
 	cascadeV3ResponseFavoritesHeaderNoFreeResultsV1Schema,
-	cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema, // TODO: incomplete
-	cascadeV3ResponseProfileHideStatusSchema, // TODO: incomplete
-]);
+	cascadeV3ResponseFavoritesHeaderNoXtraResultsV1Schema,
+	cascadeV3ResponseProfileHideStatusSchema,
+]).or(
+	// Fallback: pass through unknown cascade item types instead of crashing.
+	// The Grindr API adds new item types regularly; without this, any unknown
+	// type key causes Zod to throw and the grid goes blank / app crashes.
+	z.object({ type: z.string() }).passthrough()
+);
 
 export const cascadeV3ResponseSchema = z.object({
 	...cascadeResponseSchema.shape,

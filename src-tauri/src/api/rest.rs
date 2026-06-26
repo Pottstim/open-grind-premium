@@ -99,15 +99,18 @@ impl GrindrClient {
             &headers.items,
         );
 
-        if let Some(body) = body {
-            let json_body: serde_json::Value = rmp_serde::from_slice(&body)
+        if let Some(ref req_body) = body {
+            let json_body: serde_json::Value = rmp_serde::from_slice(req_body)
                 .map_err(|e| AppError::Http(format!("Failed to decode msgpack body: {e}")))?;
             request = request.json(&json_body);
         }
 
+        // Keep a clone of the request body for the potential retry path.
+        let retry_req_body = body.clone();
+
         let response = request.send().await?;
         let status = response.status().as_u16();
-        let body = response.bytes().await?.to_vec();
+        let resp_bytes = response.bytes().await?.to_vec();
 
         // Auto-rotate fingerprint on 401/403 (but not on login/session paths,
         // where these statuses are expected and not a detection signal).
@@ -127,8 +130,9 @@ impl GrindrClient {
                 fp.http.request(method, format!("{BASE_URL}{path}")),
                 &headers.items,
             );
-            if let Some(body) = body.as_ref() {
-                if let Ok(json_body) = rmp_serde::from_slice::<serde_json::Value>(body) {
+            // Use the *original request body*, NOT the response bytes.
+            if let Some(ref req_body) = retry_req_body {
+                if let Ok(json_body) = rmp_serde::from_slice::<serde_json::Value>(req_body) {
                     retry_request = retry_request.json(&json_body);
                 }
             }
@@ -146,9 +150,9 @@ impl GrindrClient {
             }
         }
 
-        let (status, body) = maybe_rewrite_response(status, path, body);
+        let (status, resp_bytes) = maybe_rewrite_response(status, path, resp_bytes);
 
-        Ok(RawResponse { status, body })
+        Ok(RawResponse { status, body: resp_bytes })
     }
 
     /// Generate a fresh device fingerprint and replace the current one.

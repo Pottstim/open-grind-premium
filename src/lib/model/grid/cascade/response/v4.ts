@@ -140,7 +140,9 @@ export const cascadeV4ResponseItemSchema = z.discriminatedUnion("type", [
 	cascadeV4ResponseFavoritesHeaderNoFreeResultsV1Schema,
 	cascadeV4ResponseFavoritesHeaderNoXtraResultsV1Schema,
 	cascadeV4ResponseProfileHideStatusSchema,
-]);
+]).or(
+	z.object({ type: z.string() }).passthrough()
+);
 
 export const cascadeV4ResponseSchema = z.object({
 	...cascadeResponseSchema.shape,
