@@ -91,6 +91,12 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    // Override the default AAPT ignore pattern which excludes files/dirs starting with '_'.
+    // SvelteKit outputs the entire JS bundle into '_app/' which would otherwise be silently
+    // dropped from the APK, causing the WebView to load a blank page and the app to crash.
+    androidResources {
+        ignoreAssetsPatterns += setOf("!.svn", "!.git", "!.ds_store", "!*.scc", ".*", "!CVS", "!thumbs.db", "!picasa.ini", "!*~")
+    }
 }
 
 // Reproducibility: disable assets/dexopt/baseline.prof[m] and kotlin-tooling-metadata.json
