@@ -13,7 +13,7 @@ import android.webkit.WebResourceResponse
 
 object Rust {
     init {
-        System.loadLibrary("")
+        System.loadLibrary("open_grind_lib")
     }
 
     @JvmStatic external fun onActivityCreate(activity: WryActivity)
