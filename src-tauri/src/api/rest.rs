@@ -1,4 +1,5 @@
 use base64::{engine::general_purpose::STANDARD, Engine as _};
+use futures_util::StreamExt;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -11,7 +12,7 @@ use crate::state::AppState;
 
 use super::client::{build_api_client, Fingerprint, GrindrClient};
 use super::client::BASE_URL;
-use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders};
+use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders, grindr_roles_header_value};
 
 #[derive(Serialize, Deserialize)]
 pub struct RawResponse {
@@ -349,6 +350,117 @@ pub async fn request(
         rmp_serde::encode::to_vec_named(&raw).map_err(|e| AppError::Http(e.to_string()))?;
 
     Ok(STANDARD.encode(&response_bytes))
+}
+
+#[derive(Serialize)]
+pub struct UploadImageResult {
+    pub status: u16,
+    pub body: String,
+}
+
+/// Upload a base64-encoded image to the Grindr chat media endpoint.
+#[tauri::command]
+pub async fn upload_image(
+    state: tauri::State<'_, AppState>,
+    image_base64: String,
+    mime_type: String,
+) -> Result<UploadImageResult, AppError> {
+    const MAX_IMAGE_BASE64: usize = 30 * 1024 * 1024;
+    if image_base64.len() > MAX_IMAGE_BASE64 {
+        return Err(AppError::Http("Image payload too large".to_owned()));
+    }
+    let bytes = STANDARD
+        .decode(&image_base64)
+        .map_err(|e| AppError::Http(format!("Failed to decode image base64: {e}")))?;
+    let authorization = state
+        .client()?
+        .authorization_header()
+        .await
+        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+    let fp = state.client()?.fingerprint().await;
+    let response = fp.http
+        .post(format!("{BASE_URL}/v5/chat/media/upload?takenOnGrindr=false"))
+        .header("Authorization", &authorization)
+        .header("L-Grindr-Roles", grindr_roles_header_value())
+        .header("Content-Type", &mime_type)
+        .body(bytes)
+        .send()
+        .await?;
+    let status = response.status().as_u16();
+    let body = response.text().await.unwrap_or_default();
+    Ok(UploadImageResult { status, body })
+}
+
+/// Validates that the host's eTLD+1 is `grindr.com` or `grindr.mobi`.
+fn is_allowed_grindr_host(host: &str) -> bool {
+    let labels: Vec<&str> = host.split('.').collect();
+    if labels.iter().any(|l| l.is_empty()) {
+        return false;
+    }
+    let n = labels.len();
+    if n < 2 {
+        return false;
+    }
+    labels[n - 2] == "grindr" && matches!(labels[n - 1], "com" | "mobi")
+}
+
+/// Fetch an authenticated image URL and return it as a base64 data URI.
+#[tauri::command]
+pub async fn fetch_authed_bytes(
+    state: tauri::State<'_, AppState>,
+    url: String,
+) -> Result<String, AppError> {
+    let authorization = state
+        .client()?
+        .authorization_header()
+        .await
+        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+    {
+        let parsed = wreq::Url::parse(&url)
+            .map_err(|_| AppError::Http("Invalid URL".to_owned()))?;
+        if parsed.scheme() != "https" {
+            return Err(AppError::Http(
+                "Only https URLs are allowed for authed fetches".to_owned(),
+            ));
+        }
+        let host = parsed.host_str().unwrap_or("");
+        if !is_allowed_grindr_host(host) {
+            return Err(AppError::Http(format!(
+                "URL host '{}' is not an allowed Grindr domain",
+                host
+            )));
+        }
+    }
+    let fp = state.client()?.fingerprint().await;
+    let response = fp.http
+        .get(&url)
+        .header("Authorization", &authorization)
+        .send()
+        .await?;
+    if !response.status().is_success() {
+        return Err(AppError::Http(format!(
+            "Image fetch failed with status {}",
+            response.status()
+        )));
+    }
+    let content_type = response
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("image/jpeg")
+        .to_owned();
+    const MAX_BYTES: usize = 10 * 1024 * 1024;
+    let mut body: Vec<u8> = Vec::with_capacity(8192);
+    let mut stream = response.bytes_stream();
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.map_err(|e| AppError::Http(e.to_string()))?;
+        if body.len() + chunk.len() > MAX_BYTES {
+            return Err(AppError::Http("Response too large".to_owned()));
+        }
+        body.extend_from_slice(&chunk);
+    }
+    let b64 = STANDARD.encode(&body);
+    Ok(format!("data:{};base64,{}", content_type, b64))
 }
 
 #[cfg(test)]

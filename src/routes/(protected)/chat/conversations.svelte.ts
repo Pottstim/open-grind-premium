@@ -13,7 +13,7 @@ import {
 } from "$lib/ws.svelte";
 import type { Conversation } from "$lib/model/conversation";
 import type { ApiResponseMessage } from "$lib/model/message";
-import type { getConversation } from "../routes/(protected)/chat/[conversationId]/messages";
+import type { getConversation } from "./[conversationId]/messages";
 
 type ConversationProfile = Awaited<
 	ReturnType<typeof getConversation>

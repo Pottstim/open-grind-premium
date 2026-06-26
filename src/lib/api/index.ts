@@ -278,3 +278,32 @@ export function parseApiResponse<TSchema extends z.ZodType>(options: {
 }
 
 export { ApiError };
+
+// ── Image upload / authed fetch ──────────────────────────────────────────────
+
+export interface UploadImageResult {
+status: number;
+body: string;
+}
+
+/**
+ * Upload a base64-encoded image to the Grindr media endpoint.
+ * Returns the raw JSON body from the server (contains mediaId, mediaHash, url).
+ */
+export async function uploadImage(
+imageBase64: string,
+mimeType: string,
+): Promise<UploadImageResult> {
+return await invoke<UploadImageResult>("upload_image", {
+imageBase64,
+mimeType,
+});
+}
+
+/**
+ * Fetch an authenticated Grindr image URL and return it as a base64 data URI.
+ * Only allows https URLs on grindr.com / grindr.mobi domains.
+ */
+export async function fetchAuthedBytes(url: string): Promise<string> {
+return await invoke<string>("fetch_authed_bytes", { url });
+}

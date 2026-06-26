@@ -4,6 +4,7 @@ mod error;
 mod state;
 mod storage;
 
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, OnceLock};
 use tauri::Manager;
 use tokio::sync::{mpsc, Notify};
@@ -26,7 +27,13 @@ pub fn run() {
         builder = builder.plugin(devtools);
     }
 
+    #[tauri::command]
+    fn set_foreground(state: tauri::State<'_, AppState>, foreground: bool) {
+        state.is_foreground.store(foreground, Ordering::Relaxed);
+    }
+
     builder
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_geolocation::init())
@@ -37,6 +44,7 @@ pub fn run() {
             ws_tx,
             ws_rx: tokio::sync::Mutex::new(Some(ws_rx)),
             auth_notify,
+            is_foreground: AtomicBool::new(true),
         })
         .invoke_handler(tauri::generate_handler![
             api::auth::login,
@@ -48,6 +56,9 @@ pub fn run() {
             api::auth::logout,
             api::auth::auth_state,
             api::rest::request,
+            api::rest::upload_image,
+            api::rest::fetch_authed_bytes,
+            set_foreground,
             api::ws::ws_connect,
             api::ws::ws_send,
             api::client::rotate_api_params,

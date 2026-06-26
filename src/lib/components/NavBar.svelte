@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/state";
 	import ChatCircleIcon from "phosphor-svelte/lib/ChatCircleIcon";
+	import EyeIcon from "phosphor-svelte/lib/EyeIcon";
 	import DotsNineIcon from "phosphor-svelte/lib/DotsNineIcon";
 	import DropIcon from "phosphor-svelte/lib/DropIcon";
 	import FireIcon from "phosphor-svelte/lib/FireIcon";
@@ -67,6 +68,10 @@
 		>
 			<FireIcon weight="fill" />
 			Interest
+		</a>
+		<a href="/views" data-active={page.route.id === "/(protected)/(navbar)/views"}>
+			<EyeIcon weight="fill" />
+			Views
 		</a>
 		<a href="/chat" data-active={page.route.id === "/(protected)/chat"}>
 			<ChatCircleIcon weight="fill" />

@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { ChatIcon, StarIcon } from "phosphor-svelte";
+	import { env } from "$env/dynamic/public";
+	import { UserIcon } from "phosphor-svelte";
 
+	import { getDistanceUnit } from "$lib/app-data/distance-unit.svelte";
 	import { Badge } from "$lib/components/ui/badge";
-	import UserAvatar from "$lib/components/UserAvatar.svelte";
+	import { formatDistance } from "$lib/utils/distance";
 
 	let {
 		id,
@@ -11,8 +13,7 @@
 		distance = null,
 		medias = null,
 		unread = null,
-		isFavorite = false,
-		hadRecentChat = false,
+		onlineUntil = null,
 	}: {
 		id: number;
 		displayName?: string | null;
@@ -20,46 +21,55 @@
 		distance?: number | null;
 		medias?: { mediaHash: string }[] | null;
 		unread?: number | null;
-		isFavorite?: boolean;
-		hadRecentChat?: boolean;
+		onlineUntil?: number | null;
 	} = $props();
 
 	const profilePicture = $derived(medias?.[0]);
-
-	// API returns distance in metres; convert to miles for display.
-	const METRES_PER_MILE = 1609.344;
-	function formatDistance(metres: number): string {
-		const miles = metres / METRES_PER_MILE;
-		if (miles < 0.1) {
-			return `${Math.round(metres * 3.28084)} ft`;
-		} else if (miles < 10) {
-			return `${miles.toFixed(1)} mi`;
-		} else {
-			return `${Math.round(miles)} mi`;
-		}
-	}
+	const isOnline = $derived(onlineUntil != null && onlineUntil > Date.now());
 </script>
 
-<a href="/profile/{id}" class="aspect-square relative flex items-end">
-	<div class="absolute w-full h-full bg-stone-700">
-		<UserAvatar
-			mediaHash={profilePicture?.mediaHash ?? null}
-			class="size-full"
-			size="xl"
-		/>
+<a href="/profile/{id}" class="aspect-square relative flex items-end overflow-hidden group">
+	{#if isOnline}
+		<span class="absolute top-1.5 left-1.5 size-2.5 rounded-full bg-green-500 border-2 border-background z-10 shadow-sm"></span>
+	{/if}
+	<div class="absolute w-full h-full bg-muted">
+		{#if medias && profilePicture}
+			<img
+				src="https://cdns.grindr.com/images/thumb/320x320/{profilePicture.mediaHash}"
+				alt="Profile avatar"
+				class={[
+					"w-full h-full object-cover transition-transform duration-300 group-hover:scale-105",
+					{
+						"blur-2xl": env.PUBLIC_ENABLE_BLUR_EFFECTS,
+					},
+				]}
+				loading="lazy"
+				draggable="false"
+			/>
+		{:else}
+			<UserIcon
+				weight="fill"
+				color="var(--color-stone-400)"
+				class="size-3/4 top-1/2 left-1/2 -translate-1/2 absolute"
+			/>
+		{/if}
 	</div>
 	{#if distance}
 		<span
 			class="absolute top-1 right-1 border-transparent bg-transparent text-[11px] px-1 h-4 tracking-tight font-medium text-white/80 text-shadow-stroke"
 		>
-			{formatDistance(distance)}
+			{formatDistance(distance, getDistanceUnit())}
 		</span>
 	{/if}
-	<div class="w-full z-1 flex p-0.5 gap-0.5">
+	<!-- Bottom gradient for text legibility -->
+	{#if displayName !== null || age !== null || (unread !== null && unread > 0)}
+		<div class="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-0"></div>
+	{/if}
+	<div class="w-full z-1 flex p-1 gap-0.5">
 		{#if displayName !== null || age !== null}
 			<Badge
 				variant="outline"
-				class="gap-0 max-w-full bg-popover/20 backdrop-blur-2xl min-w-0 shrink"
+				class="gap-0 max-w-full bg-black/30 backdrop-blur-sm border-white/10 text-white min-w-0 shrink text-[11px] h-auto py-0.5"
 			>
 				{#if displayName !== null}
 					<span class="truncate block shrink font-semibold">
@@ -78,46 +88,18 @@
 		{/if}
 		{#if unread !== null && unread > 0}
 			<span
-				class="size-5 bg-primary inline-block rounded-full border border-black/20 shrink-0"
+				class="size-5 bg-primary inline-flex items-center justify-center text-[10px] font-bold rounded-full border border-black/20 shrink-0 text-primary-foreground"
 			>
 				{unread}
 			</span>
 		{/if}
-		{#if isFavorite || hadRecentChat}
-			<div
-				class="absolute top-2 inset-s-2 flex gap-1 items-center w-1/6 flex-col"
-			>
-				{#if isFavorite}
-					<div class="badge">
-						<StarIcon
-							weight="fill"
-							class="text-yellow-500 icon size-4/6 m-auto"
-						/>
-					</div>
-				{/if}
-				{#if hadRecentChat}
-					<div class="badge">
-						<ChatIcon
-							weight="fill"
-							class="text-sky-400 size-3/5 m-auto -translate-y-px"
-						/>
-					</div>
-				{/if}
-			</div>
-		{/if}
 	</div>
 </a>
 
-<style lang="postcss">
-	@reference "$layout";
-
+<style>
 	.text-shadow-stroke {
 		text-shadow:
 			0px 1px 1px rgba(0, 0, 0, 0.2),
 			0px 0px 2px rgba(0, 0, 0, 0.2);
-	}
-
-	.badge {
-		@apply flex bg-popover/40 rounded-full backdrop-blur-2xl w-full h-auto aspect-square border border-white/10;
 	}
 </style>

@@ -1,3 +1,4 @@
+use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -5,8 +6,9 @@ use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager};
+use tauri_plugin_notification::NotificationExt;
 use tokio::sync::Notify;
-use tokio::time::sleep;
+use tokio::time::{sleep, timeout, interval};
 use wreq::websocket::{Message, WebSocket};
 
 use crate::error::AppError;
@@ -15,6 +17,23 @@ use crate::state::AppState;
 use super::headers::GrindrHeaders;
 
 const WS_URL: &str = "wss://grindr.mobi/v1/ws";
+const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(45);
+/// Cap the WS handshake. Without this, a half-open connection on Android Doze
+/// wedges the reconnect loop forever.
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
+
+/// Outcome of `run_message_loop`.
+/// Distinguishes a clean shutdown (command channel closed) from a
+/// transient disconnect so the outer loop knows whether to reconnect or exit.
+#[derive(Debug)]
+enum WsOutcome {
+    /// The command-sender side was dropped — no point reconnecting.
+    ChannelClosed,
+    /// Server sent a close frame or the connection dropped — should reconnect.
+    Disconnected(AppError),
+    /// Reconnect was explicitly requested (account switch / login).
+    Reconnect,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WsCommand {
@@ -24,10 +43,6 @@ pub struct WsCommand {
 }
 
 /// Dedicated notify for triggering a WS reconnect on account switch.
-/// Separated from `AppState.auth_notify` to avoid a race between the
-/// outer listen loop and the per-connection reconnect watcher — both
-/// waiting on the same `Notify` means `notify_one` only wakes one of them,
-/// and the wrong one can win.
 static WS_RECONNECT: std::sync::OnceLock<Arc<Notify>> = std::sync::OnceLock::new();
 
 fn ws_reconnect_notify() -> &'static Arc<Notify> {
@@ -37,8 +52,6 @@ fn ws_reconnect_notify() -> &'static Arc<Notify> {
 /// Called by account-switch / remove / logout commands to force the WS
 /// to reconnect with the new session.
 pub fn request_ws_reconnect() {
-    // notify_waiters() ensures both the outer loop and any per-connection
-    // watcher receive the signal regardless of which is currently waiting.
     ws_reconnect_notify().notify_waiters();
 }
 
@@ -52,40 +65,35 @@ async fn run_ws_loop(app: AppHandle) {
     let state = app.state::<AppState>();
     let mut backoff = Duration::from_secs(1);
 
-    // Dedicated reconnect signal for the outer loop.
-    // The per-connection watcher is the only producer; it signals this
-    // whenever auth state changes, so the outer loop always reconnects
-    // with fresh credentials — no race with the inner watcher.
     let outer_reconnect = Arc::new(Notify::new());
-
-    // On first start, kick the outer loop immediately.
     outer_reconnect.notify_one();
 
     loop {
         outer_reconnect.notified().await;
 
         match connect_and_run(&app, &outer_reconnect).await {
-            Ok(()) => {
-                backoff = Duration::from_secs(1);
+            WsOutcome::ChannelClosed => {
+                break;
             }
-            Err(e @ (AppError::NotInitialized | AppError::Auth(_))) => {
+            WsOutcome::Reconnect => {
+                backoff = Duration::from_secs(1);
+                outer_reconnect.notify_one();
+            }
+            WsOutcome::Disconnected(e @ (AppError::NotInitialized | AppError::Auth(_))) => {
                 eprintln!("[ws] auth error, waiting for login: {e}");
                 app.emit("ws:disconnected", ()).ok();
-                // Wait for any auth event before retrying.
                 tokio::select! {
                     _ = state.auth_notify.notified() => {}
                     _ = ws_reconnect_notify().notified() => {}
                 };
-                // Kick the outer loop again.
                 outer_reconnect.notify_one();
                 backoff = Duration::from_secs(1);
             }
-            Err(e) => {
+            WsOutcome::Disconnected(e) => {
                 eprintln!("[ws] error: {e}");
                 app.emit("ws:disconnected", ()).ok();
                 sleep(backoff).await;
                 backoff = (backoff * 2).min(Duration::from_secs(30));
-                // Retry after backoff.
                 outer_reconnect.notify_one();
             }
         }
@@ -95,58 +103,71 @@ async fn run_ws_loop(app: AppHandle) {
 async fn connect_and_run(
     app: &AppHandle,
     outer_reconnect: &Arc<Notify>,
-) -> Result<(), AppError> {
+) -> WsOutcome {
     let state = app.state::<AppState>();
-    let client = state.client()?;
+    let client = match state.client() {
+        Ok(c) => c,
+        Err(e) => return WsOutcome::Disconnected(e),
+    };
 
-    let authorization = client
-        .authorization_header()
-        .await
-        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+    let authorization = match client.authorization_header().await {
+        Some(h) => h,
+        None => return WsOutcome::Disconnected(AppError::Auth("Not logged in".to_owned())),
+    };
 
-    let session_id = client
+    let session_id = match client.session.read().await.as_ref().map(|s| s.session_id.clone()) {
+        Some(id) => id,
+        None => return WsOutcome::Disconnected(AppError::Auth("Not logged in".to_owned())),
+    };
+
+    let our_profile_id = client
         .session
         .read()
         .await
         .as_ref()
-        .map(|s| s.session_id.clone())
-        .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+        .map(|s| s.profile_id.clone())
+        .unwrap_or_default();
 
     let fp = client.fingerprint().await;
-    let headers = GrindrHeaders::build(
+    let headers = match GrindrHeaders::build(
         &fp.device,
         &fp.user_agent,
         Some(&authorization),
         Some("[PREMIUM,UNLIMITED]"),
-    )?;
+    ) {
+        Ok(h) => h,
+        Err(e) => return WsOutcome::Disconnected(e),
+    };
 
     let mut builder = fp.ws_http.websocket(WS_URL);
     for (name, value) in &headers.items {
         builder = builder.header(name.clone(), value.clone());
     }
 
-    let response = builder
-        .send()
-        .await
-        .map_err(|e| AppError::Http(format!("WS connect failed: {e}")))?;
+    let ws_future = builder.send();
+    let response = match timeout(CONNECT_TIMEOUT, ws_future).await {
+        Ok(Ok(r)) => r,
+        Ok(Err(e)) => return WsOutcome::Disconnected(AppError::Http(format!("WS connect failed: {e}"))),
+        Err(_) => return WsOutcome::Disconnected(AppError::Http(format!(
+            "WS connect timed out after {}s",
+            CONNECT_TIMEOUT.as_secs()
+        ))),
+    };
 
-    let mut ws = response
-        .into_websocket()
-        .await
-        .map_err(|e| AppError::Http(format!("WS upgrade failed: {e}")))?;
+    let mut ws = match response.into_websocket().await {
+        Ok(w) => w,
+        Err(e) => return WsOutcome::Disconnected(AppError::Http(format!("WS upgrade failed: {e}"))),
+    };
 
     app.emit("ws:connected", ()).ok();
 
-    let mut cmd_rx = state
-        .ws_rx
-        .lock()
-        .await
-        .take()
-        .ok_or_else(|| AppError::Http("WS already running".to_owned()))?;
+    let mut cmd_rx = match state.ws_rx.lock().await.take() {
+        Some(rx) => rx,
+        None => return WsOutcome::Disconnected(AppError::Http("WS already running".to_owned())),
+    };
 
     // Per-connection reconnect signal (inner loop exit trigger).
     let reconnect = Arc::new(Notify::new());
-
     let auth_notify = Arc::clone(&state.auth_notify);
     let ws_reconn = Arc::clone(ws_reconnect_notify());
     let outer_reconn = Arc::clone(outer_reconnect);
@@ -156,27 +177,36 @@ async fn connect_and_run(
             _ = auth_notify.notified() => {}
             _ = ws_reconn.notified() => {}
         };
-        // Exit the per-connection message loop.
         reconnect_watcher.notify_waiters();
-        // Tell the outer loop to reconnect with new credentials.
         outer_reconn.notify_waiters();
     });
 
-    let result =
-        run_message_loop(&mut ws, &mut cmd_rx, &session_id, &reconnect, app).await;
+    let outcome = run_message_loop(
+        &mut ws,
+        &mut cmd_rx,
+        &session_id,
+        &our_profile_id,
+        &reconnect,
+        app,
+    )
+    .await;
 
     *state.ws_rx.lock().await = Some(cmd_rx);
-
-    result
+    outcome
 }
 
 async fn run_message_loop(
     ws: &mut WebSocket,
     cmd_rx: &mut tokio::sync::mpsc::Receiver<WsCommand>,
     session_id: &str,
+    our_profile_id: &str,
     reconnect: &Arc<Notify>,
     app: &AppHandle,
-) -> Result<(), AppError> {
+) -> WsOutcome {
+    let mut heartbeat = interval(HEARTBEAT_INTERVAL);
+    heartbeat.tick().await; // consume the immediate first tick
+    let mut waiting_for_pong = false;
+
     loop {
         tokio::select! {
             msg = ws.next() => match msg {
@@ -185,20 +215,47 @@ async fn run_message_loop(
                         if let Some(event_type) = val["type"].as_str() {
                             let safe_type = event_type.replace('.', "_");
                             app.emit(&format!("grindr:{safe_type}"), &val).ok();
+
+                            // Background push notifications — only when app is not in foreground
+                            // and the event was sent by someone else.
+                            if !app
+                                .state::<AppState>()
+                                .is_foreground
+                                .load(Ordering::Relaxed)
+                            {
+                                let sender_is_self = match &val["payload"]["senderId"] {
+                                    Value::String(s) => s.as_str() == our_profile_id,
+                                    Value::Number(n) => n.to_string() == our_profile_id,
+                                    _ => false,
+                                };
+                                if !sender_is_self {
+                                    match event_type {
+                                        "chat.v1.message_sent" => maybe_notify_message(app, &val),
+                                        "tap.v1.tap_sent" => maybe_notify_tap(app, &val),
+                                        _ => {}
+                                    }
+                                }
+                            }
                         }
                     }
                 }
                 Some(Ok(Message::Ping(data))) => {
-                    ws.send(Message::Pong(data)).await
-                        .map_err(|e| AppError::Http(e.to_string()))?;
+                    if let Err(e) = ws.send(Message::Pong(data)).await {
+                        return WsOutcome::Disconnected(AppError::Http(e.to_string()));
+                    }
+                }
+                Some(Ok(Message::Pong(_))) => {
+                    waiting_for_pong = false;
                 }
                 Some(Ok(Message::Close(_))) | None => {
                     app.emit("ws:disconnected", ()).ok();
-                    return Err(AppError::Http("WS connection closed by server".to_owned()));
+                    return WsOutcome::Disconnected(AppError::Http(
+                        "WS connection closed by server".to_owned(),
+                    ));
                 }
                 Some(Err(e)) => {
                     app.emit("ws:disconnected", ()).ok();
-                    return Err(AppError::Http(e.to_string()));
+                    return WsOutcome::Disconnected(AppError::Http(e.to_string()));
                 }
                 Some(Ok(_)) => {}
             },
@@ -211,19 +268,85 @@ async fn run_message_loop(
                         "token": session_id,
                         "payload": cmd.payload,
                     });
-                    ws.send(Message::text(json.to_string()))
-                        .await
-                        .map_err(|e| AppError::Http(e.to_string()))?;
+                    if let Err(e) = ws.send(Message::text(json.to_string())).await {
+                        return WsOutcome::Disconnected(AppError::Http(e.to_string()));
+                    }
                 }
-                None => return Ok(()),
+                None => return WsOutcome::ChannelClosed,
             },
 
-            // Reconnect requested — exit cleanly so outer loop reconnects.
             _ = reconnect.notified() => {
                 eprintln!("[ws] reconnect requested, closing current connection");
-                return Ok(());
+                return WsOutcome::Reconnect;
+            }
+
+            _ = heartbeat.tick() => {
+                if waiting_for_pong {
+                    return WsOutcome::Disconnected(AppError::Http(
+                        "WS heartbeat timeout — no pong received".to_owned(),
+                    ));
+                }
+                if let Err(e) = ws.send(Message::Ping(vec![].into())).await {
+                    return WsOutcome::Disconnected(AppError::Http(e.to_string()));
+                }
+                waiting_for_pong = true;
             }
         }
+    }
+}
+
+/// Build a short, human-readable preview for a `chat.v1.message_sent` payload.
+fn message_preview(val: &Value) -> String {
+    match val["payload"]["type"].as_str() {
+        Some("Text") => val["payload"]["body"]["text"]
+            .as_str()
+            .unwrap_or("New message")
+            .chars()
+            .take(80)
+            .collect::<String>(),
+        Some("Image") | Some("ExpiringImage") => "Sent you a photo".to_owned(),
+        Some("Album") | Some("ExpiringAlbum") | Some("ExpiringAlbumV2") => {
+            "Shared an album".to_owned()
+        }
+        Some("Audio") => "Sent you a voice message".to_owned(),
+        Some("Video") | Some("PrivateVideo") | Some("NonExpiringVideo") => {
+            "Sent you a video".to_owned()
+        }
+        Some("Gaymoji") => "Sent you a Gaymoji".to_owned(),
+        Some("Giphy") => "Sent you a GIF".to_owned(),
+        Some("Location") => "Shared a location".to_owned(),
+        _ => "New message".to_owned(),
+    }
+}
+
+fn maybe_notify_message(app: &AppHandle, val: &Value) {
+    let body = message_preview(val);
+    let conversation_id = val["payload"]["conversationId"].as_str().unwrap_or("");
+    post_notification(app, "Open Grind", &body, conversation_id);
+}
+
+fn maybe_notify_tap(app: &AppHandle, val: &Value) {
+    let title = val["payload"]["senderDisplayName"]
+        .as_str()
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Open Grind");
+    post_notification(app, title, "sent you a tap", "");
+}
+
+fn post_notification(app: &AppHandle, title: &str, body: &str, conversation_id: &str) {
+    app.notification()
+        .builder()
+        .title(title)
+        .body(body)
+        .channel_id("open_grind_messages")
+        .show()
+        .ok();
+    if !conversation_id.is_empty() {
+        app.emit(
+            "notification:posted",
+            serde_json::json!({ "conversationId": conversation_id }),
+        )
+        .ok();
     }
 }
 
@@ -235,7 +358,6 @@ pub async fn ws_connect(state: tauri::State<'_, AppState>) -> Result<(), AppErro
     };
 
     if has_session {
-        // Signal both notifies so the watcher wakes and kicks the outer loop.
         state.auth_notify.notify_one();
         ws_reconnect_notify().notify_one();
     }
