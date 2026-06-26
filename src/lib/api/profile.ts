@@ -31,6 +31,10 @@ export async function getProfile(profileId: number) {
 	return profile;
 }
 
+export function clearProfileCache(profileId: number) {
+	profilesCache.delete(profileId);
+}
+
 const getProfilesResponseSchema = z.object({
 	profiles: z.array(
 		z.object({
