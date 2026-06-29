@@ -4,12 +4,20 @@ mod error;
 mod state;
 mod storage;
 
+use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, OnceLock};
 use tauri::Manager;
 use tokio::sync::{mpsc, Notify};
 
 use crate::state::AppState;
 use api::client::GrindrClient;
+
+/// Called by the frontend when the app enters foreground or background.
+/// Gates push notifications so they only fire when the user isn't actively using the app.
+#[tauri::command]
+fn set_foreground(state: tauri::State<'_, AppState>, foreground: bool) {
+    state.is_foreground.store(foreground, std::sync::atomic::Ordering::Relaxed);
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -32,11 +40,13 @@ pub fn run() {
         .plugin(tauri_plugin_geolocation::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
         .manage(AppState {
             client: OnceLock::new(),
             ws_tx,
             ws_rx: tokio::sync::Mutex::new(Some(ws_rx)),
             auth_notify,
+            is_foreground: AtomicBool::new(true),
         })
         .invoke_handler(tauri::generate_handler![
             api::auth::login,
@@ -51,6 +61,9 @@ pub fn run() {
             api::ws::ws_connect,
             api::ws::ws_send,
             api::client::rotate_api_params,
+            api::rest::upload_image,
+            api::rest::fetch_authed_bytes,
+            set_foreground,
         ])
         .setup(|app| {
             #[cfg(all(target_os = "macos", not(feature = "keychain")))]

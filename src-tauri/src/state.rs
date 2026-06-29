@@ -1,3 +1,4 @@
+use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, OnceLock};
 use tokio::sync::{mpsc, Notify};
 
@@ -10,6 +11,9 @@ pub struct AppState {
     pub ws_tx: mpsc::Sender<WsCommand>,
     pub ws_rx: tokio::sync::Mutex<Option<mpsc::Receiver<WsCommand>>>,
     pub auth_notify: Arc<Notify>,
+    /// true when the WebView is visible/active; false when app is backgrounded.
+    /// Used by the WS loop to decide whether to post system notifications.
+    pub is_foreground: AtomicBool,
 }
 
 impl AppState {

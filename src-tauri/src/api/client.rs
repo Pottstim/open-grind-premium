@@ -44,7 +44,7 @@ pub struct RotateResult {
     pub l_device_info: String,
 }
 
-fn build_api_client() -> Result<Client, AppError> {
+pub(super) fn build_api_client() -> Result<Client, AppError> {
     Client::builder()
         .emulation(grindr_emulation())
         .gzip(true)
