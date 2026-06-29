@@ -1,5 +1,6 @@
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use serde::de::DeserializeOwned;
+use futures_util::future::{BoxFuture, FutureExt};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use wreq::header::{HeaderName, HeaderValue};
@@ -63,90 +64,110 @@ impl GrindrClient {
         response.json::<TResp>().await.map_err(Into::into)
     }
 
-    async fn request_raw(
-        &self,
+    pub async fn request_raw(
+        self: Arc<Self>,
         method: Method,
         path: &str,
         body: Option<Vec<u8>>,
     ) -> Result<RawResponse, AppError> {
-        let authorization = self
-            .authorization_header()
-            .await
-            .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
+        Self::request_raw_internal(self.clone(), method, path.to_string(), body, true).await
+    }
 
-        let fp = self.fingerprint().await;
-
-        let headers = GrindrHeaders::build(
-            &fp.device,
-            &fp.user_agent,
-            Some(&authorization),
-            Some("[PREMIUM,UNLIMITED]"),
-        )?;
-
-        #[cfg(debug_assertions)]
-        {
-            println!("=== OUTGOING REQUEST ===");
-            println!("Method+Path: {method} {path}");
-            for (name, value) in &headers.items {
-                println!("  {name}: {}", value.to_str().unwrap_or("<binary>"));
+    pub(super) fn request_raw_internal(
+        client: Arc<GrindrClient>,
+        method: Method,
+        path: String,
+        body: Option<Vec<u8>>,
+        check_refresh: bool,
+    ) -> BoxFuture<'static, Result<RawResponse, AppError>> {
+        let method = method.clone();
+        async move {
+            if check_refresh && path != "/v8/sessions" {
+                let _ = client.refresh_token().await;
             }
-            println!("========================");
-        }
 
-        let mut request = apply_headers(
-            fp.http.request(method.clone(), format!("{BASE_URL}{path}")),
-            &headers.items,
-        );
+            let authorization = client
+                .authorization_header()
+                .await
+                .ok_or_else(|| AppError::Auth("Not logged in".to_owned()))?;
 
-        if let Some(body) = body {
-            let json_body: serde_json::Value = rmp_serde::from_slice(&body)
-                .map_err(|e| AppError::Http(format!("Failed to decode msgpack body: {e}")))?;
-            request = request.json(&json_body);
-        }
+            let fp = client.fingerprint().await;
 
-        let response = request.send().await?;
-        let status = response.status().as_u16();
-        let body = response.bytes().await?.to_vec();
-
-        // Auto-rotate fingerprint on 401/403 (but not on login/session paths,
-        // where these statuses are expected and not a detection signal).
-        let is_auth_path = path.starts_with("/v8/sessions");
-        if !is_auth_path && (status == 401 || status == 403) {
-            eprintln!("[premium] received HTTP {status} on {path} — rotating fingerprint and retrying once");
-            self.rotate_fingerprint().await;
-            // Rebuild request with fresh fingerprint.
-            let fp = self.fingerprint().await;
             let headers = GrindrHeaders::build(
                 &fp.device,
                 &fp.user_agent,
                 Some(&authorization),
                 Some("[PREMIUM,UNLIMITED]"),
             )?;
-            let mut retry_request = apply_headers(
+
+            #[cfg(debug_assertions)]
+            {
+                println!("=== OUTGOING REQUEST ===");
+                println!("Method+Path: {method} {path}");
+                for (name, value) in &headers.items {
+                    println!("  {name}: {}", value.to_str().unwrap_or("<binary>"));
+                }
+                println!("========================");
+            }
+
+            let request = apply_headers(
                 fp.http.request(method.clone(), format!("{BASE_URL}{path}")),
                 &headers.items,
             );
-            // Try to decode and attach the msgpack body for the retry.
-            if let Ok(json_body) = rmp_serde::from_slice::<serde_json::Value>(&body) {
-                retry_request = retry_request.json(&json_body);
-            }
-            match retry_request.send().await {
-                Ok(retry_resp) => {
-                    let retry_status = retry_resp.status().as_u16();
-                    let retry_body = retry_resp.bytes().await.unwrap_or_default().to_vec();
-                    let (status, body) = maybe_rewrite_response(retry_status, path, retry_body);
-                    return Ok(RawResponse { status, body });
-                }
-                Err(e) => {
-                    eprintln!("[premium] retry after fingerprint rotation also failed: {e}");
-                    // Fall through to the original response handling below.
-                }
-            }
-        }
+            let mut request = request;
 
-        let (status, body) = maybe_rewrite_response(status, path, body);
+            let body_bytes = if let Some(ref b) = body {
+                let json_body: serde_json::Value = rmp_serde::from_slice(b)
+                    .map_err(|e| AppError::Http(format!("Failed to decode msgpack body: {e}")))?;
+                request = request.json(&json_body);
+                Some(json_body)
+            } else {
+                None
+            };
 
-        Ok(RawResponse { status, body })
+            let response = request.send().await?;
+            let status = response.status().as_u16();
+            let body_out = response.bytes().await?.to_vec();
+
+            // Auto-rotate fingerprint on 401/403 (but not on login/session paths,
+            // where these statuses are expected and not a detection signal).
+            let is_auth_path = path.starts_with("/v8/sessions");
+            if !is_auth_path && (status == 401 || status == 403) {
+                eprintln!("[premium] received HTTP {status} on {path} — rotating fingerprint and retrying once");
+                client.rotate_fingerprint().await;
+                // Rebuild request with fresh fingerprint.
+                let fp = client.fingerprint().await;
+                let headers = GrindrHeaders::build(
+                    &fp.device,
+                    &fp.user_agent,
+                    Some(&authorization),
+                    Some("[PREMIUM,UNLIMITED]"),
+                )?;
+                let mut retry_request = apply_headers(
+                    fp.http.request(method, format!("{BASE_URL}{path}")),
+                    &headers.items,
+                );
+                if let Some(json_body) = body_bytes {
+                    retry_request = retry_request.json(&json_body);
+                }
+                match retry_request.send().await {
+                    Ok(retry_resp) => {
+                        let retry_status = retry_resp.status().as_u16();
+                        let retry_body = retry_resp.bytes().await.unwrap_or_default().to_vec();
+                        let (status, body) = maybe_rewrite_response(retry_status, &path, retry_body);
+                        return Ok(RawResponse { status, body });
+                    }
+                    Err(e) => {
+                        eprintln!("[premium] retry after fingerprint rotation also failed: {e}");
+                        // Fall through to the original response handling below.
+                    }
+                }
+            }
+            let body = body_out;
+
+            let (status, body) = maybe_rewrite_response(status, &path, body);
+            Ok(RawResponse { status, body })
+        }.boxed()
     }
 
     /// Generate a fresh device fingerprint and replace the current one.
@@ -339,8 +360,8 @@ pub async fn request(
         message: format!("Invalid method: {}", payload.method),
     })?;
 
-    let raw = state
-        .client()?
+    let client = state.client()?.clone();
+    let raw = client
         .request_raw(method, &payload.path, payload.body)
         .await?;
 

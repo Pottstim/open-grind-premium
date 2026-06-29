@@ -7,7 +7,7 @@ use crate::api::ws::WsCommand;
 use crate::error::AppError;
 
 pub struct AppState {
-    pub client: OnceLock<GrindrClient>,
+    pub client: OnceLock<Arc<GrindrClient>>,
     pub ws_tx: mpsc::Sender<WsCommand>,
     pub ws_rx: tokio::sync::Mutex<Option<mpsc::Receiver<WsCommand>>>,
     pub auth_notify: Arc<Notify>,
@@ -17,7 +17,7 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn client(&self) -> Result<&GrindrClient, AppError> {
-        self.client.get().ok_or(AppError::NotInitialized)
+    pub fn client(&self) -> Result<Arc<GrindrClient>, AppError> {
+        self.client.get().cloned().ok_or(AppError::NotInitialized)
     }
 }

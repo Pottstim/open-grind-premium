@@ -71,7 +71,7 @@ pub fn run() {
 
             storage::init_keyring();
 
-            if let Ok(client) = GrindrClient::new() {
+            if let Ok(client) = GrindrClient::new().map(Arc::new) {
                 let _ = app.state::<AppState>().client.set(client);
             }
 
@@ -81,8 +81,8 @@ pub fn run() {
                 tauri::async_runtime::spawn(async move {
                     let state = handle.state::<AppState>();
                     if let Ok(client) = state.client() {
-                        client.reload_session().await;
-                        if client.authorization_header().await.is_some() {
+                        client.clone().reload_session().await;
+                        if client.clone().authorization_header().await.is_some() {
                             state.auth_notify.notify_one();
                         }
                     }
