@@ -1,6 +1,6 @@
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, OnceLock};
-use tokio::sync::{mpsc, Notify};
+use tokio::sync::{mpsc, Mutex, Notify};
 
 use crate::api::client::GrindrClient;
 use crate::api::ws::WsCommand;
@@ -14,6 +14,8 @@ pub struct AppState {
     /// true when the WebView is visible/active; false when app is backgrounded.
     /// Used by the WS loop to decide whether to post system notifications.
     pub is_foreground: AtomicBool,
+    /// WS outbound message buffer — queues messages during reconnect.
+    pub ws_buffer: Mutex<Vec<WsCommand>>,
 }
 
 impl AppState {

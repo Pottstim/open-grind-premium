@@ -299,6 +299,23 @@ impl GrindrClient {
     }
 
     pub async fn refresh_token(&self) -> Result<LoginResult, AppError> {
+        let _guard = self.refresh_lock.lock().await;
+
+        // Re-check — another thread may have already refreshed while we waited
+        // for the lock.
+        {
+            let current = self.session.read().await;
+            if let Some(ref s) = *current {
+                let still_expired = s.expires_at
+                    < (chrono::Utc::now().timestamp() as u64 + 60);
+                if !still_expired {
+                    return Ok(LoginResult {
+                        profile_id: s.profile_id.clone(),
+                    });
+                }
+            }
+        }
+
         let current = self.session.read().await;
         let session = current
             .as_ref()

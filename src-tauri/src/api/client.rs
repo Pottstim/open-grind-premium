@@ -34,6 +34,9 @@ pub struct GrindrClient {
     pub(super) fingerprint: RwLock<Arc<Fingerprint>>,
     pub(super) session: RwLock<Option<Session>>,
     pub(super) refresh_lock: Mutex<()>,
+    /// Rotation circuit-breaker state.
+    pub(super) last_rotation: AtomicI64,
+    pub(super) consecutive_rotations: AtomicU32,
 }
 
 #[derive(Debug, Serialize)]
@@ -108,6 +111,8 @@ impl GrindrClient {
             })),
             session: RwLock::new(session),
             refresh_lock: Mutex::new(()),
+            last_rotation: AtomicI64::new(0),
+            consecutive_rotations: AtomicU32::new(0),
         })
     }
 
@@ -173,3 +178,5 @@ pub async fn rotate_api_params(
 pub fn probe_emulation() -> wreq_util::Emulation {
     grindr_emulation()
 }
+
+use std::sync::atomic::{AtomicI64, AtomicU32, Ordering};

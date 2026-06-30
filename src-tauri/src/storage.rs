@@ -1,4 +1,3 @@
-#[cfg(all(target_os = "macos", not(feature = "keychain")))]
 mod file_store {
     use keyring_core::api::{CredentialApi, CredentialPersistence, CredentialStoreApi};
     use keyring_core::{Credential, CredentialStore, Entry, Error, Result};
@@ -22,6 +21,7 @@ mod file_store {
 
     impl CredentialApi for FileCredential {
         fn set_secret(&self, secret: &[u8]) -> Result<()> {
+            #[cfg(unix)]
             use std::os::unix::fs::PermissionsExt;
             let path = credential_path(&self.base, &self.service, &self.user);
             let dir = path.parent().ok_or_else(|| {
@@ -31,11 +31,15 @@ mod file_store {
                 )))
             })?;
             fs::create_dir_all(dir).map_err(|e| Error::PlatformFailure(Box::new(e)))?;
+            #[cfg(unix)]
             fs::set_permissions(dir, fs::Permissions::from_mode(0o700))
                 .map_err(|e| Error::PlatformFailure(Box::new(e)))?;
             fs::write(&path, secret).map_err(|e| Error::PlatformFailure(Box::new(e)))?;
+            #[cfg(unix)]
             fs::set_permissions(&path, fs::Permissions::from_mode(0o600))
-                .map_err(|e| Error::PlatformFailure(Box::new(e)))
+                .map_err(|e| Error::PlatformFailure(Box::new(e)))?;
+            #[cfg(not(unix))]
+            Ok(())
         }
 
         fn get_secret(&self) -> Result<Vec<u8>> {
@@ -107,9 +111,9 @@ mod file_store {
     }
 
     pub fn init(base: PathBuf) {
-        use std::os::unix::fs::PermissionsExt;
         let creds_dir = base.join("credentials");
         if let Ok(()) = fs::create_dir_all(&creds_dir) {
+            #[cfg(unix)]
             let _ = fs::set_permissions(&creds_dir, fs::Permissions::from_mode(0o700));
         }
         let store = Arc::new(FileStore { base }) as Arc<CredentialStore>;
@@ -117,12 +121,7 @@ mod file_store {
     }
 }
 
-#[cfg(all(target_os = "macos", not(feature = "keychain")))]
-pub fn init_file_store(base: std::path::PathBuf) {
-    file_store::init(base);
-}
-
-pub fn init_keyring() {
+pub fn init_keyring(base: std::path::PathBuf) {
     #[cfg(target_os = "ios")]
     {
         if let Ok(store) = apple_native_keyring_store::protected::Store::new() {
@@ -173,6 +172,7 @@ pub fn init_keyring() {
         }
     }
 
-    // Unsupported platform — keyring operations will fail gracefully at runtime
-    // rather than panicking during initialization.
+    // P2 #8: Fall back to file-based store if no native keyring works.
+    eprintln!("[storage] no native keyring available — falling back to file store at {:?}", base);
+    file_store::init(base);
 }

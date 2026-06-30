@@ -47,6 +47,7 @@ pub fn run() {
             ws_rx: tokio::sync::Mutex::new(Some(ws_rx)),
             auth_notify,
             is_foreground: AtomicBool::new(true),
+            ws_buffer: tokio::sync::Mutex::new(Vec::with_capacity(64)),
         })
         .invoke_handler(tauri::generate_handler![
             api::auth::login,
@@ -66,10 +67,10 @@ pub fn run() {
             set_foreground,
         ])
         .setup(|app| {
-            #[cfg(all(target_os = "macos", not(feature = "keychain")))]
-            storage::init_file_store(app.path().app_data_dir()?);
+            let app_dir = app.path().app_data_dir()?;
+            std::fs::create_dir_all(&app_dir).ok();
 
-            storage::init_keyring();
+            storage::init_keyring(app_dir);
 
             if let Ok(client) = GrindrClient::new() {
                 let _ = app.state::<AppState>().client.set(client);

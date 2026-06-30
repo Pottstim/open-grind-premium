@@ -38,11 +38,16 @@ enum WsOutcome {
     Reconnect,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct WsCommand {
     pub r#type: String,
     pub ref_id: String,
     pub payload: Value,
+}
+
+impl WsCommand {
+    /// Max buffer size before oldest messages are dropped.
+    pub const BUFFER_CAPACITY: usize = 64;
 }
 
 /// Dedicated notify for triggering a WS reconnect on account switch.
@@ -155,7 +160,7 @@ async fn connect_and_run(
         &fp.device,
         &fp.user_agent,
         Some(&authorization),
-        Some("[PREMIUM,UNLIMITED]"),
+        None,
     ) {
         Ok(h) => h,
         Err(e) => return WsOutcome::Disconnected(e),
@@ -186,6 +191,21 @@ async fn connect_and_run(
     };
 
     app.emit("ws:connected", ()).ok();
+
+    // P1 #6: Flush any buffered outbound messages into the WS send channel.
+    {
+        let mut buf = app.state::<AppState>().ws_buffer.lock().await;
+        if !buf.is_empty() {
+            eprintln!("[ws] flushing {} buffered messages", buf.len());
+        }
+        let tx = &app.state::<AppState>().ws_tx;
+        for cmd in buf.drain(..) {
+            if let Err(e) = tx.try_send(cmd) {
+                eprintln!("[ws] buffer flush: channel full ({e}), dropping remainder");
+                break;
+            }
+        }
+    }
 
     let mut cmd_rx = match state.ws_rx.lock().await.take() {
         Some(rx) => rx,
@@ -393,9 +413,17 @@ pub async fn ws_send(
         return Err(AppError::Auth("Not logged in".to_owned()));
     }
 
-    state
-        .ws_tx
-        .send(command)
-        .await
-        .map_err(|_| AppError::Http("WS not connected".to_owned()))
+    // Try to send directly. If the WS is not connected, buffer the message.
+    if state.ws_tx.try_send(command.clone()).is_err() {
+        // P1 #6: Buffer outbound messages during reconnect.
+        let mut buf = state.ws_buffer.lock().await;
+        if buf.len() < WsCommand::BUFFER_CAPACITY {
+            buf.push(command);
+        } else {
+            // Buffer full — drop the oldest to make room.
+            buf.remove(0);
+            buf.push(command);
+        }
+    }
+    Ok(())
 }

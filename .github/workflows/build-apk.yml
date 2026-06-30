@@ -6,7 +6,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Check
+        run: cargo check --lib
+
+      - name: Test
+        run: cargo test --lib
+
+      - name: Clippy
+        run: cargo clippy --lib -- -D warnings
+
   build-android:
+    needs: check
     runs-on: ubuntu-latest
     permissions:
       contents: write

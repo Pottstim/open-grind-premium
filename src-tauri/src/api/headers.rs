@@ -334,12 +334,316 @@ const DEVICE_PROFILES: &[DeviceProfile] = &[
         total_ram: "12017676288",
         min_android: 13,
     },
+    // ----- Expanded device profiles (real-world global market) -----
+    // Realme
+    DeviceProfile {
+        manufacturer: "Realme",
+        device_model: "RMX3700",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Realme",
+        device_model: "RMX3851",
+        screen_resolution: "2412x1080",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "Realme",
+        device_model: "RMX3760",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Realme",
+        device_model: "RMX3615",
+        screen_resolution: "1600x720",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Realme",
+        device_model: "RMX3781",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 14,
+    },
+    // Oppo
+    DeviceProfile {
+        manufacturer: "OPPO",
+        device_model: "CPH2525",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "OPPO",
+        device_model: "CPH2487",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "OPPO",
+        device_model: "CPH2551",
+        screen_resolution: "2772x1240",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "OPPO",
+        device_model: "CPH2591",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "OPPO",
+        device_model: "CPH2465",
+        screen_resolution: "1600x720",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    // Vivo
+    DeviceProfile {
+        manufacturer: "vivo",
+        device_model: "V2330",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "vivo",
+        device_model: "V2309",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "vivo",
+        device_model: "V2312",
+        screen_resolution: "2400x1080",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "vivo",
+        device_model: "V2240",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "vivo",
+        device_model: "V2341",
+        screen_resolution: "2800x1260",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    // Tecno / Infinix
+    DeviceProfile {
+        manufacturer: "Tecno",
+        device_model: "TECNO-L8Pro",
+        screen_resolution: "2460x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Tecno",
+        device_model: "TECNO-KJ7n",
+        screen_resolution: "2460x1080",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Tecno",
+        device_model: "TECNO-CK9",
+        screen_resolution: "1600x720",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Infinix",
+        device_model: "X6816",
+        screen_resolution: "1612x720",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Infinix",
+        device_model: "X6827",
+        screen_resolution: "2460x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Infinix",
+        device_model: "X689B",
+        screen_resolution: "2460x1080",
+        total_ram: "8026152960",
+        min_android: 14,
+    },
+    // Huawei
+    DeviceProfile {
+        manufacturer: "HUAWEI",
+        device_model: "ALN-LX9",
+        screen_resolution: "2700x1224",
+        total_ram: "8026152960",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "HUAWEI",
+        device_model: "MNA-LX9",
+        screen_resolution: "2600x1200",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "HUAWEI",
+        device_model: "JLN-LX1",
+        screen_resolution: "2388x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    // Honor
+    DeviceProfile {
+        manufacturer: "Honor",
+        device_model: "LGE-NX9",
+        screen_resolution: "2664x1200",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "Honor",
+        device_model: "ALI-NX3",
+        screen_resolution: "2388x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Honor",
+        device_model: "RBN-NX1",
+        screen_resolution: "2664x1200",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    // More budget Samsung
+    DeviceProfile {
+        manufacturer: "samsung",
+        device_model: "SM-A156B",
+        screen_resolution: "2340x1080",
+        total_ram: "5938152960",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "samsung",
+        device_model: "SM-A256E",
+        screen_resolution: "2340x1080",
+        total_ram: "5938152960",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "samsung",
+        device_model: "SM-M346B",
+        screen_resolution: "2408x1080",
+        total_ram: "5938152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "samsung",
+        device_model: "SM-A556E",
+        screen_resolution: "2340x1080",
+        total_ram: "8026152960",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "samsung",
+        device_model: "SM-A057F",
+        screen_resolution: "1600x720",
+        total_ram: "3852152832",
+        min_android: 13,
+    },
+    // More Xiaomi/Redmi budget
+    DeviceProfile {
+        manufacturer: "Xiaomi",
+        device_model: "21071115SI",
+        screen_resolution: "2400x1080",
+        total_ram: "5938152960",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Xiaomi",
+        device_model: "22031116BG",
+        screen_resolution: "2400x1080",
+        total_ram: "5938152960",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Redmi",
+        device_model: "23028RN4DG",
+        screen_resolution: "2400x1080",
+        total_ram: "5938152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "Redmi",
+        device_model: "23076RN8DY",
+        screen_resolution: "2400x1080",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    DeviceProfile {
+        manufacturer: "Redmi",
+        device_model: "23122PCD1G",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    // Motorola budget
+    DeviceProfile {
+        manufacturer: "motorola",
+        device_model: "motorola edge 40 neo",
+        screen_resolution: "2400x1080",
+        total_ram: "8026152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "motorola",
+        device_model: "motorola g54 5G",
+        screen_resolution: "2400x1080",
+        total_ram: "5938152960",
+        min_android: 13,
+    },
+    DeviceProfile {
+        manufacturer: "motorola",
+        device_model: "motorola g22",
+        screen_resolution: "1600x720",
+        total_ram: "3852152832",
+        min_android: 12,
+    },
+    // More OnePlus
+    DeviceProfile {
+        manufacturer: "OnePlus",
+        device_model: "CPH2611",
+        screen_resolution: "2772x1240",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
+    DeviceProfile {
+        manufacturer: "OnePlus",
+        device_model: "CPH2451",
+        screen_resolution: "2772x1240",
+        total_ram: "12017676288",
+        min_android: 14,
+    },
 ];
 
 pub const SAFE_TIMEZONES: &[&str] = &[
     // Europe
     "Europe/Dublin",
-    "Europe/Zurich",
     "Europe/Zurich",
     "Europe/Prague",
     "Europe/Bratislava",
@@ -352,6 +656,21 @@ pub const SAFE_TIMEZONES: &[&str] = &[
     "Europe/Tallinn",
     "Europe/Luxembourg",
     "Europe/Malta",
+    "Europe/London",
+    "Europe/Paris",
+    "Europe/Berlin",
+    "Europe/Madrid",
+    "Europe/Rome",
+    "Europe/Amsterdam",
+    "Europe/Brussels",
+    "Europe/Vienna",
+    "Europe/Stockholm",
+    "Europe/Oslo",
+    "Europe/Copenhagen",
+    "Europe/Warsaw",
+    "Europe/Helsinki",
+    "Europe/Athens",
+    "Europe/Lisbon",
     // Americas
     "America/Mexico_City",
     "America/Argentina/Buenos_Aires",
@@ -359,14 +678,31 @@ pub const SAFE_TIMEZONES: &[&str] = &[
     "America/Bogota",
     "America/Lima",
     "America/Montevideo",
+    "America/New_York",
+    "America/Chicago",
+    "America/Los_Angeles",
+    "America/Denver",
+    "America/Phoenix",
+    "America/Anchorage",
+    "America/Sao_Paulo",
+    "America/Toronto",
+    "America/Vancouver",
     // Asia-Pacific
-    "Asia/Tokyo",
     "Asia/Tokyo",
     "Asia/Taipei",
     "Asia/Seoul",
     "Asia/Bangkok",
     "Asia/Manila",
     "Asia/Singapore",
+    "Asia/Shanghai",
+    "Asia/Hong_Kong",
+    "Asia/Dubai",
+    "Asia/Kolkata",
+    "Asia/Jakarta",
+    "Asia/Kuala_Lumpur",
+    "Australia/Sydney",
+    "Australia/Melbourne",
+    "Pacific/Auckland",
 ];
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -535,9 +871,6 @@ fn invalid_header<E: std::fmt::Display>(e: E) -> AppError {
 
 /// Returns the L-Grindr-Roles header value for upload/fetch requests
 /// that are not routed through the normal `request_raw` pipeline.
-pub fn grindr_roles_header_value() -> HeaderValue {
-    HeaderValue::from_static("[PREMIUM,UNLIMITED]")
-}
 
 #[cfg(test)]
 mod tests {
@@ -601,14 +934,13 @@ mod tests {
     fn headers_authorized_order() {
         let device = test_device();
         let headers =
-            GrindrHeaders::build(&device, "ua/1.0", Some("Grindr3 sid"), Some("[PREMIUM,UNLIMITED]")).unwrap();
+            GrindrHeaders::build(&device, "ua/1.0", Some("Grindr3 sid"), None).unwrap();
         let names: Vec<&str> = headers.items.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(
             names,
             vec![
                 "authorization",
                 "l-time-zone",
-                "l-grindr-roles",
                 "l-device-info",
                 "accept",
                 "user-agent",

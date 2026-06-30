@@ -5,13 +5,14 @@ use std::str::FromStr;
 use wreq::header::{HeaderName, HeaderValue};
 use wreq::{Method, RequestBuilder};
 use std::sync::Arc;
+use std::sync::atomic::Ordering;
 
 use crate::error::AppError;
 use crate::state::AppState;
 
 use super::client::{build_api_client, Fingerprint, GrindrClient};
 use super::client::BASE_URL;
-use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders, grindr_roles_header_value};
+use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders};
 
 #[derive(Serialize, Deserialize)]
 pub struct RawResponse {
@@ -76,11 +77,13 @@ impl GrindrClient {
 
         let fp = self.fingerprint().await;
 
+        // P0 #1: Do NOT send L-Grindr-Roles outbound — premium injection happens
+        // entirely client-side via maybe_rewrite_response().
         let headers = GrindrHeaders::build(
             &fp.device,
             &fp.user_agent,
             Some(&authorization),
-            Some("[PREMIUM,UNLIMITED]"),
+            None,
         )?;
 
         #[cfg(debug_assertions)]
@@ -93,8 +96,10 @@ impl GrindrClient {
             println!("========================");
         }
 
+        // P0 #11: keep `method` by value for the initial request — only clone on retry.
+        let retry_method = method.clone();
         let mut request = apply_headers(
-            fp.http.request(method.clone(), format!("{BASE_URL}{path}")),
+            fp.http.request(method, format!("{BASE_URL}{path}")),
             &headers.items,
         );
 
@@ -112,37 +117,61 @@ impl GrindrClient {
         // where these statuses are expected and not a detection signal).
         let is_auth_path = path.starts_with("/v8/sessions");
         if !is_auth_path && (status == 401 || status == 403) {
-            eprintln!("[premium] received HTTP {status} on {path} — rotating fingerprint and retrying once");
-            self.rotate_fingerprint().await;
-            // Rebuild request with fresh fingerprint.
-            let fp = self.fingerprint().await;
-            let headers = GrindrHeaders::build(
-                &fp.device,
-                &fp.user_agent,
-                Some(&authorization),
-                Some("[PREMIUM,UNLIMITED]"),
-            )?;
-            let mut retry_request = apply_headers(
-                fp.http.request(method.clone(), format!("{BASE_URL}{path}")),
-                &headers.items,
-            );
-            // Try to decode and attach the msgpack body for the retry.
-            if let Ok(json_body) = rmp_serde::from_slice::<serde_json::Value>(&body) {
-                retry_request = retry_request.json(&json_body);
-            }
-            match retry_request.send().await {
-                Ok(retry_resp) => {
-                    let retry_status = retry_resp.status().as_u16();
-                    let retry_body = retry_resp.bytes().await.unwrap_or_default().to_vec();
-                    let (status, body) = maybe_rewrite_response(retry_status, path, retry_body);
-                    return Ok(RawResponse { status, body });
+            // P1 #16: Rate-limited auto-rotate with circuit-breaker.
+            let now = chrono::Utc::now().timestamp();
+            let last_rot = self.last_rotation.load(Ordering::Relaxed);
+            let consec = self.consecutive_rotations.load(Ordering::Relaxed);
+
+            let can_rotate = if consec >= 3 && now - last_rot < 60 {
+                // Circuit-breaker: 3+ consecutive rotations within 60s — pause.
+                eprintln!("[premium] rotation circuit-breaker tripped — pausing 60s before retry");
+                false
+            } else if now - last_rot < 300 && last_rot != 0 {
+                // Rate limit: max 1 rotation per 5 minutes.
+                eprintln!("[premium] rotation rate-limited — skipping, returning original {status}");
+                false
+            } else {
+                true
+            };
+
+            if can_rotate {
+                eprintln!("[premium] received HTTP {status} on {path} — rotating fingerprint and retrying once");
+                self.rotate_fingerprint().await;
+                self.last_rotation.store(now, Ordering::Relaxed);
+                self.consecutive_rotations.fetch_add(1, Ordering::Relaxed);
+                // Rebuild request with fresh fingerprint — use the pre-cloned method for the retry.
+                let fp = self.fingerprint().await;
+                let headers = GrindrHeaders::build(
+                    &fp.device,
+                    &fp.user_agent,
+                    Some(&authorization),
+                    None,
+                )?;
+                let mut retry_request = apply_headers(
+                    fp.http.request(retry_method, format!("{BASE_URL}{path}")),
+                    &headers.items,
+                );
+                // Try to decode and attach the msgpack body for the retry.
+                if let Ok(json_body) = rmp_serde::from_slice::<serde_json::Value>(&body) {
+                    retry_request = retry_request.json(&json_body);
                 }
-                Err(e) => {
-                    eprintln!("[premium] retry after fingerprint rotation also failed: {e}");
-                    // Fall through to the original response handling below.
+                match retry_request.send().await {
+                    Ok(retry_resp) => {
+                        let retry_status = retry_resp.status().as_u16();
+                        let retry_body = retry_resp.bytes().await.unwrap_or_default().to_vec();
+                        let (status, body) = maybe_rewrite_response(retry_status, path, retry_body);
+                        return Ok(RawResponse { status, body });
+                    }
+                    Err(e) => {
+                        eprintln!("[premium] retry after fingerprint rotation also failed: {e}");
+                        // Fall through to the original response handling below.
+                    }
                 }
             }
         }
+
+        // Reset rotation circuit on any successful (non-401/403) request.
+        self.consecutive_rotations.store(0, Ordering::Relaxed);
 
         let (status, body) = maybe_rewrite_response(status, path, body);
 
@@ -232,13 +261,20 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             flags.insert(key.to_string(), serde_json::json!(true));
         }
         json["featureFlags"] = serde_json::Value::Object(flags);
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v3/bootstrap: {e}");
+            body
+        });
         return (status, new_body);
     } else if path.starts_with("/v1/entitlements") {
-        // Ensure rightNow exists even if the server omits it.
-        json["rightNow"] = serde_json::json!(999);
-        json["total"] = serde_json::json!(999);
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        // P1 #15: Realistic entitlement values (default free allocation),
+        // not 999 which would be an obvious flag.
+        json["rightNow"] = serde_json::json!(3);
+        json["total"] = serde_json::json!(5);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v1/entitlements: {e}");
+            body
+        });
         return (status, new_body);
     } else if path.starts_with("/v1/me") {
         // `/v1/me` also returns user profile data including subscription status.
@@ -248,7 +284,10 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             "userRole": "UNLIMITED",
             "subscriptionTier": "UNLIMITED"
         });
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v1/me: {e}");
+            body
+        });
         return (status, new_body);
     } else if path.starts_with("/v3/me/profile") || path.starts_with("/v4/subscriptions") {
         json["subscription"] = serde_json::json!({
@@ -256,12 +295,18 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             "userRole": "UNLIMITED",
             "subscriptionTier": "UNLIMITED"
         });
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on profile/subscriptions: {e}");
+            body
+        });
         return (status, new_body);
     } else if path.starts_with("/v2/inbox") || path.starts_with("/v3/inbox") {
         // Remove any server-side "upgrade to see more" gate.
         json.as_object_mut().map(|m| m.remove("upgradeRequired"));
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on inbox: {e}");
+            body
+        });
         return (status, new_body);
     } else if path.starts_with("/v3/me/settings") {
         // Inject premium settings so the UI renders all options.
@@ -271,7 +316,57 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             obj.entry("incognito".to_string())
                 .or_insert(serde_json::json!(false));
         }
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v3/me/settings: {e}");
+            body
+        });
+        return (status, new_body);
+    // P2 #14: More API interception points
+    } else if path.starts_with("/v1/views") {
+        // Inject `canViewAll` to unlock "who viewed your profile"
+        json["canViewAll"] = serde_json::json!(true);
+        json.as_object_mut().map(|m| m.remove("truncatedProfiles"));
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v1/views: {e}");
+            body
+        });
+        return (status, new_body);
+    } else if path.starts_with("/v3/me/prefs") {
+        // Unlock gated preference panels
+        json["showOnlineStatus"] = serde_json::json!(true);
+        json["showLastSeen"] = serde_json::json!(true);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v3/me/prefs: {e}");
+            body
+        });
+        return (status, new_body);
+    } else if path.starts_with("/v1/favorites") {
+        // Remove max favorites limit
+        json.as_object_mut().map(|m| m.remove("maxFavorites"));
+        json["maxFavorites"] = serde_json::json!(999);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v1/favorites: {e}");
+            body
+        });
+        return (status, new_body);
+    } else if path.starts_with("/v3/explore") || path.starts_with("/v3/discover") {
+        // Override page size for more results on explore/discover
+        if let Some(obj) = json.as_object_mut() {
+            obj.entry("pageSize").or_insert(serde_json::json!(100));
+        }
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v3/explore: {e}");
+            body
+        });
+        return (status, new_body);
+    } else if path.starts_with("/v4/album") {
+        // Remove private album access gating
+        json.as_object_mut().map(|m| m.remove("requiresUpgrade"));
+        json["requiresUpgrade"] = serde_json::json!(false);
+        let new_body = serde_json::to_vec(&json).unwrap_or_else(|e| {
+            eprintln!("[premium] serde_json::to_vec failed on /v4/album: {e}");
+            body
+        });
         return (status, new_body);
     } else {
         return (status, body);
@@ -380,7 +475,6 @@ pub async fn upload_image(
         .http
         .post(format!("{BASE_URL}/v5/chat/media/upload?takenOnGrindr=false"))
         .header("Authorization", &authorization)
-        .header("L-Grindr-Roles", grindr_roles_header_value())
         .header("Content-Type", &mime_type)
         .body(bytes)
         .send()
@@ -530,16 +624,16 @@ mod tests {
     fn test_entitlements_injects_rightnow() {
         let input = serde_json::json!({"rightNow": 5, "total": 5});
         let (_, json) = call_rewrite(200, "/v1/entitlements", input);
-        assert_eq!(json["rightNow"], 999);
-        assert_eq!(json["total"], 999);
+        assert_eq!(json["rightNow"], 3);
+        assert_eq!(json["total"], 5);
     }
 
     #[test]
     fn test_entitlements_handles_missing_fields() {
         let input = serde_json::json!({});
         let (_, json) = call_rewrite(200, "/v1/entitlements", input);
-        assert_eq!(json["rightNow"], 999);
-        assert_eq!(json["total"], 999);
+        assert_eq!(json["rightNow"], 3);
+        assert_eq!(json["total"], 5);
     }
 
     // ── profile / subscriptions ────────────────────────────────────────────
