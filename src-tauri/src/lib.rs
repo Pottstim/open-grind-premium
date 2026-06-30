@@ -47,7 +47,6 @@ pub fn run() {
             ws_rx: tokio::sync::Mutex::new(Some(ws_rx)),
             auth_notify,
             is_foreground: AtomicBool::new(true),
-            ws_buffer: tokio::sync::Mutex::new(Vec::with_capacity(64)),
         })
         .invoke_handler(tauri::generate_handler![
             api::auth::login,
@@ -67,12 +66,12 @@ pub fn run() {
             set_foreground,
         ])
         .setup(|app| {
-            let app_dir = app.path().app_data_dir()?;
-            std::fs::create_dir_all(&app_dir).ok();
+            #[cfg(all(target_os = "macos", not(feature = "keychain")))]
+            storage::init_file_store(app.path().app_data_dir()?);
 
-            storage::init_keyring(app_dir);
+            storage::init_keyring();
 
-            if let Ok(client) = GrindrClient::new() {
+            if let Ok(client) = GrindrClient::new().map(Arc::new) {
                 let _ = app.state::<AppState>().client.set(client);
             }
 
@@ -82,8 +81,8 @@ pub fn run() {
                 tauri::async_runtime::spawn(async move {
                     let state = handle.state::<AppState>();
                     if let Ok(client) = state.client() {
-                        client.reload_session().await;
-                        if client.authorization_header().await.is_some() {
+                        client.clone().reload_session().await;
+                        if client.clone().authorization_header().await.is_some() {
                             state.auth_notify.notify_one();
                         }
                     }
