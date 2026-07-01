@@ -21,6 +21,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+          components: clippy
 
       - name: Check
         run: cargo check --lib --manifest-path src-tauri/Cargo.toml
@@ -29,7 +30,7 @@ jobs:
         run: cargo test --lib --manifest-path src-tauri/Cargo.toml
 
       - name: Clippy
-        run: cargo clippy --manifest-path src-tauri/Cargo.toml
+        run: cargo clippy --lib --manifest-path src-tauri/Cargo.toml -- -D warnings
 
   build-android:
     needs: check
@@ -54,6 +55,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+          components: clippy
 
       - name: Setup Java
         uses: actions/setup-java@v4
