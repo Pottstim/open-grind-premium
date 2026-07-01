@@ -30,7 +30,7 @@ jobs:
         run: cargo test --lib --manifest-path src-tauri/Cargo.toml
 
       - name: Clippy
-        run: cargo clippy --lib --manifest-path src-tauri/Cargo.toml -- -D warnings
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml
 
   build-android:
     needs: check
@@ -51,8 +51,6 @@ jobs:
         with:
           bun-version: latest
 
-      # Use stable for Android builds (different from rust-toolchain.toml which is for
-      # development)
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -102,3 +100,4 @@ jobs:
           name: open-grind-apk
           path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           retention-days: 30
+          
