@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use serde::de::DeserializeOwned;
-use futures_util::future::{BoxFuture, FutureExt};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use wreq::header::{HeaderName, HeaderValue};
@@ -12,7 +11,7 @@ use crate::state::AppState;
 
 use super::client::{build_api_client, Fingerprint, GrindrClient};
 use super::client::BASE_URL;
-use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders, };
+use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders};
 
 #[derive(Serialize, Deserialize)]
 pub struct RawResponse {
