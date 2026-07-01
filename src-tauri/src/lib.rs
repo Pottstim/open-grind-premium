@@ -69,7 +69,7 @@ pub fn run() {
             #[cfg(all(target_os = "macos", not(feature = "keychain")))]
             storage::init_file_store(app.path().app_data_dir()?);
 
-            storage::init_keyring();
+            storage::init_keyring(app.path().app_data_dir().expect("failed to get app data dir"));
 
             if let Ok(client) = GrindrClient::new().map(Arc::new) {
                 let _ = app.state::<AppState>().client.set(client);

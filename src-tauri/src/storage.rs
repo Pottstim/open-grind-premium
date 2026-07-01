@@ -38,7 +38,6 @@ mod file_store {
             #[cfg(unix)]
             fs::set_permissions(&path, fs::Permissions::from_mode(0o600))
                 .map_err(|e| Error::PlatformFailure(Box::new(e)))?;
-            #[cfg(not(unix))]
             Ok(())
         }
 
@@ -114,7 +113,10 @@ mod file_store {
         let creds_dir = base.join("credentials");
         if let Ok(()) = fs::create_dir_all(&creds_dir) {
             #[cfg(unix)]
-            let _ = fs::set_permissions(&creds_dir, fs::Permissions::from_mode(0o700));
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let _ = fs::set_permissions(&creds_dir, fs::Permissions::from_mode(0o700));
+            }
         }
         let store = Arc::new(FileStore { base }) as Arc<CredentialStore>;
         keyring_core::set_default_store(store);

@@ -12,7 +12,7 @@ use crate::state::AppState;
 
 use super::client::{build_api_client, Fingerprint, GrindrClient};
 use super::client::BASE_URL;
-use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders, grindr_roles_header_value};
+use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders};
 
 #[derive(Serialize, Deserialize)]
 pub struct RawResponse {
@@ -401,7 +401,7 @@ pub async fn upload_image(
         .http
         .post(format!("{BASE_URL}/v5/chat/media/upload?takenOnGrindr=false"))
         .header("Authorization", &authorization)
-        .header("L-Grindr-Roles", grindr_roles_header_value())
+        // .header("L-Grindr-Roles", grindr_roles_header_value())
         .header("Content-Type", &mime_type)
         .body(bytes)
         .send()
