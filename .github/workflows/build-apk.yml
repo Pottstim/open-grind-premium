@@ -51,6 +51,8 @@ jobs:
         with:
           bun-version: latest
 
+      # Use stable for Android builds (different from rust-toolchain.toml which is for
+      # development)
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
