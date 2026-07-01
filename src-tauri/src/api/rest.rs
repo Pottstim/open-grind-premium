@@ -254,13 +254,13 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
         }
         json["featureFlags"] = serde_json::Value::Object(flags);
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else if path.starts_with("/v1/entitlements") {
         // Ensure rightNow exists even if the server omits it.
         json["rightNow"] = serde_json::json!(999);
         json["total"] = serde_json::json!(999);
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else if path.starts_with("/v1/me") {
         // `/v1/me` also returns user profile data including subscription status.
         // Inject the same premium subscription object as /v3/me/profile.
@@ -270,7 +270,7 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             "subscriptionTier": "UNLIMITED"
         });
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else if path.starts_with("/v3/me/profile") || path.starts_with("/v4/subscriptions") {
         json["subscription"] = serde_json::json!({
             "premium": true,
@@ -278,12 +278,12 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             "subscriptionTier": "UNLIMITED"
         });
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else if path.starts_with("/v2/inbox") || path.starts_with("/v3/inbox") {
         // Remove any server-side "upgrade to see more" gate.
         json.as_object_mut().map(|m| m.remove("upgradeRequired"));
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else if path.starts_with("/v3/me/settings") {
         // Inject premium settings so the UI renders all options.
         if let Some(obj) = json.as_object_mut() {
@@ -293,7 +293,7 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
                 .or_insert(serde_json::json!(false));
         }
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        (status, new_body);
+        return (status, new_body);
     } else {
         (status, body);
     }
