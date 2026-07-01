@@ -207,7 +207,7 @@ const MAX_ERROR_BODY: usize = 1024;
 
 fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u8>) {
     let Ok(mut json) = serde_json::from_slice::<serde_json::Value>(&body) else {
-        (status, body);
+        return (status, body);
     };
     let path = path.to_lowercase();
 
@@ -295,7 +295,7 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else {
-        (status, body);
+        return (status, body);
     }
 }
 
