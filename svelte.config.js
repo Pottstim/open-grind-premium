@@ -21,20 +21,20 @@ const grindrApiVersion = fs
 	.readFileSync(
 		path.join(
 			path.dirname(fileURLToPath(import.meta.url)),
-			"./src-tauri/src/api/headers.rs",
+			"./src-tauri/src/api/version.rs",
 		),
 		"utf-8",
 	)
-	.match(/const APP_VERSION: &str = "([^"]+)";/)[1];
+	.match(/const FALLBACK_APP_VERSION: &str = "([^"]+)";/)[1];
 const grindrApiBuildNumber = fs
 	.readFileSync(
 		path.join(
 			path.dirname(fileURLToPath(import.meta.url)),
-			"./src-tauri/src/api/headers.rs",
+			"./src-tauri/src/api/version.rs",
 		),
 		"utf-8",
 	)
-	.match(/const BUILD_NUMBER: &str = "([^"]+)";/)[1];
+	.match(/const FALLBACK_BUILD_NUMBER: &str = "([^"]+)";/)[1];
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
