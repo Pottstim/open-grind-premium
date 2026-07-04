@@ -97,7 +97,7 @@ impl GrindrClient {
                 &fp.device,
                 &fp.user_agent,
                 Some(&authorization),
-                Some("[PREMIUM,UNLIMITED]"),
+                None,
             )?;
 
             #[cfg(debug_assertions)]
@@ -141,7 +141,7 @@ impl GrindrClient {
                     &fp.device,
                     &fp.user_agent,
                     Some(&authorization),
-                    Some("[PREMIUM,UNLIMITED]"),
+                    None,
                 )?;
                 let mut retry_request = apply_headers(
                     fp.http.request(method, format!("{BASE_URL}{path}")),
@@ -174,6 +174,21 @@ impl GrindrClient {
     /// Used internally by `request_raw` on 401/403 to evade detection, and
     /// mirrors the public `rotate_api_params` Tauri command.
     async fn rotate_fingerprint(&self) {
+        // Rate limiting to avoid cycling fingerprints too quickly
+        // If we rotated in the last 30 seconds, don't rotate again
+        {
+            let fp = self.fingerprint.read().await;
+            if let Some(last_rotated) = fp.device.last_rotated {
+                if std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_secs() - last_rotated < 30
+                {
+                    eprintln!("[premium] skipping fingerprint rotation, last rotation was less than 30s ago");
+                    return;
+                }
+            }
+        }
         let device = DeviceInfo::default();
         if let Err(e) = DeviceStorage::save(&device) {
             eprintln!("[premium] could not persist rotated device info: {e}");
@@ -257,8 +272,8 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
         return (status, new_body);
     } else if path.starts_with("/v1/entitlements") {
         // Ensure rightNow exists even if the server omits it.
-        json["rightNow"] = serde_json::json!(999);
-        json["total"] = serde_json::json!(999);
+        json["rightNow"] = serde_json::json!(15);
+        json["total"] = serde_json::json!(15);
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else if path.starts_with("/v1/me") {
@@ -292,6 +307,29 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             obj.entry("incognito".to_string())
                 .or_insert(serde_json::json!(false));
         }
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v1/views") {
+        // Remove views limit
+        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v3/me/prefs") {
+        // Inject preference fields
+        if let Some(obj) = json.as_object_mut() {
+            obj.entry("showDistance".to_string())
+                .or_insert(serde_json::json!(true));
+        }
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v1/favorites") {
+        // Remove favorites limit
+        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
+        let new_body = serde_json::to_vec(&json).unwrap_or(body);
+        return (status, new_body);
+    } else if path.starts_with("/v3/explore") || path.starts_with("/v4/album") {
+        // Remove limits for explore and album
+        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
         let new_body = serde_json::to_vec(&json).unwrap_or(body);
         return (status, new_body);
     } else {
@@ -551,16 +589,16 @@ mod tests {
     fn test_entitlements_injects_rightnow() {
         let input = serde_json::json!({"rightNow": 5, "total": 5});
         let (_, json) = call_rewrite(200, "/v1/entitlements", input);
-        assert_eq!(json["rightNow"], 999);
-        assert_eq!(json["total"], 999);
+        assert_eq!(json["rightNow"], 15);
+        assert_eq!(json["total"], 15);
     }
 
     #[test]
     fn test_entitlements_handles_missing_fields() {
         let input = serde_json::json!({});
         let (_, json) = call_rewrite(200, "/v1/entitlements", input);
-        assert_eq!(json["rightNow"], 999);
-        assert_eq!(json["total"], 999);
+        assert_eq!(json["rightNow"], 15);
+        assert_eq!(json["total"], 15);
     }
 
     // ── profile / subscriptions ────────────────────────────────────────────
@@ -680,6 +718,43 @@ mod tests {
         assert_eq!(json["showDistance"], false);
         // incognito should be added since it doesn't exist
         assert_eq!(json["incognito"], false);
+    }
+
+    // ── new endpoints ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_views_removes_upgrade_required() {
+        let input = serde_json::json!({"profiles": [], "upgradeRequired": true});
+        let (_, json) = call_rewrite(200, "/v1/views", input);
+        assert!(json.get("upgradeRequired").is_none());
+    }
+
+    #[test]
+    fn test_prefs_injects_show_distance() {
+        let input = serde_json::json!({});
+        let (_, json) = call_rewrite(200, "/v3/me/prefs", input);
+        assert_eq!(json["showDistance"], true);
+    }
+
+    #[test]
+    fn test_favorites_removes_upgrade_required() {
+        let input = serde_json::json!({"profiles": [], "upgradeRequired": true});
+        let (_, json) = call_rewrite(200, "/v1/favorites", input);
+        assert!(json.get("upgradeRequired").is_none());
+    }
+
+    #[test]
+    fn test_explore_removes_upgrade_required() {
+        let input = serde_json::json!({"profiles": [], "upgradeRequired": true});
+        let (_, json) = call_rewrite(200, "/v3/explore", input);
+        assert!(json.get("upgradeRequired").is_none());
+    }
+
+    #[test]
+    fn test_album_removes_upgrade_required() {
+        let input = serde_json::json!({"photos": [], "upgradeRequired": true});
+        let (_, json) = call_rewrite(200, "/v4/album", input);
+        assert!(json.get("upgradeRequired").is_none());
     }
 
     // ── passthrough (non-matching paths, non-JSON responses) ───────────────

@@ -721,6 +721,7 @@ pub struct DeviceInfo {
     pub timezone: String,
     pub locale: String,
     pub accept_language: String,
+    pub last_rotated: Option<u64>,
 }
 
 impl Default for DeviceInfo {
@@ -745,6 +746,12 @@ impl Default for DeviceInfo {
             timezone: timezone.to_owned(),
             locale: "en_US".to_owned(),
             accept_language: "en-US".to_owned(),
+            last_rotated: Some(
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_secs(),
+            ),
         }
     }
 }
@@ -892,6 +899,7 @@ mod tests {
             timezone: "Europe/Madrid".to_owned(),
             locale: "en_US".to_owned(),
             accept_language: "en-US".to_owned(),
+            last_rotated: None,
         }
     }
 
