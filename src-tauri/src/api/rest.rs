@@ -173,20 +173,20 @@ impl GrindrClient {
     /// Generate a fresh device fingerprint and replace the current one.
     /// Used internally by `request_raw` on 401/403 to evade detection, and
     /// mirrors the public `rotate_api_params` Tauri command.
+    #[allow(clippy::collapsible_if)]
     async fn rotate_fingerprint(&self) {
         // Rate limiting to avoid cycling fingerprints too quickly
         // If we rotated in the last 30 seconds, don't rotate again
         {
             let fp = self.fingerprint.read().await;
-            if let Some(last_rotated) = fp.device.last_rotated {
-                if std::time::SystemTime::now()
+            if let Some(last_rotated) = fp.device.last_rotated
+                && std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .unwrap_or_default()
                     .as_secs() - last_rotated < 30
-                {
-                    eprintln!("[premium] skipping fingerprint rotation, last rotation was less than 30s ago");
-                    return;
-                }
+            {
+                eprintln!("[premium] skipping fingerprint rotation, last rotation was less than 30s ago");
+                return;
             }
         }
         let device = DeviceInfo::default();
