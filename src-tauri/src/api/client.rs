@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use std::sync::atomic::{AtomicI64, AtomicU32};
 
 use serde::Serialize;
 use tokio::sync::{Mutex, RwLock};
@@ -35,6 +36,7 @@ pub struct GrindrClient {
     pub(super) session: RwLock<Option<Session>>,
     pub(super) refresh_lock: Mutex<()>,
     /// Rotation circuit-breaker state.
+    #[allow(dead_code)]
     pub(super) last_rotation: AtomicI64,
     #[allow(dead_code)]
     pub(super) consecutive_rotations: AtomicU32,
@@ -179,5 +181,3 @@ pub async fn rotate_api_params(
 pub fn probe_emulation() -> wreq_util::Emulation {
     grindr_emulation()
 }
-
-use std::sync::atomic::{AtomicI64, AtomicU32, Ordering};

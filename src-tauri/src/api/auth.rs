@@ -170,6 +170,7 @@ impl AuthStorage {
         rmp_serde::decode::from_slice(&bytes).unwrap_or_default()
     }
 
+    #[allow(clippy::collapsible_if)]
     fn save_accounts_index(ids: &[String]) {
         if let Ok(bytes) = rmp_serde::encode::to_vec(ids) {
             if let Ok(entry) = keyring_entry(ACCOUNTS_INDEX_KEY) {
@@ -187,6 +188,7 @@ impl AuthStorage {
         Ok(())
     }
 
+    #[allow(clippy::collapsible_if)]
     fn remove_account_index(profile_id: &str) {
         let mut ids = Self::accounts_index();
         ids.retain(|id| id != profile_id);
@@ -339,6 +341,7 @@ impl GrindrClient {
         }
         // Try to activate the next available account
         let accounts = AuthStorage::list_accounts(None);
+        #[allow(clippy::collapsible_if)]
         if let Some(next) = accounts.first() {
             if let Ok(Some(session)) = AuthStorage::get_session(&next.profile_id) {
                 AuthStorage::set_active_profile(&next.profile_id)?;
