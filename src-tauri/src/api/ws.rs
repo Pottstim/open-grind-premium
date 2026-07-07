@@ -160,7 +160,7 @@ async fn connect_and_run(
         &fp.device,
         &fp.user_agent,
         Some(&authorization),
-        None,
+        Some("PREMIUM,UNLIMITED"),
     ) {
         Ok(h) => h,
         Err(e) => return WsOutcome::Disconnected(e),

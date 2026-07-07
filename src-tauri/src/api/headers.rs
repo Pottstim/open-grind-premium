@@ -876,6 +876,11 @@ impl GrindrHeaders {
 }
 
 fn invalid_header<E: std::fmt::Display>(e: E) -> AppError {
+/// Returns the L-Grindr-Roles header value for upload/fetch requests
+/// that are not routed through the normal `request_raw` pipeline.
+pub fn grindr_roles_header_value() -> &'static str {
+    "[PREMIUM,UNLIMITED]"
+}
     AppError::Http(format!("Invalid header value: {e}"))
 }
 
