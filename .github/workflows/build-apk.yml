@@ -20,7 +20,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-android
+          targets: aarch64-linux-android,armv7-linux-android-armeabi,i686-linux-android,x86_64-linux-android
           components: clippy
 
       - name: Check
@@ -51,12 +51,10 @@ jobs:
         with:
           bun-version: latest
 
-      # Use stable for Android builds (different from rust-toolchain.toml which is for
-      # development)
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-android
+          targets: aarch64-linux-android,armv7-linux-android-armeabi,i686-linux-android,x86_64-linux-android
           components: clippy
 
       - name: Setup Java
