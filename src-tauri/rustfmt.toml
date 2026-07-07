@@ -1,2 +1,4 @@
+# P3 #12: Enforce a consistent style. Run with `cargo fmt`.
 max_width = 120
 imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
