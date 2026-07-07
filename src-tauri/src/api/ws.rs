@@ -193,13 +193,14 @@ async fn connect_and_run(
     app.emit("ws:connected", ()).ok();
 
     // P1 #6: Flush any buffered outbound messages into the WS send channel.
-    /*
     {
-        let mut buf = app.state::<AppState>().ws_buffer.lock().await;
+        let state = app.state::<AppState>();
+        let mut buf = state.ws_buffer.lock().await;
         if !buf.is_empty() {
             eprintln!("[ws] flushing {} buffered messages", buf.len());
+            app.emit("ws:queue-draining", serde_json::json!({ "count": buf.len() })).ok();
         }
-        let tx = &app.state::<AppState>().ws_tx;
+        let tx = &state.ws_tx;
         for cmd in buf.drain(..) {
             if let Err(e) = tx.try_send(cmd) {
                 eprintln!("[ws] buffer flush: channel full ({e}), dropping remainder");
@@ -207,7 +208,6 @@ async fn connect_and_run(
             }
         }
     }
-    */
 
     let mut cmd_rx = match state.ws_rx.lock().await.take() {
         Some(rx) => rx,
@@ -417,8 +417,6 @@ pub async fn ws_send(
     }
 
     // Try to send directly. If the WS is not connected, buffer the message.
-    let _ = state.ws_tx.try_send(command);
-    /*
     if state.ws_tx.try_send(command.clone()).is_err() {
         // P1 #6: Buffer outbound messages during reconnect.
         let mut buf = state.ws_buffer.lock().await;
@@ -430,6 +428,5 @@ pub async fn ws_send(
             buf.push(command);
         }
     }
-    */
     Ok(())
 }

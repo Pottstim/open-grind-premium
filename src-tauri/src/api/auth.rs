@@ -353,6 +353,10 @@ impl GrindrClient {
     }
 
     pub async fn authorization_header(&self) -> Option<String> {
+        // P2 #7: Hold the refresh_lock across the entire check-refresh cycle
+        // to prevent two concurrent callers from both racing into refresh_token().
+        let _guard = self.refresh_lock.lock().await;
+
         let expires_at = self
             .session
             .read()
@@ -362,20 +366,7 @@ impl GrindrClient {
             .unwrap_or(0);
 
         if expires_at < (chrono::Utc::now().timestamp() as u64 + 60) {
-            let _guard = self.refresh_lock.lock().await;
-
-            let still_expired = self
-                .session
-                .read()
-                .await
-                .as_ref()
-                .map(|s| s.expires_at)
-                .unwrap_or(0)
-                < (chrono::Utc::now().timestamp() as u64 + 60);
-
-            if still_expired {
-                let _ = self.refresh_token().await;
-            }
+            let _ = self.refresh_token().await;
         }
 
         self.session
