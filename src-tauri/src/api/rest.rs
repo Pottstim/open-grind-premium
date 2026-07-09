@@ -13,6 +13,7 @@ use crate::state::AppState;
 use super::client::{build_api_client, Fingerprint, GrindrClient};
 use super::client::BASE_URL;
 use super::headers::{build_user_agent, DeviceInfo, DeviceStorage, GrindrHeaders};
+use crate::api::rewrite::apply_rewrites;
 
 #[derive(Serialize, Deserialize)]
 pub struct RawResponse {
@@ -223,10 +224,8 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
     let Ok(mut json) = serde_json::from_slice::<serde_json::Value>(&body) else {
         return (status, body);
     };
-    let path = path.to_lowercase();
 
-    // Ban/shadowban detection — check parsed JSON fields, not raw string, to avoid
-    // false positives on profile text that happens to contain these words.
+    // Ban bypass (highest priority)
     let is_banned = json
         .get("status")
         .and_then(|v| v.as_str())
@@ -237,103 +236,15 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             .and_then(|v| v.as_i64())
             .map(|c| matches!(c, 40300..=40303))
             .unwrap_or(false);
+
     if is_banned {
         return (200, serde_json::json!({"status": "ok"}).to_string().into_bytes());
     }
 
-    if path.starts_with("/v3/bootstrap") {
-        json["userRole"] = serde_json::json!("UNLIMITED");
-        json["subscriptionTier"] = serde_json::json!("UNLIMITED");
-        // Start from existing flags so server-side A/B flags are preserved,
-        // then overlay the premium flags so our injections always win.
-        let mut flags: serde_json::Map<String, serde_json::Value> = json
-            .get("featureFlags")
-            .and_then(|f| f.as_object())
-            .cloned()
-            .unwrap_or_default();
-        for key in [
-            "readReceipts",
-            "tapAndGo",
-            "unlimitedTaps",
-            "unlimitedFavorites",
-            "unlimitedBlocks",
-            "incognitoMode",
-            "typingStatus",
-            "expire24hProfile",
-            "hideDistance",
-            "boosts",
-            "profileViews",
-        ] {
-            flags.insert(key.to_string(), serde_json::json!(true));
-        }
-        json["featureFlags"] = serde_json::Value::Object(flags);
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v1/entitlements") {
-        // Ensure rightNow exists even if the server omits it.
-        json["rightNow"] = serde_json::json!(15);
-        json["total"] = serde_json::json!(15);
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v1/me") {
-        // `/v1/me` also returns user profile data including subscription status.
-        // Inject the same premium subscription object as /v3/me/profile.
-        json["subscription"] = serde_json::json!({
-            "premium": true,
-            "userRole": "UNLIMITED",
-            "subscriptionTier": "UNLIMITED"
-        });
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v3/me/profile") || path.starts_with("/v4/subscriptions") {
-        json["subscription"] = serde_json::json!({
-            "premium": true,
-            "userRole": "UNLIMITED",
-            "subscriptionTier": "UNLIMITED"
-        });
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v2/inbox") || path.starts_with("/v3/inbox") {
-        // Remove any server-side "upgrade to see more" gate.
-        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v3/me/settings") {
-        // Inject premium settings so the UI renders all options.
-        if let Some(obj) = json.as_object_mut() {
-            obj.entry("showDistance".to_string())
-                .or_insert(serde_json::json!(true));
-            obj.entry("incognito".to_string())
-                .or_insert(serde_json::json!(false));
-        }
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v1/views") {
-        // Remove views limit
-        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v3/me/prefs") {
-        // Inject preference fields
-        if let Some(obj) = json.as_object_mut() {
-            obj.entry("showDistance".to_string())
-                .or_insert(serde_json::json!(true));
-        }
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v1/favorites") {
-        // Remove favorites limit
-        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else if path.starts_with("/v3/explore") || path.starts_with("/v4/album") {
-        // Remove limits for explore and album
-        json.as_object_mut().map(|m| m.remove("upgradeRequired"));
-        let new_body = serde_json::to_vec(&json).unwrap_or(body);
-        return (status, new_body);
-    } else {
-        return (status, body);
-    }
+    apply_rewrites(path, &mut json);
+
+    let new_body = serde_json::to_vec(&json).unwrap_or(body);
+    (status, new_body)
 }
 
 fn parse_api_error(bytes: &[u8], http_status: i32) -> AppError {
