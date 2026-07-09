@@ -208,13 +208,15 @@ async fn connect_and_run(
         let mut requeued = 0usize;
 
         for cmd in buf.drain(..) {
-            if let Err(e) = tx.try_send(cmd) {
+            // Clone before try_send so we can re-queue if channel is full
+            let cmd_clone = cmd.clone();
+            if let Err(_) = tx.try_send(cmd) {
                 dropped += 1;
                 eprintln!("[ws] flush: channel full, attempting re-queue");
 
                 let mut buf = state.ws_buffer.lock().await;
                 if buf.len() < WsCommand::BUFFER_CAPACITY {
-                    buf.push(cmd);
+                    buf.push(cmd_clone);
                     requeued += 1;
                 } else {
                     eprintln!("[ws] flush: buffer also full — dropping command");
@@ -439,6 +441,7 @@ pub async fn ws_send(
         return Err(AppError::Auth("Not logged in".to_owned()));
     }
 
+    // Try to send directly. If the WS is not connected, buffer the message.
     if state.ws_tx.try_send(command.clone()).is_err() {
         let mut buf = state.ws_buffer.lock().await;
 
@@ -448,11 +451,7 @@ pub async fn ws_send(
             let dropped = buf.remove(0);
             buf.push(command);
 
-            let _ = state.app_handle.emit("ws:queue-dropped", serde_json::json!({
-                "reason": "buffer_full",
-                "dropped_type": dropped.r#type,
-                "buffer_size": buf.len()
-            }));
+            // Emit event to frontend for UI feedback (e.g., show retry button)
             eprintln!("[ws] buffer full — dropped oldest command: {}", dropped.r#type);
         }
     }
