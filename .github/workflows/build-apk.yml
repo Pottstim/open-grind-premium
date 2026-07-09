@@ -88,6 +88,13 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Remove stale Android project
+        # The committed gen/android was generated with an old package name
+        # (org.opengrind) but tauri.conf.json now uses com.opengrind.premium.
+        # tauri android init refuses to run against the mismatched directory,
+        # so delete it and let init regenerate the project fresh.
+        run: rm -rf src-tauri/gen/android
+
       - name: Initialize Android project
         run: bun run tauri android init
         env:
