@@ -25,6 +25,7 @@ list of minor polish items plus repo hygiene.
 | Release APK signing | DONE | `build-apk.yml` keystore secrets; commit `68a725e` |
 | Cascade v3 card `@type` literals | DONE | `src/lib/model/grid/cascade/response/v3.ts` — all 8 incomplete schemas completed (2026-07-14) |
 | Stop tracking generated `src-tauri/gen/` | DONE | `.gitignore` + commit `4e15890` (removed 47 files incl. a committed 25 MB signed APK) |
+| P0 | #1 Taps + Views (interest) | Core engagement (tap back, see who viewed you) | ~3 days | Medium | **DONE 2026-07-14** |
 
 ## 🟡 Remaining (minor / optional)
 
