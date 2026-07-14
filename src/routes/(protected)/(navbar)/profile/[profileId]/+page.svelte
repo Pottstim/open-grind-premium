@@ -3,6 +3,8 @@
 	import { ChatCircleIcon } from "phosphor-svelte";
 
 	import { getProfile } from "$lib/api/profile";
+	import { recordProfileView } from "$lib/api/interest/views";
+	import TapButtons from "$lib/components/TapButtons.svelte";
 	import ApiErrorDisplay from "$lib/components/ApiErrorDisplay.svelte";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Skeleton } from "$lib/components/ui/skeleton";
@@ -35,6 +37,13 @@
 	);
 
 	const profile = $derived(getProfile(profileId));
+
+	// Record that we viewed this profile (best-effort; ignore failures).
+	$effect(() => {
+		if (!isOurProfile && profileId > 0) {
+			void recordProfileView({ profileId }).catch(() => {});
+		}
+	});
 </script>
 
 <div class="flex flex-1">
@@ -92,6 +101,11 @@
 					<OnlineStatus onlineUntil={onlineUntil ?? null} {seen} />
 					<Distance {distance} />
 				</div>
+				{#if !isOurProfile}
+					<div class="mt-3">
+						<TapButtons {profileId} />
+					</div>
+				{/if}
 				{#if sexualPosition !== null || height !== null || weight !== null || bodyType !== null}
 					<div class="flex items-center gap-3 text-sm mt-2">
 						{#if sexualPosition !== null && sexualPosition !== undefined}
