@@ -707,7 +707,7 @@ mod tests {
         let input = serde_json::json!({"profiles": [], "upgradeRequired": true, "maxFavorites": 5});
         let (_, json) = call_rewrite(200, "/v1/favorites", input);
         assert!(json.get("upgradeRequired").is_none());
-        assert_eq!(json["maxFavorites"], 9999);
+        assert_eq!(json["maxFavorites"], 1000);
         assert_eq!(json["canAddMore"], true);
     }
 
@@ -858,7 +858,7 @@ mod tests {
         let input = load_fixture("favorites_gated");
         let (_, json) = call_rewrite(200, "/v1/favorites", input);
         assert!(json.get("upgradeRequired").is_none());
-        assert_eq!(json["maxFavorites"], 9999);
+        assert_eq!(json["maxFavorites"], 1000);
         assert_eq!(json["canAddMore"], true);
     }
 
