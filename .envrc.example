@@ -1,0 +1,3 @@
+# Example direnv configuration for local development.
+# Copy to `.envrc` (which is gitignored) — it may contain machine-specific paths.
+use flake

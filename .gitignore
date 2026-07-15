@@ -15,6 +15,9 @@ vite.config.ts.timestamp-*
 # Nix
 /result
 /result-*
+
+# direnv — developer-local; may leak machine-specific paths
+.envrc
 .direnv/
 
 # Android signing

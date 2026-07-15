@@ -4,6 +4,11 @@
 use serde_json::{json, Map, Value};
 use std::sync::OnceLock;
 
+/// Realistic Unlimited-style favorites cap.
+/// Replaces the obviously-fake `9999` (a detection beacon, like the `999`
+/// entitlement value flagged in the audit) with a plausible value.
+const REALISTIC_MAX_FAVORITES: i64 = 1000;
+
 pub struct RewriteRule {
     pub path_prefix: &'static str,
     pub transform: fn(&mut Value),
@@ -136,7 +141,10 @@ pub fn get_rewrite_rules() -> &'static [RewriteRule] {
                 transform: |json| {
                     strip_upgrade_gates(json);
                     if let Some(obj) = json.as_object_mut() {
-                        obj.insert("maxFavorites".to_string(), json!(9999));
+                        let floor = REALISTIC_MAX_FAVORITES;
+                        if obj.get("maxFavorites").and_then(|v| v.as_i64()).unwrap_or(0) < floor {
+                            obj.insert("maxFavorites".to_string(), json!(floor));
+                        }
                         obj.insert("canAddMore".to_string(), json!(true));
                     }
                 },

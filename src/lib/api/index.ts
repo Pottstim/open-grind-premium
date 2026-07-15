@@ -122,27 +122,67 @@ export async function callMethod<T extends keyof typeof methods>(
 	return parsed.data as z.infer<(typeof methods)[T]["response"]>;
 }
 
-/** Detect Cloudflare / WAF HTML block pages more robustly than exact title match. */
+/**
+ * Detect Cloudflare / WAF HTML block (challenge) pages.
+ *
+ * Uses a *normalized* matcher (audit §3.5): the body is lowercased, HTML
+ * comments are stripped, common entities decoded, and whitespace collapsed
+ * before signal matching. This makes detection robust to cosmetic changes in
+ * Cloudflare's challenge markup (title strings, injected whitespace, attribute
+ * placement) that brittle exact-string matching historically missed.
+ */
 export function isCloudflareBlock(status: number, text: string): boolean {
 	if (!text) return false;
-	const lower = text.toLowerCase();
+
+	// JSON / non-HTML API errors are never Cloudflare block pages.
+	const trimmed = text.trimStart();
+	if (trimmed.startsWith("{") || trimmed.startsWith("[")) return false;
+
+	const normalized = normalizeForMatching(text);
+
+	// Require an HTML document so we never mistake a bare error string.
 	const looksLikeHtml =
-		lower.includes("<html") || lower.includes("<!doctype html") || lower.includes("<title");
+		normalized.includes("<html") ||
+		normalized.includes("<!doctype html>") ||
+		normalized.includes("<title");
 	if (!looksLikeHtml) return false;
 
-	const cloudflareSignals =
-		lower.includes("cloudflare") ||
-		lower.includes("cf-ray") ||
-		lower.includes("attention required") ||
-		lower.includes("sorry, you have been blocked") ||
-		lower.includes("checking your browser") ||
-		lower.includes("just a moment") ||
-		lower.includes("cf-browser-verification") ||
-		lower.includes("challenge-platform");
+	const cloudflareSignals = [
+		"cloudflare",
+		"cf-ray",
+		"cf-mitigated",
+		"cf-browser-verification",
+		"challenge-platform",
+		"attention required",
+		"checking your browser",
+		"just a moment",
+		"managed challenge",
+		"you have been blocked",
+		"sorry, you have been blocked",
+	];
+	const hasSignal = cloudflareSignals.some((s) => normalized.includes(s));
+	if (!hasSignal) return false;
 
-	// 403 is the common hard-block; 503/429/1020-style pages also appear.
-	const blockishStatus = status === 403 || status === 503 || status === 429 || status === 520;
-	return cloudflareSignals && (blockishStatus || lower.includes("you have been blocked"));
+	// 403 / 429 / 503 / 520 are the statuses Cloudflare returns for
+	// blocks and managed challenges; a strong block phrase alone also counts.
+	const blockishStatus = [403, 429, 503, 520].includes(status);
+	return blockishStatus || normalized.includes("you have been blocked");
+}
+
+/** Lowercase, strip comments, decode common HTML entities, collapse whitespace. */
+function normalizeForMatching(html: string): string {
+	let s = html.toLowerCase();
+	s = s.replace(/<!--[\s\S]*?-->/g, " ");
+	s = s
+		.replace(/&nbsp;/g, " ")
+		.replace(/&/g, "&")
+		.replace(/</g, "<")
+		.replace(/>/g, ">")
+		.replace(/&#39;/g, "'")
+		.replace(/"/g, '"')
+		.replace(/&#(\d+);/g, (_m, d) => String.fromCharCode(Number(d)));
+	s = s.replace(/\s+/g, " ");
+	return s;
 }
 
 export function asAppError(error: unknown) {

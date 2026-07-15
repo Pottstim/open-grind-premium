@@ -254,6 +254,16 @@ fn maybe_rewrite_response(status: u16, path: &str, body: Vec<u8>) -> (u16, Vec<u
             .unwrap_or(false);
 
     if is_banned {
+        // Dev-mode escape hatch (audit: "Blanket ban bypass could mask real errors"):
+        // set OG_DEV_DISABLE_BAN_BYPASS=1 to surface the true response instead of
+        // rewriting to 200 OK, so auth/gate failures stay debuggable. The override is
+        // read live (not cached) and is a no-op in production where the env var is unset.
+        if std::env::var_os("OG_DEV_DISABLE_BAN_BYPASS").is_some() {
+            tracing::warn!(
+                "[premium] ban bypass disabled (OG_DEV_DISABLE_BAN_BYPASS set) — passing through {status} {path}"
+            );
+            return (status, body);
+        }
         return (
             200,
             serde_json::json!({"status": "ok"}).to_string().into_bytes(),

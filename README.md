@@ -34,6 +34,26 @@ Interested in contributing to the project? Head to [CONTRIBUTING.md](./CONTRIBUT
 
 Check out [issues](https://git.opengrind.org/open-grind/open-grind/issues) and the Matrix chatroom [#opengrind:opengrind.org](https://matrix.to/#/#opengrind:opengrind.org).
 
+## Legal & Disclaimer
+
+Open Grind is an **unofficial, community-driven** client and is not affiliated with,
+endorsed by, or sponsored by Grindr LLC.
+
+Using a third-party client to access Grindr **likely violates Grindr's Terms of
+Service** and may result in account suspension or a permanent ban. The fingerprint
+rotation, request rewriting, and ban-bypass features exist to protect your privacy
+and client stability — they do **not** make usage ToS-compliant, and they carry no
+guarantee against detection or enforcement.
+
+- This software is provided for **educational, privacy-research, and personal-use**
+  purposes only.
+- You assume **all risk** and responsibility for any consequences of using it,
+  including against your Grindr account.
+- Contributors and maintainers are **not liable** for any damages, account bans,
+  or losses arising from its use.
+
+If you do not accept these risks, do not use this software.
+
 ## License
 
 [MIT](./LICENSE)
